@@ -10,7 +10,7 @@ const commonConfig = {
     },
     devtool: 'source-map',
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".jsx"]
+        extensions: [".ts", ".tsx", ".js", ".jsx", ".scss", ".css"]
     },
     module: {
         rules: [
@@ -19,6 +19,24 @@ const commonConfig = {
                 use: [{
                     loader: 'awesome-typescript-loader',
                 }],
+            },
+            {
+                test: /\.scss$/,
+                use: [{
+                    loader: "file-loader",
+                    options: {
+                        name: "[name].css"
+                    }
+                }, {
+                    loader: "extract-loader"
+                }, {
+                    loader: "css-loader"
+                }, {
+                    loader: "sass-loader",
+                    options: { 
+                        implementation: require("sass")
+                    }
+                }]
             }
         ]
     }
@@ -27,10 +45,10 @@ const commonConfig = {
 module.exports = [
     Object.assign(
       {
-        target: 'electron-main',
-        entry: { main: './src/main/index.ts' },
+        target: "electron-main",
+        entry: { main: "./src/main/index.ts" },
         plugins: [new WriteFilePlugin(), new CopyWebpackPlugin([
-            { from: './src/main/app-package.json', to: path.join(__dirname, 'dist', 'package.json') }
+            { from: "./src/main/app-package.json", to: path.join(__dirname, "dist", "package.json") }
         ])],
         node: {
             __dirname: false,
@@ -40,10 +58,15 @@ module.exports = [
       commonConfig),
     Object.assign(
       {
-        entry: { renderer: './src/renderer/index.tsx' },
+        entry: { 
+            renderer: [
+                "./src/renderer/index.tsx",
+                "./src/renderer/app.scss",
+            ] 
+        },
         plugins: [new WriteFilePlugin(), new CopyWebpackPlugin([
-            { from: './src/renderer/index.html', to: path.join(__dirname, 'dist', 'index.html') },
-            { from: './src/renderer/preload.js', to: path.join(__dirname, 'dist', 'preload.js') }
+            { from: "./src/renderer/index.html", to: path.join(__dirname, "dist", "index.html") },
+            { from: "./src/renderer/preload.js", to: path.join(__dirname, "dist", "preload.js") }
         ])]
       },
       commonConfig)
