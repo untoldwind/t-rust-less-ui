@@ -51,7 +51,7 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
           <FlexVertical>
             <SelectField value={selectedStore || ""} options={stores.map(store => ({ label: store, value: store }))} />
             <SelectField value={selectedIdentity} options={identities.map(identity => ({ label: `${identity.name} <${identity.email}>`, value: identity.id }))} />
-            <PasswordField value={passpharse} autoFocus />
+            <PasswordField value={passpharse} autoFocus onValueChange={passpharse => this.setState({ passpharse })} />
           </FlexVertical>
         </GridItem>
       </Grid>

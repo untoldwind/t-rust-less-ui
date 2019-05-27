@@ -35,6 +35,7 @@
         "write-file-webpack-plugin": "^4.5.0"
     },
     "dependencies": {
+        "decko": "^1.2.0",
         "moment": "^2.24.0",
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
