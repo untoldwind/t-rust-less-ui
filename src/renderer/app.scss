@@ -1,3 +1,16 @@
+@import "~sass-bem/bem";
+
 body {
-    background-color: blue;
+    margin: 0;
+}
+
+#app {
+    height: 100vh;
+    width: 100%;
+}
+
+@include block("components") {
+    @include element("grid") {
+        display: grid;
+    }
 }

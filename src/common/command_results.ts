@@ -1,10 +1,7 @@
-import { StoreConfig, Status } from "./model";
+import { StoreConfig, Status, ServiceError, Identity } from "./model";
 
 export interface ErrorResult {
-    error: {
-        error: any
-        display: string
-    }
+    error: ServiceError
 }
 
 export interface BoolResult {
@@ -27,6 +24,10 @@ export interface StatusResult {
     status: Status
 }
 
+export interface IdentitiesResult {
+    identities: Identity[]
+}
+
 export type CommandResult = "invalid"
     | "success"
     | ErrorResult
@@ -35,5 +36,21 @@ export type CommandResult = "invalid"
     | StoreConfigResult
     | StringResult
     | StringListResult
-    | StatusResult;
+    | StatusResult
+    | IdentitiesResult;
 
+export function isError(result : CommandResult): result is ErrorResult {
+    return typeof result === "object" && typeof (result as ErrorResult).error !== "undefined";
+}
+
+export function isStringList(result: CommandResult): result is StringListResult {
+    return typeof result === "object" && typeof (result as StringListResult).string_list !== "undefined";
+}
+
+export function isStatus(result: CommandResult): result is StatusResult {
+    return typeof result === "object" && typeof (result as StatusResult).status !== "undefined";
+}
+
+export function isIdentities(result: CommandResult): result is IdentitiesResult {
+    return typeof result === "object" && typeof (result as IdentitiesResult).identities !== "undefined";
+}

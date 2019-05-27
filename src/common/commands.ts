@@ -13,11 +13,15 @@ export interface SetDefaultStore {
 }
 
 export interface Status {
-    status: string
+    status: {
+        store_name: string
+    }
 }
 
 export interface ListIdentities {
-    list_identities: string
+    list_identities: {
+        store_name: string
+    }
 }
 
 export type Command = "list_stores"
