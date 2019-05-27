@@ -1,5 +1,5 @@
 export interface FieldProps {
-    autoFocus: boolean
-    disabled: boolean
+    autoFocus?: boolean
+    disabled?: boolean
     value: string
 }

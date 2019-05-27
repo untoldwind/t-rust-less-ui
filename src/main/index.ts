@@ -7,6 +7,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let mainWindow: BrowserWindow | null = null;
 
+
 function createWindow(): BrowserWindow {
     const window = new BrowserWindow({
         webPreferences: {
@@ -17,6 +18,12 @@ function createWindow(): BrowserWindow {
     });
 
     if (isDevelopment) {
+        const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+
+        installExtension(REDUX_DEVTOOLS)
+            .then((name : any) => console.log(`Added Extension:  ${name}`))
+            .catch((err: any ) => console.log('An error occurred: ', err));
+        
         window.webContents.openDevTools();
         window.loadURL("http://localhost:8080");
     } else {

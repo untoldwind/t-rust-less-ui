@@ -1,4 +1,4 @@
-import { ServiceError } from "../../common/model";
+import { ServiceError, Identity } from "../../common/model";
 import { NavigationPage } from "../actions/navigation";
 
 export interface NavigationState {
@@ -12,9 +12,15 @@ export interface ServiceState {
     selectedStore: string | null
 }
 
+export interface StoreState {
+    identities: Identity[]
+    listIdentitiesInProgress: boolean
+}
+
 export interface State {
     navigation: NavigationState
     service: ServiceState
+    store: StoreState
 }
 
 export const INITIAL_STATE : State = {
@@ -27,4 +33,8 @@ export const INITIAL_STATE : State = {
         stores: [],
         selectedStore: null,
     },
+    store: {
+        identities: [],
+        listIdentitiesInProgress: false,
+    }
 };

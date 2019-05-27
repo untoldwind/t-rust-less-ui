@@ -1,16 +1,30 @@
 @import "~sass-bem/bem";
 
+html {
+  font-family: "Lato", "Roboto", "Arial", "Helvetica", sans-serif;
+}
+
 body {
-    margin: 0;
+  margin: 0;
 }
 
 #app {
-    height: 100vh;
-    width: 100%;
+  height: 100vh;
+  width: 100vw;
 }
 
-@include block("components") {
-    @include element("grid") {
+@include block("grid") {
+    @include element("container") {
         display: grid;
+    }
+}
+
+@include block("flex") {
+    display: flex;
+    flex: 1 1 auto;
+
+    @include element("vertical") {
+        flex-direction: column;
+        height: 100%;
     }
 }

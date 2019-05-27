@@ -9,9 +9,9 @@ export interface Props extends FieldProps {
 
 export const SelectField : React.FunctionComponent<Props> = props => {
     return (
-        <select className="components__field components__selectfield" {...props}>
+        <select className="components__field components__field__select" {...props}>
             {props.options.map(option => (
-                <option {...option}/>
+                <option key={option.value} {...option}/>
             ))}
         </select>
     )

@@ -1,9 +1,7 @@
 import { ActionCreator } from "../helpers/action-creator";
-import { ServiceError, Status, Identity } from "../../common/model";
+import { Status, Identity } from "../../common/model";
 
 export const StoreActionCreators = {
-    setError: new ActionCreator<"STORE_ERROR", ServiceError>("STORE_ERROR"),
-
     statusStart: new ActionCreator<"STATUS_START", undefined>("STATUS_START"),
     statusDone: new ActionCreator<"STATUS_DONE", Status>("STATUS_DONE"),
 
