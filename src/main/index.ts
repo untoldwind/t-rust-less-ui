@@ -9,60 +9,60 @@ let mainWindow: BrowserWindow | null = null;
 
 
 function createWindow(): BrowserWindow {
-    const window = new BrowserWindow({
-        webPreferences: {
-            contextIsolation: false,
-            nodeIntegration: false,
-            preload: path.join(__dirname, 'preload.js'),
-        },
+  const window = new BrowserWindow({
+    webPreferences: {
+      contextIsolation: false,
+      nodeIntegration: false,
+      preload: path.join(__dirname, 'preload.js'),
+    },
+  });
+
+  if (isDevelopment) {
+    const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+
+    installExtension(REDUX_DEVTOOLS)
+      .then((name: any) => console.log(`Added Extension:  ${name}`))
+      .catch((err: any) => console.log('An error occurred: ', err));
+
+    window.webContents.openDevTools();
+    window.loadURL("http://localhost:8080");
+  } else {
+    window.loadURL(url.format({
+      pathname: path.join(__dirname, 'index.html'),
+      protocol: 'file',
+      slashes: true,
+    }));
+  }
+
+  window.on('closed', () => {
+    mainWindow = null;
+  })
+
+  window.webContents.on('devtools-opened', () => {
+    window.focus();
+    setImmediate(() => {
+      window.focus();
     });
+  });
 
-    if (isDevelopment) {
-        const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
-
-        installExtension(REDUX_DEVTOOLS)
-            .then((name : any) => console.log(`Added Extension:  ${name}`))
-            .catch((err: any ) => console.log('An error occurred: ', err));
-        
-        window.webContents.openDevTools();
-        window.loadURL("http://localhost:8080");
-    } else {
-        window.loadURL(url.format({
-            pathname: path.join(__dirname, 'index.html'),
-            protocol: 'file',
-            slashes: true
-        }));
-    }
-
-    window.on('closed', () => {
-        mainWindow = null;
-    })
-
-    window.webContents.on('devtools-opened', () => {
-        window.focus();
-        setImmediate(() => {
-            window.focus();
-        });
-    });
-
-    return window;
+  return window;
 }
 
 app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        app.quit();
-    }
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
 });
 
 app.on("activate", () => {
-    if (mainWindow === null) {
-        mainWindow = createWindow();
-    }
+  if (mainWindow === null) {
+    mainWindow = createWindow();
+  }
 })
 
 app.on("ready", () => {
-    mainWindow = createWindow();
-    console.log("Sending");
+  mainWindow = createWindow();
+  console.log("Sending");
 
-    backend.sendCommand("list_stores", result => console.log(result));
+  backend.sendCommand("list_stores", result => console.log(result));
 })

@@ -5,7 +5,7 @@ import { serviceReducer } from "./service-reducers";
 import { storeReducer } from "./store-reducers";
 
 export const reducers = combineReducers<State>({
-    navigation: navigationReducer,
-    service: serviceReducer,
-    store: storeReducer,
+  navigation: navigationReducer,
+  service: serviceReducer,
+  store: storeReducer,
 });

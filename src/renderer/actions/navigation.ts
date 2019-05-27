@@ -4,7 +4,7 @@ export type NavigationPage = "UnlockStore" | "ListSecrets";
 
 
 export const NavigationActionCreators = {
-    navigateTo: new ActionCreator<"NAVIGATE_TO", NavigationPage>("NAVIGATE_TO"),
+  navigateTo: new ActionCreator<"NAVIGATE_TO", NavigationPage>("NAVIGATE_TO"),
 };
 
 export type NavigationAction = typeof NavigationActionCreators[keyof typeof NavigationActionCreators];

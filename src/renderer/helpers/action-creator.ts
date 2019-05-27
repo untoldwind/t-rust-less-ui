@@ -3,7 +3,7 @@
  * @template T - Generic Type
  */
 export type EmptyAction<T> = {
-    readonly type: T;
+  readonly type: T;
 };
 
 /**
@@ -12,9 +12,9 @@ export type EmptyAction<T> = {
  * @template P - Generic Type
  */
 export type PayloadAction<T, P> = {
-    readonly type: T;
-    readonly payload: P;
-    readonly error?: boolean;
+  readonly type: T;
+  readonly payload: P;
+  readonly error?: boolean;
 };
 
 /**
@@ -24,11 +24,11 @@ export type PayloadAction<T, P> = {
  * @template P - Generic Type
  */
 export class ActionCreator<T, P> {
-    readonly type: T;
-    readonly payload: P;
+  readonly type: T;
+  readonly payload: P;
 
-    constructor(type: T) { this.type = type; }
-    create = (payload: P) => ({ type: this.type, payload });
+  constructor(type: T) { this.type = type; }
+  create = (payload: P) => ({ type: this.type, payload });
 }
 
 /**
@@ -38,7 +38,7 @@ export class ActionCreator<T, P> {
  * @returns () => EmptyAction<T>
  */
 export function createEmptyAction<T>(type: T): () => EmptyAction<T> {
-    return () => ({ type });
+  return () => ({ type });
 }
 
 /**
@@ -49,5 +49,5 @@ export function createEmptyAction<T>(type: T): () => EmptyAction<T> {
  * @returns (payload: P) => PayloadAction<T, P>
  */
 export function createPayloadAction<T, P>(type: T): (payload: P) => PayloadAction<T, P> {
-    return (payload) => ({ type, payload });
+  return (payload) => ({ type, payload });
 }

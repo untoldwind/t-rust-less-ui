@@ -4,6 +4,6 @@ export type BoundActions = {
 
 }
 
-export function actionBinder(dispatch: Dispatch) : BoundActions {
-    return {}
+export function actionBinder(dispatch: Dispatch): BoundActions {
+  return {}
 }

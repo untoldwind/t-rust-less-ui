@@ -5,7 +5,7 @@ import { bindActors } from "./helpers/bind-actor";
 import { actors } from "./actions/actors";
 
 declare namespace window {
-    const __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: <R>(a: R) => R
+  const __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: <R>(a: R) => R
 }
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;

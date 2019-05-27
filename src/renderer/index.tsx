@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 
 render((
-    <Provider store={store}>
-        <MainFrame/>
-    </Provider>
+  <Provider store={store}>
+    <MainFrame />
+  </Provider>
 ), document.getElementById("app"));
