@@ -20,6 +20,17 @@ export function sendCommand(command: Command, resultReceiver: (result: CommandRe
   window.ipcRenderer.send("backend", { command, replyChannel });
 }
 
+export function expectSuccess(success: () => void, failure: (error: ServiceError) => void): (commandResult: CommandResult) => void {
+  return (commandResult: CommandResult) => {
+    if (commandResult === "success")
+      success();
+    else if (isError(commandResult))
+      failure(commandResult.error);
+    else
+      failure({ error: commandResult, display: "Expected success" })
+  }
+}
+
 export function expectStringList(success: (result: string[]) => void, failure: (error: ServiceError) => void): (commandResult: CommandResult) => void {
   return (commandResult: CommandResult) => {
     if (isStringList(commandResult))

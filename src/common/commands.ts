@@ -24,10 +24,26 @@ export interface ListIdentities {
   }
 }
 
+export interface Unlock {
+  unlock: {
+    store_name: string
+    identity_id: string
+    passphrase: string
+  }
+}
+
+export interface Lock {
+  lock: {
+    store_name: string
+  }
+}
+
 export type Command = "list_stores"
   | GetStoreConfig
   | SetStoreConfig
   | "get_default_store"
   | SetDefaultStore
   | Status
-  | ListIdentities;
+  | ListIdentities
+  | Unlock
+  | Lock;

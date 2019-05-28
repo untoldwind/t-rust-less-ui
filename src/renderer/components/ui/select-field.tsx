@@ -25,5 +25,4 @@ export class SelectField extends React.Component<Props>  {
 
     onValueChange && onValueChange(event.target.value);
   }
-
 }
