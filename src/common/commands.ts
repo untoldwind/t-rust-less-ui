@@ -1,4 +1,5 @@
-import { StoreConfig } from "./model";
+import { StoreConfig, SecretListFilter } from "./model";
+import { ListSecrets } from "../renderer/components/list-secrets";
 
 export interface GetStoreConfig {
   get_store_config: string
@@ -12,7 +13,7 @@ export interface SetDefaultStore {
   set_default_store: string
 }
 
-export interface Status {
+export interface GetStatus {
   status: {
     store_name: string
   }
@@ -38,12 +39,20 @@ export interface Lock {
   }
 }
 
+export interface ListSecrets {
+  list_secrets: {
+    store_name: string
+    filter: SecretListFilter
+  }
+}
+
 export type Command = "list_stores"
   | GetStoreConfig
   | SetStoreConfig
   | "get_default_store"
   | SetDefaultStore
-  | Status
+  | GetStatus
   | ListIdentities
   | Unlock
-  | Lock;
+  | Lock
+  | ListSecrets;

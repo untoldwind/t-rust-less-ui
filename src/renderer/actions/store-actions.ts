@@ -28,7 +28,7 @@ export function doGetStatus(dispatch: Dispatch): (store_name: string) => void {
 export function doLockStore(dispatch: Dispatch): (store_name: string) => void {
   return (store_name: string) => {
     sendCommand({ lock: { store_name } }, expectSuccess(
-      () => { },
+      () => doGetStatus(dispatch)(store_name),
       error => dispatch(ServiceActionCreators.setError.create(error))
     ));
   }
@@ -37,7 +37,7 @@ export function doLockStore(dispatch: Dispatch): (store_name: string) => void {
 export function doUnlockStore(dispatch: Dispatch): (store_name: string, identity_id: string, passphrase: string) => void {
   return (store_name: string, identity_id: string, passphrase: string) => {
     sendCommand({ unlock: { store_name, identity_id, passphrase } }, expectSuccess(
-      () => { },
+      () => doGetStatus(dispatch)(store_name),
       error => dispatch(ServiceActionCreators.setError.create(error))
     ))
   }

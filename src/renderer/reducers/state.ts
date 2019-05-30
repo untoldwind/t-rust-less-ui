@@ -1,4 +1,4 @@
-import { Identity } from "../../common/model";
+import { Identity, Status, SecretListFilter, SecretList } from "../../common/model";
 import { NavigationPage } from "../actions/navigation";
 import { ServiceError } from "../../common/errors";
 
@@ -16,6 +16,11 @@ export interface ServiceState {
 export interface StoreState {
   identities: Identity[]
   listIdentitiesInProgress: boolean
+  status: Status | null
+  getStatusinProgress: boolean
+  listFilter: SecretListFilter
+  list: SecretList | null
+  listInProgress: boolean
 }
 
 export interface State {
@@ -37,5 +42,10 @@ export const INITIAL_STATE: State = {
   store: {
     identities: [],
     listIdentitiesInProgress: false,
+    status: null,
+    getStatusinProgress: false,
+    listFilter: {},
+    list: null,
+    listInProgress: false,
   },
 };

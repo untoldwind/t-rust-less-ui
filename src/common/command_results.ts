@@ -1,4 +1,4 @@
-import { StoreConfig, Status, Identity } from "./model";
+import { StoreConfig, Status, Identity, SecretList } from "./model";
 import { ServiceError } from "./errors";
 
 export interface ErrorResult {
@@ -29,6 +29,10 @@ export interface IdentitiesResult {
   identities: Identity[]
 }
 
+export interface SecretListResult {
+  secret_list: SecretList
+}
+
 export type CommandResult = "invalid"
   | "success"
   | ErrorResult
@@ -38,10 +42,15 @@ export type CommandResult = "invalid"
   | StringResult
   | StringListResult
   | StatusResult
-  | IdentitiesResult;
+  | IdentitiesResult
+  | SecretListResult;
 
 export function isError(result: CommandResult): result is ErrorResult {
   return typeof result === "object" && typeof (result as ErrorResult).error !== "undefined";
+}
+
+export function isString(result: CommandResult): result is StringResult {
+  return typeof result === "object" && typeof (result as StringResult).string !== "undefined";
 }
 
 export function isStringList(result: CommandResult): result is StringListResult {
@@ -54,4 +63,8 @@ export function isStatus(result: CommandResult): result is StatusResult {
 
 export function isIdentities(result: CommandResult): result is IdentitiesResult {
   return typeof result === "object" && typeof (result as IdentitiesResult).identities !== "undefined";
+}
+
+export function isSecretList(result: CommandResult): result is SecretListResult {
+  return typeof result === "object" && typeof (result as SecretListResult).secret_list !== "undefined";
 }

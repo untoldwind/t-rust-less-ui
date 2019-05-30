@@ -30,7 +30,11 @@ function processResponse(chunk: Buffer) {
     chunks.push(data);
     return;
   }
-  const message = JSON.parse(data.toString("utf8", 4));
+  const message = JSON.parse(data.toString("utf8", 4, 4+len));
+
+  if(data.length > 4+len) {
+    chunks.push(data.slice(4+len));
+  }
 
   if (typeof message !== "object" || typeof message.id !== "number" || typeof message.result === "undefined") {
     console.log("Droping invalid response: ", message);

@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 import { ServiceActionCreators } from "./service-action-creators";
-import { expectStringList, sendCommand } from "./backend";
+import { expectStringList, sendCommand, expectOptionString } from "./backend";
 
 export function doListStores(dispatch: Dispatch): () => void {
   return () => {
@@ -10,6 +10,15 @@ export function doListStores(dispatch: Dispatch): () => void {
       success => dispatch(ServiceActionCreators.listStoresDone.create(success)),
       error => dispatch(ServiceActionCreators.setError.create(error))
     ));
+  }
+}
+
+export function doGetDefaultStore(dispatch: Dispatch): (fallback: string) => void {
+  return (fallback: string) => {
+    sendCommand("get_default_store", expectOptionString(
+      success => dispatch(ServiceActionCreators.selectStore.create(success || fallback)),
+      error => dispatch(ServiceActionCreators.setError.create(error)),
+    ))
   }
 }
 

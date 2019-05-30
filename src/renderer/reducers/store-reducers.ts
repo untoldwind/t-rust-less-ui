@@ -8,6 +8,7 @@ export function storeReducer(state: StoreState = INITIAL_STATE.store, action: Se
       return {
         ...state,
         identities: [],
+        status: null,
       };
     case StoreActionCreators.listIdentitiesStart.type:
       return {
@@ -20,6 +21,17 @@ export function storeReducer(state: StoreState = INITIAL_STATE.store, action: Se
         listIdentitiesInProgress: false,
         identities: action.payload,
       };
+    case StoreActionCreators.statusStart.type:
+      return {
+        ...state,
+        getStatusinProgress: true,
+      }
+    case StoreActionCreators.statusDone.type:
+      return {
+        ...state,
+        getStatusinProgress: false,
+        status: action.payload,
+      }
     default:
       return state;
   }

@@ -1,5 +1,5 @@
 import { IpcRenderer } from "electron";
-import { CommandResult, isStringList, isError, isIdentities, isStatus } from "../../common/command_results";
+import { CommandResult, isStringList, isError, isIdentities, isStatus, isString } from "../../common/command_results";
 import { Command } from "../../common/commands";
 import { Identity, Status } from "../../common/model";
 import { ServiceError } from "../../common/errors";
@@ -29,6 +29,19 @@ export function expectSuccess(success: () => void, failure: (error: ServiceError
       failure(commandResult.error);
     else
       failure({ error: commandResult, display: "Expected success" })
+  }
+}
+
+export function expectOptionString(success: (result: string | null) => void, failure: (error: ServiceError) => void): (commandResult: CommandResult) => void {
+  return (commandResult: CommandResult) => {
+    if (commandResult === "empty")
+      success(null);
+    else if (isString(commandResult))
+      success(commandResult.string)
+    else if (isError(commandResult))
+      failure(commandResult.error);
+    else
+      failure({ error: commandResult, display: "Expected option of string" })
   }
 }
 
