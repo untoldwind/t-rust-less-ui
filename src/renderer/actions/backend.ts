@@ -1,7 +1,8 @@
 import { IpcRenderer } from "electron";
 import { CommandResult, isStringList, isError, isIdentities, isStatus } from "../../common/command_results";
 import { Command } from "../../common/commands";
-import { ServiceError, Identity, Status } from "../../common/model";
+import { Identity, Status } from "../../common/model";
+import { ServiceError } from "../../common/errors";
 
 declare global {
   interface Window {

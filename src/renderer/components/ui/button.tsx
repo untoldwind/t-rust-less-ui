@@ -2,6 +2,7 @@ import * as React from "react";
 
 export interface ButtonProps {
   disabled?: boolean
+  type?: "button" | "reset" | "submit"
   onClick?: () => void
 }
 

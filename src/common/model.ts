@@ -89,8 +89,3 @@ export interface Secret {
   versions: string[]
   password_strengths: { [name: string]: PasswordStrength }
 }
-
-export interface ServiceError {
-  error: any
-  display: string
-}

@@ -1,0 +1,1 @@
+export type UIState = "primary" | "secondary" | "success" | "failure";

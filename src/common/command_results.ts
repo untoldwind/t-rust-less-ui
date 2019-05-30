@@ -1,4 +1,5 @@
-import { StoreConfig, Status, ServiceError, Identity } from "./model";
+import { StoreConfig, Status, Identity } from "./model";
+import { ServiceError } from "./errors";
 
 export interface ErrorResult {
   error: ServiceError

@@ -1,5 +1,6 @@
-import { ServiceError, Identity } from "../../common/model";
+import { Identity } from "../../common/model";
 import { NavigationPage } from "../actions/navigation";
+import { ServiceError } from "../../common/errors";
 
 export interface NavigationState {
   page: NavigationPage

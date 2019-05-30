@@ -9,9 +9,10 @@ import { SelectField } from "./ui/select-field";
 import { PasswordField } from "./ui/password-field";
 import { Button } from "./ui/button";
 import { bind } from "decko";
+import { Form } from "./ui/form";
+import { ServiceErrorPanel } from "./service-error-panel";
 
 const mapStateToProps = (state: State) => ({
-  error: state.service.error,
   stores: state.service.stores,
   selectedStore: state.service.selectedStore,
   identities: state.store.identities,
@@ -50,12 +51,17 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
     return (
       <Grid height={[100, '%']} colSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]} rowSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}>
         <GridItem colStart={2} rowStart={2}>
-          <FlexVertical>
-            <SelectField value={selectedStore || ""} options={stores.map(store => ({ label: store, value: store }))} />
-            <SelectField value={selectedIdentity} options={identities.map(identity => ({ label: `${identity.name} <${identity.email}>`, value: identity.id }))} />
-            <PasswordField value={passphrase} autoFocus onValueChange={passphrase => this.setState({ passphrase })} />
-            <Button disabled={!this.isValid()} onClick={this.onUnlock}>Unlock</Button>
-          </FlexVertical>
+          <Form onSubmit={this.onUnlock}>
+            <FlexVertical>
+              <SelectField value={selectedStore || ""} options={stores.map(store => ({ label: store, value: store }))} />
+              <SelectField value={selectedIdentity} options={identities.map(identity => ({ label: `${identity.name} <${identity.email}>`, value: identity.id }))} />
+              <PasswordField value={passphrase} autoFocus onValueChange={passphrase => this.setState({ passphrase })} />
+              <Button type="submit" disabled={!this.isValid()}>Unlock</Button>
+            </FlexVertical>
+          </Form>
+        </GridItem>
+        <GridItem colSpan={3} colStart={1} rowStart={3}>
+          <ServiceErrorPanel />
         </GridItem>
       </Grid>
     )

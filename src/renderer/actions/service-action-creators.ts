@@ -1,5 +1,5 @@
 import { ActionCreator } from "../helpers/action-creator";
-import { ServiceError } from "../../common/model";
+import { ServiceError } from "../../common/errors";
 
 export const ServiceActionCreators = {
   setError: new ActionCreator<"SERVICE_ERROR", ServiceError>("SERVICE_ERROR"),

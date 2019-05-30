@@ -4,6 +4,7 @@ import { returntypeof } from "../helpers/returntypeof";
 import { BoundActions, actionBinder } from "../actions/bindable";
 import { connect } from "react-redux";
 import { UnlockStore } from "./unlock-store";
+import { ListSecrets } from "./list-secrets";
 
 const mapStateToProps = (state: State) => ({
   page: state.navigation.page,
@@ -18,6 +19,10 @@ export class MainFrameImpl extends React.Component<Props, {}> {
       case "UnlockStore":
         return (
           <UnlockStore />
+        );
+      case "ListSecrets":
+        return (
+          <ListSecrets />
         );
       default:
         return null;
