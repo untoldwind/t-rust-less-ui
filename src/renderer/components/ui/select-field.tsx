@@ -10,8 +10,16 @@ export interface Props extends FieldProps {
 
 export class SelectField extends React.Component<Props>  {
   render() {
+    const p = {
+      className: "custom-select",
+      autoFocus: this.props.autoFocus,
+      disabled: this.props.disabled,
+      value: this.props.value,
+      onChange: this.onChange,
+    };
+
     return (
-      <select className="form-control" {...this.props} onChange={this.onChange}>
+      <select {...p} >
         {this.props.options.map((option, idx) => (
           <option key={idx} {...option} />
         ))}
