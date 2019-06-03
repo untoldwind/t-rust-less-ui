@@ -17,7 +17,7 @@ export function doGetDefaultStore(dispatch: Dispatch): (fallback: string) => voi
   return (fallback: string) => {
     sendCommand("get_default_store", expectOptionString(
       success => dispatch(ServiceActionCreators.selectStore.create(success || fallback)),
-      error => dispatch(ServiceActionCreators.setError.create(error)),
+      error => dispatch(ServiceActionCreators.setError.create(error))
     ))
   }
 }

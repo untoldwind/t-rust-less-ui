@@ -1,7 +1,8 @@
 import { Dispatch } from "redux";
 import { StoreActionCreators } from "./store-action-creators";
-import { sendCommand, expectStatus, expectIdentities, expectSuccess } from "./backend";
+import { sendCommand, expectStatus, expectIdentities, expectSuccess, expectSecretList } from "./backend";
 import { ServiceActionCreators } from "./service-action-creators";
+import { SecretListFilter } from "../../common/model";
 
 export function doListIdentities(dispatch: Dispatch): (store_name: string) => void {
   return (store_name: string) => {
@@ -38,6 +39,17 @@ export function doUnlockStore(dispatch: Dispatch): (store_name: string, identity
   return (store_name: string, identity_id: string, passphrase: string) => {
     sendCommand({ unlock: { store_name, identity_id, passphrase } }, expectSuccess(
       () => doGetStatus(dispatch)(store_name),
+      error => dispatch(ServiceActionCreators.setError.create(error))
+    ))
+  }
+}
+
+export function doUpdateSecretList(dispatch: Dispatch): (store_name: string, filter: SecretListFilter) => void {
+  return (store_name: string, filter: SecretListFilter) => {
+    dispatch(StoreActionCreators.listEntriesStart.create(undefined));
+
+    sendCommand({ "list_secrets": { store_name, filter } }, expectSecretList(
+      success => dispatch(StoreActionCreators.listEntriesDone.create(success)),
       error => dispatch(ServiceActionCreators.setError.create(error))
     ))
   }

@@ -16,7 +16,22 @@
   }
   
   @include block("buttons") {
+    display: inline-block;
+    color: color("typo");
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    line-height: 1.5;
+    border-radius: 5px;
+    padding: 6px 12px;
+    width: 100%;
+
+    &:not(:disabled) {
+      cursor: pointer;
+    }
+
     @include element("standard") {
+
       @include state_iter using ($state) {
         @include modifier($state) {
           background-color: color($state);
@@ -26,6 +41,9 @@
   }
   
   @include block("fields") {
+    display: block;
+    width: 100%;
+
     @include element("select") {
     }
   

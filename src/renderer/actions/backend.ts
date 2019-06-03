@@ -1,7 +1,7 @@
 import { IpcRenderer } from "electron";
-import { CommandResult, isStringList, isError, isIdentities, isStatus, isString } from "../../common/command_results";
+import { CommandResult, isStringList, isError, isIdentities, isStatus, isString, isSecretList } from "../../common/command_results";
 import { Command } from "../../common/commands";
-import { Identity, Status } from "../../common/model";
+import { Identity, Status, SecretList } from "../../common/model";
 import { ServiceError } from "../../common/errors";
 
 declare global {
@@ -63,7 +63,7 @@ export function expectStatus(success: (result: Status) => void, failure: (error:
     else if (isError(commandResult))
       failure(commandResult.error);
     else
-      failure({ error: commandResult, display: "Expected string list" })
+      failure({ error: commandResult, display: "Expected status" })
   }
 }
 
@@ -74,6 +74,17 @@ export function expectIdentities(success: (result: Identity[]) => void, failure:
     else if (isError(commandResult))
       failure(commandResult.error);
     else
-      failure({ error: commandResult, display: "Expected string list" })
+      failure({ error: commandResult, display: "Expected identities" })
+  }
+}
+
+export function expectSecretList(success: (result: SecretList) => void, failure: (error: ServiceError) => void): (commandResult: CommandResult) => void {
+  return (commandResult: CommandResult) => {
+    if (isSecretList(commandResult))
+      success(commandResult.secret_list)
+    else if (isError(commandResult))
+      failure(commandResult.error)
+    else
+      failure({ error: commandResult, display: "Expected secret list" })
   }
 }

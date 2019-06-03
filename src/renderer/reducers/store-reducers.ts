@@ -25,13 +25,24 @@ export function storeReducer(state: StoreState = INITIAL_STATE.store, action: Se
       return {
         ...state,
         getStatusinProgress: true,
-      }
+      };
     case StoreActionCreators.statusDone.type:
       return {
         ...state,
         getStatusinProgress: false,
         status: action.payload,
-      }
+      };
+    case StoreActionCreators.listEntriesStart.type:
+      return {
+        ...state,
+        listInProgress: true,
+      };
+    case StoreActionCreators.listEntriesDone.type:
+      return {
+        ...state,
+        listInProgress: false,
+        list: action.payload,
+      };
     default:
       return state;
   }

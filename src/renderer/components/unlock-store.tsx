@@ -56,7 +56,7 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
               <SelectField value={selectedStore || ""} options={stores.map(store => ({ label: store, value: store }))} />
               <SelectField value={selectedIdentity} options={identities.map(identity => ({ label: `${identity.name} <${identity.email}>`, value: identity.id }))} />
               <PasswordField value={passphrase} autoFocus onValueChange={passphrase => this.setState({ passphrase })} />
-              <Button type="submit" disabled={!this.isValid()}>Unlock</Button>
+              <Button type="submit" state="primary" disabled={!this.isValid()}>Unlock</Button>
             </FlexVertical>
           </Form>
         </GridItem>
