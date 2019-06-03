@@ -1,3 +1,45 @@
-@import "styles/colors_dark";
-@import "styles/core";
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+@import "~@fortawesome/fontawesome-free/scss/regular.scss";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 
+@import "~bootswatch/dist/cyborg/variables";
+@import "~bootstrap/scss/bootstrap";
+@import "~bootswatch/dist/cyborg/bootswatch";
+
+@import "~sass-bem/bem";
+@import "styles/spacing";
+
+html {
+  font-family: "Lato", "Roboto", "Arial", "Helvetica", sans-serif;
+}
+
+#app {
+  height: 100vh;
+  width: 100vw;
+}
+
+@include block("grid") {
+  @include element("container") {
+    display: grid;
+
+    @each $spacingSize, $value in $spacingSizes {
+      @include modifier("column-gap--" + $spacingSize) {
+        grid-column-gap: #{$value};
+      }
+
+      @include modifier("row-gap--" + $spacingSize) {
+        grid-row-gap: #{$value};
+      }
+    }
+  }
+
+  @include block("flex") {
+    display: flex;
+    flex: 1 1 auto;
+
+    @include element("vertical") {
+      flex-direction: column;
+      height: 100%;
+    }
+  }
+}

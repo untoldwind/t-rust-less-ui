@@ -4,7 +4,6 @@ import { State } from "../reducers/state";
 import { BoundActions, actionBinder } from "../actions/bindable";
 import { connect } from "react-redux";
 import { Grid, GridItem } from "./ui/grid";
-import { FlexVertical } from "./ui/flex";
 import { SelectField } from "./ui/select-field";
 import { PasswordField } from "./ui/password-field";
 import { Button } from "./ui/button";
@@ -52,12 +51,12 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
       <Grid height={[100, '%']} colSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]} rowSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}>
         <GridItem colStart={2} rowStart={2}>
           <Form onSubmit={this.onUnlock}>
-            <FlexVertical>
+            <Grid columns={1} rowGap="md">
               <SelectField value={selectedStore || ""} options={stores.map(store => ({ label: store, value: store }))} />
               <SelectField value={selectedIdentity} options={identities.map(identity => ({ label: `${identity.name} <${identity.email}>`, value: identity.id }))} />
               <PasswordField value={passphrase} autoFocus onValueChange={passphrase => this.setState({ passphrase })} />
               <Button type="submit" state="primary" disabled={!this.isValid()}>Unlock</Button>
-            </FlexVertical>
+            </Grid>
           </Form>
         </GridItem>
         <GridItem colSpan={3} colStart={1} rowStart={3}>

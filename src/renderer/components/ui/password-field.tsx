@@ -8,7 +8,7 @@ export interface Props extends FieldProps {
 export class PasswordField extends React.Component<Props, {}> {
   render() {
     return (
-      <input className="fields fields__password" type="password" {...this.props} onChange={this.onChange} />
+      <input className="form-control" type="password" {...this.props} onChange={this.onChange} />
     )
   }
 

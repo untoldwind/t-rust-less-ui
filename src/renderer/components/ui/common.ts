@@ -1,1 +1,1 @@
-export type UIState = "primary" | "secondary" | "success" | "failure";
+export type UIState = "primary" | "secondary" | "success" | "info" | "warning" | "danger";

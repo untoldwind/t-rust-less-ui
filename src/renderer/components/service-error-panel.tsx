@@ -19,7 +19,7 @@ class ServiceErrorPanelImpl extends React.Component<Props, {}> {
     if (!error) return null;
 
     return (
-      <Panel state="failure">
+      <Panel state="danger">
         {error.display}
       </Panel>
     )

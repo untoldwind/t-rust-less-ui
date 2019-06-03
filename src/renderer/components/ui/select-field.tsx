@@ -11,7 +11,7 @@ export interface Props extends FieldProps {
 export class SelectField extends React.Component<Props>  {
   render() {
     return (
-      <select className="components__field components__field__select" {...this.props} onChange={this.onChange}>
+      <select className="form-control" {...this.props} onChange={this.onChange}>
         {this.props.options.map((option, idx) => (
           <option key={idx} {...option} />
         ))}

@@ -2,11 +2,15 @@ import * as React from "react";
 
 export type SizeSpec = [number, "px" | "fr" | "%" | "vw" | "vh"]
 
+export type Spacing = "sm" | "base" | "md" | "lg" | "xl" | "xxl";
+
 export interface GridProps {
   columns?: number
   colSpec?: SizeSpec[]
   rowSpec?: SizeSpec[]
   height?: SizeSpec
+  colGap?: Spacing
+  rowGap?: Spacing
 }
 
 export const Grid: React.FunctionComponent<GridProps> = props => {
@@ -16,6 +20,8 @@ export const Grid: React.FunctionComponent<GridProps> = props => {
   };
   if (props.rowSpec) style.gridTemplateRows = props.rowSpec.map(element => element.join("")).join(" ");
   if (props.height) style.height = props.height.join("");
+  if (props.colGap) classes.push(`grid__container--column-gap--${props.colGap}`)
+  if (props.rowGap) classes.push(`grid__container--row-gap--${props.rowGap}`)
 
   return (
     <div className={classes.join(" ")} style={style}>
