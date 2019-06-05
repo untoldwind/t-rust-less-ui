@@ -1,6 +1,7 @@
 const path = require("path");
 const WriteFilePlugin = require("write-file-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const commonConfig = {
     output: {
@@ -21,18 +22,25 @@ const commonConfig = {
                 }],
             },
             {
-                test: /\.scss$/,
+                test: /\.css$/,
                 use: [{
-                    loader: "file-loader",
+                    loader: MiniCssExtractPlugin.loader,
                     options: {
-                        name: "[name].css"
-                    }
-                }, {
-                    loader: "extract-loader"
+                        publicPath: "/",
+                    },
                 }, {
                     loader: "css-loader"
+                }]
+            },
+            {
+                test: /\.scss$/,
+                use: [{
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {
+                        publicPath: "/",
+                    },
                 }, {
-                    loader: "resolve-url-loader"
+                    loader: "css-loader"
                 }, {
                     loader: "sass-loader",
                     options: { 
@@ -73,12 +81,24 @@ module.exports = [
             renderer: [
                 "./src/renderer/index.tsx",
                 "./src/renderer/app.scss",
-            ] 
+            ],
+            "blueprint-core": [
+                "@blueprintjs/core/lib/css/blueprint.css",
+            ],
+            "blueprint-icons": [
+                "@blueprintjs/icons/lib/css/blueprint-icons.css",
+            ],
+            "blueprint-select": [
+                "@blueprintjs/select/lib/css/blueprint-select.css",
+            ],
         },
         plugins: [new WriteFilePlugin(), new CopyWebpackPlugin([
             { from: "./src/renderer/index.html", to: path.join(__dirname, "dist", "index.html") },
             { from: "./src/renderer/preload.js", to: path.join(__dirname, "dist", "preload.js") }
-        ])]
+        ]), new MiniCssExtractPlugin({
+            filename: "[name].css",
+            chunkFilename: "[id].css",
+        })]
       },
       commonConfig)
   ];

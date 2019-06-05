@@ -4,9 +4,7 @@ import { State } from "../reducers/state";
 import { BoundActions, actionBinder } from "../actions/bindable";
 import { connect } from "react-redux";
 import { Grid, GridItem } from "./ui/grid";
-import { SelectField } from "./ui/select-field";
-import { PasswordField } from "./ui/password-field";
-import { Button } from "./ui/button";
+import { Button, InputGroup, HTMLSelect } from "@blueprintjs/core";
 import { bind } from "decko";
 import { Form } from "./ui/form";
 import { ServiceErrorPanel } from "./service-error-panel";
@@ -52,10 +50,18 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
         <GridItem colStart={2} rowStart={2}>
           <Form onSubmit={this.onUnlock}>
             <Grid columns={1} rowGap="md">
-              <SelectField value={selectedStore || ""} options={stores.map(store => ({ label: store, value: store }))} />
-              <SelectField value={selectedIdentity} options={identities.map(identity => ({ label: `${identity.name} <${identity.email}>`, value: identity.id }))} />
-              <PasswordField value={passphrase} autoFocus onValueChange={passphrase => this.setState({ passphrase })} />
-              <Button type="submit" state="primary" disabled={!this.isValid()}>Unlock</Button>
+              <HTMLSelect value={selectedStore || ""} large>
+                {stores.map(store => (
+                  <option key={store} value={store}>{store}</option>
+                ))}
+              </HTMLSelect>
+              <HTMLSelect value={selectedIdentity} large>
+                {identities.map(identity => (
+                  <option key={identity.id} value={identity.id}>{identity.name} {`<${identity.email}>`}</option>
+                ))}
+              </HTMLSelect>
+              <InputGroup value={passphrase} type="password" leftIcon="key" large onChange={(event: React.FormEvent<HTMLElement>) => this.setState({ passphrase: (event.target as HTMLInputElement).value })} />
+              <Button type="submit" icon="log-in" intent="success" large disabled={!this.isValid()}>Unlock</Button>
             </Grid>
           </Form>
         </GridItem>
