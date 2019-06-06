@@ -9,6 +9,11 @@ export function serviceReducer(state: ServiceState = INITIAL_STATE.service, acti
         error: action.payload,
         listStoresInProgress: false,
       }
+    case ServiceActionCreators.dismissError.type:
+      return {
+        ...state,
+        error: null,
+      }
     case ServiceActionCreators.listStoresStart.type:
       return {
         ...state,

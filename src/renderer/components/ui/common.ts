@@ -1,1 +1,0 @@
-export type UIState = "primary" | "secondary" | "success" | "info" | "warning" | "danger";

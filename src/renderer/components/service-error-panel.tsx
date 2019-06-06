@@ -2,8 +2,8 @@ import * as React from "react";
 import { BoundActions, actionBinder } from "../actions/bindable";
 import { returntypeof } from "../helpers/returntypeof";
 import { State } from "../reducers/state";
-import { Panel } from "./ui/panel";
 import { connect } from "react-redux";
+import { Toaster, Toast } from "@blueprintjs/core";
 
 const mapStateToProps = (state: State) => ({
   error: state.service.error,
@@ -19,9 +19,9 @@ class ServiceErrorPanelImpl extends React.Component<Props, {}> {
     if (!error) return null;
 
     return (
-      <Panel state="danger">
-        {error.display}
-      </Panel>
+      <Toaster>
+        <Toast intent="danger" message={error.display} onDismiss={this.props.doDismissError} />
+      </Toaster>
     )
   }
 }

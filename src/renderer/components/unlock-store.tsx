@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import { Grid, GridItem } from "./ui/grid";
 import { Button, InputGroup, HTMLSelect } from "@blueprintjs/core";
 import { bind } from "decko";
-import { Form } from "./ui/form";
 import { ServiceErrorPanel } from "./service-error-panel";
 
 const mapStateToProps = (state: State) => ({
@@ -47,8 +46,11 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
 
     return (
       <Grid height={[100, '%']} colSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]} rowSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}>
-        <GridItem colStart={2} rowStart={2}>
-          <Form onSubmit={this.onUnlock}>
+        <GridItem colSpan={3}>
+          <ServiceErrorPanel />
+        </GridItem>
+        <GridItem colStart={2}>
+          <form onSubmit={this.onUnlock}>
             <Grid columns={1} rowGap="md">
               <HTMLSelect value={selectedStore || ""} large>
                 {stores.map(store => (
@@ -63,10 +65,7 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
               <InputGroup value={passphrase} type="password" leftIcon="key" large onChange={(event: React.FormEvent<HTMLElement>) => this.setState({ passphrase: (event.target as HTMLInputElement).value })} />
               <Button type="submit" icon="log-in" intent="success" large disabled={!this.isValid()}>Unlock</Button>
             </Grid>
-          </Form>
-        </GridItem>
-        <GridItem colSpan={3} colStart={1} rowStart={3}>
-          <ServiceErrorPanel />
+          </form>
         </GridItem>
       </Grid>
     )
@@ -80,7 +79,10 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
   }
 
   @bind
-  private onUnlock() {
+  private onUnlock(event: React.FormEvent<HTMLElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+
     const { selectedStore } = this.props;
     const { selectedIdentity, passphrase } = this.state;
 

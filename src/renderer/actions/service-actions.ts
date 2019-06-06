@@ -2,6 +2,12 @@ import { Dispatch } from "redux";
 import { ServiceActionCreators } from "./service-action-creators";
 import { expectStringList, sendCommand, expectOptionString } from "./backend";
 
+export function doDismissError(dispatch: Dispatch): () => void {
+  return () => {
+    dispatch(ServiceActionCreators.dismissError.create(undefined));
+  }
+}
+
 export function doListStores(dispatch: Dispatch): () => void {
   return () => {
     dispatch(ServiceActionCreators.listStoresStart.create(undefined));
