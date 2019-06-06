@@ -14,7 +14,7 @@ const stateProps = returntypeof(mapStateToProps);
 export type Props = typeof stateProps & BoundActions;
 
 export class MainFrameImpl extends React.Component<Props, {}> {
-  render() {
+  render(): React.ReactNode {
     switch (this.props.page) {
       case "UnlockStore":
         return (

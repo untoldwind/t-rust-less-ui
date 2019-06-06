@@ -13,7 +13,7 @@ const stateProps = returntypeof(mapStateToProps);
 export type Props = typeof stateProps & BoundActions;
 
 class ServiceErrorPanelImpl extends React.Component<Props, {}> {
-  render() {
+  render(): React.ReactNode {
     const { error } = this.props;
 
     if (!error) return null;

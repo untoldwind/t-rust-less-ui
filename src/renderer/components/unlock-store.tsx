@@ -40,7 +40,7 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
     }
   }
 
-  render() {
+  render(): React.ReactNode {
     const { selectedStore, stores, identities } = this.props;
     const { selectedIdentity, passphrase } = this.state;
 
@@ -62,7 +62,7 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
                   <option key={identity.id} value={identity.id}>{identity.name} {`<${identity.email}>`}</option>
                 ))}
               </HTMLSelect>
-              <InputGroup value={passphrase} type="password" leftIcon="key" large onChange={(event: React.FormEvent<HTMLElement>) => this.setState({ passphrase: (event.target as HTMLInputElement).value })} />
+              <InputGroup value={passphrase} type="password" leftIcon="key" large autoFocus onChange={(event: React.FormEvent<HTMLElement>) => this.setState({ passphrase: (event.target as HTMLInputElement).value })} />
               <Button type="submit" icon="log-in" intent="success" large disabled={!this.isValid()}>Unlock</Button>
             </Grid>
           </form>
@@ -87,6 +87,7 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
     const { selectedIdentity, passphrase } = this.state;
 
     if (selectedStore && selectedIdentity.length > 0 && passphrase.length > 0) {
+      this.setState({ passphrase: "" });
       this.props.doUnlockStore(selectedStore, selectedIdentity, passphrase)
     }
   }
