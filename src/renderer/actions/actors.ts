@@ -25,7 +25,7 @@ class UpdateStatus {
 
   @bind
   trigger(state: State, dispatch: Dispatch) {
-    if (state.service.selectedStore && !state.store.status && !this.intervalId) {
+    if (state.service.selectedStore && !this.intervalId) {
       const store = state.service.selectedStore;
 
       doGetStatus(dispatch)(store);
@@ -34,6 +34,7 @@ class UpdateStatus {
       }, 1000);
     } else if (!state.service.selectedStore && this.intervalId) {
       window.clearInterval(this.intervalId);
+      this.intervalId = null;
     }
   }
 }

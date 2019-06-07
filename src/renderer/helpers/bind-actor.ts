@@ -5,15 +5,19 @@ export interface Actor<S> {
 }
 
 export function bindActors<S>(store: Store<S>, actors: Actor<S>[]) {
-  let acting = false;
+  let timeoutId: number | null = null;
 
-  actors.forEach((actor) => actor(store.getState(), store.dispatch));
+  timeoutId = window.setTimeout(() => {
+    timeoutId = null;
+    actors.forEach((actor) => actor(store.getState(), store.dispatch));
+  }, 100);
 
   store.subscribe(() => {
-    if (!acting) {
-      acting = true;
-      actors.forEach((actor) => actor(store.getState(), store.dispatch));
-      acting = false;
+    if (!timeoutId) {
+      timeoutId = window.setTimeout(() => {
+        timeoutId = null;
+        actors.forEach((actor) => actor(store.getState(), store.dispatch));
+      }, 100);
     }
   });
 }

@@ -5,6 +5,7 @@ import { State } from "../reducers/state";
 import { connect } from "react-redux";
 import { Grid } from "./ui/grid";
 import { SecretEntryList } from "./secret-entry-list";
+import { SecretDetailView } from "./secret-detail-view";
 
 const mapStateToProps = (state: State) => ({
   error: state.service.error,
@@ -16,9 +17,9 @@ export type Props = typeof stateProps & BoundActions;
 class ListSecretsImpl extends React.Component<Props, {}> {
   render() {
     return (
-      <Grid colSpec={[[1, 'fr'], [2, 'fr']]}>
+      <Grid height={[100, "vh"]} colSpec={[[1, 'fr'], [2, 'fr']]}>
         <SecretEntryList />
-        <div>right</div>
+        <SecretDetailView />
       </Grid>
     )
   }

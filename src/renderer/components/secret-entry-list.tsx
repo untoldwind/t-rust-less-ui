@@ -24,15 +24,17 @@ class SecretEntryListImpl extends React.Component<Props, {}> {
 
     if (!list || listInProgress) {
       return (
-        <Grid height={[100, 'vh']} columns={1}>
+        <Grid columns={1}>
           <Spinner />
         </Grid>
       );
     }
     return (
-      <Menu>
-        {list.entries.map(this.renderListEntry)}
-      </Menu>
+      <div style={{ overflowY: "auto" }}>
+        <Menu>
+          {list.entries.map(this.renderListEntry)}
+        </Menu>
+      </div>
     )
   }
 

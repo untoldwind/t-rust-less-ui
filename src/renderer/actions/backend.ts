@@ -91,7 +91,6 @@ export function expectSecretList(success: (result: SecretList) => void, failure:
 
 export function expectSecret(success: (result: Secret) => void, failure: (error: ServiceError) => void): (commandResult: CommandResult) => void {
   return (commandResult: CommandResult) => {
-    console.log(commandResult);
     if (isSecret(commandResult))
       success(commandResult.secret)
     else if (isError(commandResult))

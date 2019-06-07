@@ -16,10 +16,13 @@ export interface GridProps {
 export const Grid: React.FunctionComponent<GridProps> = props => {
   const classes: string[] = ["grid", "grid__container"];
   const style: React.CSSProperties = {
-    gridTemplateColumns: props.colSpec ? props.colSpec.map(elem => elem.join("")).join(" ") : `repeat(${props.columns || 12}, fr)`,
+    gridTemplateColumns: props.colSpec ? props.colSpec.map(elem => elem.join("")).join(" ") : `repeat(${props.columns || 12}, 1fr)`,
   };
   if (props.rowSpec) style.gridTemplateRows = props.rowSpec.map(element => element.join("")).join(" ");
-  if (props.height) style.height = props.height.join("");
+  if (props.height) {
+    style.height = props.height.join("");
+    style.maxHeight = props.height.join("");
+  }
   if (props.colGap) classes.push(`grid__container--column-gap--${props.colGap}`)
   if (props.rowGap) classes.push(`grid__container--row-gap--${props.rowGap}`)
 
