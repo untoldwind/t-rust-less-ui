@@ -5,11 +5,7 @@ import { StoreAction, StoreActionCreators } from "../actions/store-action-creato
 export function storeReducer(state: StoreState = INITIAL_STATE.store, action: ServiceAction | StoreAction): StoreState {
   switch (action.type) {
     case ServiceActionCreators.selectStore.type:
-      return {
-        ...state,
-        identities: [],
-        status: null,
-      };
+      return INITIAL_STATE.store;
     case StoreActionCreators.listIdentitiesStart.type:
       return {
         ...state,

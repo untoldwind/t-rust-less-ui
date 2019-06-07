@@ -20,9 +20,21 @@ function ensureIdentities(state: State, dispatch: Dispatch) {
   }
 }
 
-function ensureStatus(state: State, dispatch: Dispatch) {
-  if (state.service.selectedStore && !state.store.getStatusinProgress && !state.store.status) {
-    doGetStatus(dispatch)(state.service.selectedStore);
+class UpdateStatus {
+  private intervalId: number | null = null;
+
+  @bind
+  trigger(state: State, dispatch: Dispatch) {
+    if (state.service.selectedStore && !state.store.getStatusinProgress && !state.store.status && !this.intervalId) {
+      const store = state.service.selectedStore;
+
+      doGetStatus(dispatch)(store);
+      this.intervalId = window.setInterval(() => {
+        doGetStatus(dispatch)(store);
+      }, 1000);
+    } else if (!state.service.selectedStore && this.intervalId) {
+      window.clearInterval(this.intervalId);
+    }
   }
 }
 
@@ -45,6 +57,6 @@ class UpdateSecretList {
 export const actors: Actor<State>[] = [
   ensureStoreList,
   ensureIdentities,
-  ensureStatus,
+  new UpdateStatus().trigger,
   new UpdateSecretList().trigger,
 ];
