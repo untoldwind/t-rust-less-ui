@@ -12,6 +12,7 @@ const mapStateToProps = (state: State) => ({
   stores: state.service.stores,
   selectedStore: state.service.selectedStore,
   identities: state.store.identities,
+  unlockInProgress: state.store.unlockInProgress,
 });
 const stateProps = returntypeof(mapStateToProps);
 
@@ -41,7 +42,7 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
   }
 
   render(): React.ReactNode {
-    const { selectedStore, stores, identities } = this.props;
+    const { selectedStore, stores, identities, unlockInProgress } = this.props;
     const { selectedIdentity, passphrase } = this.state;
 
     return (
@@ -63,7 +64,7 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
                 ))}
               </HTMLSelect>
               <InputGroup value={passphrase} type="password" leftIcon="key" large autoFocus onChange={(event: React.FormEvent<HTMLElement>) => this.setState({ passphrase: (event.target as HTMLInputElement).value })} />
-              <Button type="submit" icon="log-in" intent="success" large disabled={!this.isValid()}>Unlock</Button>
+              <Button type="submit" icon="log-in" intent="success" large loading={unlockInProgress} disabled={!this.isValid()}>Unlock</Button>
             </Grid>
           </form>
         </GridItem>

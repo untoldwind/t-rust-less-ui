@@ -6,6 +6,16 @@ export function storeReducer(state: StoreState = INITIAL_STATE.store, action: Se
   switch (action.type) {
     case ServiceActionCreators.selectStore.type:
       return INITIAL_STATE.store;
+    case StoreActionCreators.unlockStart.type:
+      return {
+        ...state,
+        unlockInProgress: true,
+      };
+    case StoreActionCreators.unlockDone.type:
+      return {
+        ...state,
+        unlockInProgress: false,
+      };
     case StoreActionCreators.listIdentitiesStart.type:
       return {
         ...state,
@@ -21,6 +31,11 @@ export function storeReducer(state: StoreState = INITIAL_STATE.store, action: Se
       return {
         ...state,
         status: action.payload,
+      };
+    case StoreActionCreators.setListFilter.type:
+      return {
+        ...state,
+        listFilter: action.payload,
       };
     case StoreActionCreators.listEntriesStart.type:
       return {

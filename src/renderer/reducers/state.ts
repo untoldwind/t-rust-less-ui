@@ -14,6 +14,7 @@ export interface ServiceState {
 }
 
 export interface StoreState {
+  unlockInProgress: boolean
   identities: Identity[]
   listIdentitiesInProgress: boolean
   status: Status | null
@@ -40,6 +41,7 @@ export const INITIAL_STATE: State = {
     selectedStore: null,
   },
   store: {
+    unlockInProgress: false,
     identities: [],
     listIdentitiesInProgress: false,
     status: null,

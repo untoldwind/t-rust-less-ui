@@ -3,6 +3,7 @@ import { StoreActionCreators } from "./store-action-creators";
 import { sendCommand, expectStatus, expectIdentities, expectSuccess, expectSecretList, expectSecret } from "./backend";
 import { ServiceActionCreators } from "./service-action-creators";
 import { SecretListFilter } from "../../common/model";
+import { debounce } from "../helpers/debounce";
 
 export function doListIdentities(dispatch: Dispatch): (store_name: string) => void {
   return (store_name: string) => {
@@ -54,14 +55,14 @@ export function doUnlockStore(dispatch: Dispatch): (store_name: string, identity
 }
 
 export function doUpdateSecretList(dispatch: Dispatch): (store_name: string, filter: SecretListFilter) => void {
-  return (store_name: string, filter: SecretListFilter) => {
+  return debounce((store_name: string, filter: SecretListFilter) => {
     dispatch(StoreActionCreators.listEntriesStart.create(undefined));
 
     sendCommand({ "list_secrets": { store_name, filter } }, expectSecretList(
       success => dispatch(StoreActionCreators.listEntriesDone.create(success)),
       error => dispatch(ServiceActionCreators.setError.create(error))
     ))
-  }
+  }, 100)
 }
 
 let expected_secret_id: string | null = null;
@@ -75,5 +76,11 @@ export function doSelectEntry(dispatch: Dispatch): (store_name: string, secret_i
       },
       error => dispatch(ServiceActionCreators.setError.create(error))
     ))
+  }
+}
+
+export function doUpdateListFilter(dispatch: Dispatch): (filter: SecretListFilter) => void {
+  return (filter: SecretListFilter) => {
+    dispatch(StoreActionCreators.setListFilter.create(filter))
   }
 }
