@@ -46,6 +46,13 @@ export interface ListSecrets {
   }
 }
 
+export interface GetSecret {
+  get_secret: {
+    store_name: string
+    secret_id: string
+  }
+}
+
 export type Command = "list_stores"
   | GetStoreConfig
   | SetStoreConfig
@@ -55,4 +62,5 @@ export type Command = "list_stores"
   | ListIdentities
   | Unlock
   | Lock
-  | ListSecrets;
+  | ListSecrets
+  | GetSecret;

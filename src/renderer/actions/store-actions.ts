@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 import { StoreActionCreators } from "./store-action-creators";
-import { sendCommand, expectStatus, expectIdentities, expectSuccess, expectSecretList } from "./backend";
+import { sendCommand, expectStatus, expectIdentities, expectSuccess, expectSecretList, expectSecret } from "./backend";
 import { ServiceActionCreators } from "./service-action-creators";
 import { SecretListFilter } from "../../common/model";
 
@@ -15,14 +15,23 @@ export function doListIdentities(dispatch: Dispatch): (store_name: string) => vo
   }
 }
 
+let getStatusInProgress: boolean = false;
+
 export function doGetStatus(dispatch: Dispatch): (store_name: string) => void {
   return (store_name: string) => {
-    dispatch(StoreActionCreators.statusStart.create(undefined));
-
-    sendCommand({ status: { store_name } }, expectStatus(
-      success => dispatch(StoreActionCreators.statusDone.create(success)),
-      error => dispatch(ServiceActionCreators.setError.create(error))
-    ));
+    if (!getStatusInProgress) {
+      getStatusInProgress = true;
+      sendCommand({ status: { store_name } }, expectStatus(
+        success => {
+          dispatch(StoreActionCreators.setStatus.create(success));
+          getStatusInProgress = false;
+        },
+        error => {
+          dispatch(ServiceActionCreators.setError.create(error));
+          getStatusInProgress = false;
+        }
+      ));
+    }
   }
 }
 
@@ -50,6 +59,20 @@ export function doUpdateSecretList(dispatch: Dispatch): (store_name: string, fil
 
     sendCommand({ "list_secrets": { store_name, filter } }, expectSecretList(
       success => dispatch(StoreActionCreators.listEntriesDone.create(success)),
+      error => dispatch(ServiceActionCreators.setError.create(error))
+    ))
+  }
+}
+
+let expected_secret_id: string | null = null;
+
+export function doSelectEntry(dispatch: Dispatch): (store_name: string, secret_id: string) => void {
+  return (store_name: string, secret_id: string) => {
+    expected_secret_id = secret_id;
+    sendCommand({ "get_secret": { store_name, secret_id } }, expectSecret(
+      success => {
+        if (expected_secret_id === success.id) dispatch(StoreActionCreators.setCurrentSecret.create(success))
+      },
       error => dispatch(ServiceActionCreators.setError.create(error))
     ))
   }

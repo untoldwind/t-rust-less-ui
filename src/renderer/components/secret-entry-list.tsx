@@ -6,10 +6,13 @@ import { connect } from "react-redux";
 import { Grid } from "./ui/grid";
 import { Spinner, Menu, MenuItem } from "@blueprintjs/core";
 import { SecretEntryMatch } from "../../common/model";
+import { bind } from "decko";
 
 const mapStateToProps = (state: State) => ({
+  selectedStore: state.service.selectedStore,
   listInProgress: state.store.listInProgress,
   list: state.store.list,
+  currentSecret: state.store.currentSecret,
 });
 const stateProps = returntypeof(mapStateToProps);
 
@@ -33,10 +36,26 @@ class SecretEntryListImpl extends React.Component<Props, {}> {
     )
   }
 
+  @bind
   private renderListEntry(entryMatch: SecretEntryMatch): React.ReactNode {
+    const { currentSecret } = this.props;
+
     return (
-      <MenuItem key={entryMatch.entry.id} text={entryMatch.entry.name} />
+      <MenuItem key={entryMatch.entry.id}
+        text={entryMatch.entry.name}
+        active={currentSecret !== null && currentSecret.id === entryMatch.entry.id}
+        onClick={this.onEntrySelect(entryMatch.entry.id)} />
     )
+  }
+
+  @bind
+  private onEntrySelect(secret_id: string) {
+    return () => {
+      const { selectedStore } = this.props;
+
+      if (!selectedStore) return;
+      this.props.doSelectEntry(selectedStore, secret_id)
+    }
   }
 }
 

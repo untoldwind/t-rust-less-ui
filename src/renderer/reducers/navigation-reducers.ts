@@ -9,7 +9,7 @@ export function navigationReducer(state: NavigationState = INITIAL_STATE.navigat
         ...state,
         page: action.payload,
       };
-    case StoreActionCreators.statusDone.type:
+    case StoreActionCreators.setStatus.type:
       if (state.page === "UnlockStore" && !action.payload.locked)
         return {
           ...state,

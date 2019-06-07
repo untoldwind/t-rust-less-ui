@@ -17,7 +17,6 @@ export interface StoreState {
   identities: Identity[]
   listIdentitiesInProgress: boolean
   status: Status | null
-  getStatusinProgress: boolean
   listFilter: SecretListFilter
   list: SecretList | null
   listInProgress: boolean
@@ -44,7 +43,6 @@ export const INITIAL_STATE: State = {
     identities: [],
     listIdentitiesInProgress: false,
     status: null,
-    getStatusinProgress: false,
     listFilter: {},
     list: null,
     listInProgress: false,

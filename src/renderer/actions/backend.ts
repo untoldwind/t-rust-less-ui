@@ -1,7 +1,7 @@
 import { IpcRenderer } from "electron";
-import { CommandResult, isStringList, isError, isIdentities, isStatus, isString, isSecretList } from "../../common/command_results";
+import { CommandResult, isStringList, isError, isIdentities, isStatus, isString, isSecretList, isSecret } from "../../common/command_results";
 import { Command } from "../../common/commands";
-import { Identity, Status, SecretList } from "../../common/model";
+import { Identity, Status, SecretList, Secret } from "../../common/model";
 import { ServiceError } from "../../common/errors";
 
 declare global {
@@ -86,5 +86,17 @@ export function expectSecretList(success: (result: SecretList) => void, failure:
       failure(commandResult.error)
     else
       failure({ error: commandResult, display: "Expected secret list" })
+  }
+}
+
+export function expectSecret(success: (result: Secret) => void, failure: (error: ServiceError) => void): (commandResult: CommandResult) => void {
+  return (commandResult: CommandResult) => {
+    console.log(commandResult);
+    if (isSecret(commandResult))
+      success(commandResult.secret)
+    else if (isError(commandResult))
+      failure(commandResult.error)
+    else
+      failure({ error: commandResult, display: "Expect secret" })
   }
 }

@@ -17,15 +17,9 @@ export function storeReducer(state: StoreState = INITIAL_STATE.store, action: Se
         listIdentitiesInProgress: false,
         identities: action.payload,
       };
-    case StoreActionCreators.statusStart.type:
+    case StoreActionCreators.setStatus.type:
       return {
         ...state,
-        getStatusinProgress: true,
-      };
-    case StoreActionCreators.statusDone.type:
-      return {
-        ...state,
-        getStatusinProgress: false,
         status: action.payload,
       };
     case StoreActionCreators.listEntriesStart.type:
@@ -34,10 +28,25 @@ export function storeReducer(state: StoreState = INITIAL_STATE.store, action: Se
         listInProgress: true,
       };
     case StoreActionCreators.listEntriesDone.type:
+      let currentSecret = state.currentSecret;
+
+      if (currentSecret) {
+        const secretId = currentSecret.id;
+        if (!action.payload.entries.find(match => match.entry.id === secretId)) {
+          currentSecret = null;
+        }
+      }
+
       return {
         ...state,
         listInProgress: false,
         list: action.payload,
+        currentSecret,
+      };
+    case StoreActionCreators.setCurrentSecret.type:
+      return {
+        ...state,
+        currentSecret: action.payload,
       };
     default:
       return state;
