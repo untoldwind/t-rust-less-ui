@@ -46,13 +46,13 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
     const { selectedIdentity, passphrase } = this.state;
 
     return (
-      <Grid height={[100, '%']} colSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]} rowSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}>
+      <Grid height={[100, '%']} columns={[[1, 'fr'], [1, 'fr'], [1, 'fr']]} rows={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}>
         <GridItem colSpan={3}>
           <ServiceErrorPanel />
         </GridItem>
         <GridItem colStart={2}>
           <form onSubmit={this.onUnlock}>
-            <Grid columns={1} rowGap="md">
+            <Grid columns={1} gap="md">
               <HTMLSelect value={selectedStore || ""} large>
                 {stores.map(store => (
                   <option key={store} value={store}>{store}</option>

@@ -5,26 +5,32 @@ export type SizeSpec = [number, "px" | "fr" | "%" | "vw" | "vh"]
 export type Spacing = "sm" | "base" | "md" | "lg" | "xl" | "xxl";
 
 export interface GridProps {
-  columns?: number
-  colSpec?: SizeSpec[]
-  rowSpec?: SizeSpec[]
+  columns?: number | SizeSpec[]
+  rows?: number | SizeSpec[]
   height?: SizeSpec
-  colGap?: Spacing
-  rowGap?: Spacing
+  gap?: Spacing | [Spacing, Spacing]
+  padding?: Spacing | [Spacing, Spacing]
 }
 
 export const Grid: React.FunctionComponent<GridProps> = props => {
   const classes: string[] = ["grid", "grid__container"];
   const style: React.CSSProperties = {
-    gridTemplateColumns: props.colSpec ? props.colSpec.map(elem => elem.join("")).join(" ") : `repeat(${props.columns || 12}, 1fr)`,
+    gridTemplateColumns: typeof props.columns === "number" ? `repeat(${props.columns}, 1fr)` : (props.columns ? props.columns.map(elem => elem.join("")).join(" ") : "1fr"),
   };
-  if (props.rowSpec) style.gridTemplateRows = props.rowSpec.map(element => element.join("")).join(" ");
+  if (props.columns) style.gridTemplateColumns = typeof props.columns === "number" ? `repeat(${props.columns}, 1fr)` : props.columns.map(elem => elem.join("")).join(" ");
+  if (props.rows) style.gridTemplateRows = typeof props.rows === "number" ? `repeat(${props.rows}, 1fr)` : props.rows.map(element => element.join("")).join(" ");
   if (props.height) {
     style.height = props.height.join("");
     style.maxHeight = props.height.join("");
   }
-  if (props.colGap) classes.push(`grid__container--column-gap--${props.colGap}`)
-  if (props.rowGap) classes.push(`grid__container--row-gap--${props.rowGap}`)
+  if (props.gap) {
+    classes.push(`grid__container--column-gap--${typeof props.gap === "string" ? props.gap : props.gap[0]}`)
+    classes.push(`grid__container--row-gap--${typeof props.gap === "string" ? props.gap : props.gap[1]}`)
+  }
+  if (props.padding) {
+    classes.push(`grid__container--pad-x--${typeof props.padding === "string" ? props.padding : props.padding[0]}`)
+    classes.push(`grid__container--pad-y--${typeof props.padding === "string" ? props.padding : props.padding[1]}`)
+  }
 
   return (
     <div className={classes.join(" ")} style={style}>

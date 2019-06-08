@@ -20,7 +20,7 @@ export type Props = typeof stateProps & BoundActions;
 class ListSecretsImpl extends React.Component<Props, {}> {
   render() {
     return (
-      <Grid height={[100, "vh"]} colSpec={[[1, 'fr'], [2, 'fr']]} rowSpec={[[40, 'px'], [1, 'fr']]}>
+      <Grid height={[100, "vh"]} columns={[[1, 'fr'], [2, 'fr']]} rows={[[40, 'px'], [1, 'fr']]}>
         <GridItem colSpan={2}>
           {this.renderHeader()}
         </GridItem>
@@ -34,7 +34,7 @@ class ListSecretsImpl extends React.Component<Props, {}> {
     const { listFilter } = this.props;
 
     return (
-      <Grid colSpec={[[1, 'fr'], [2, 'fr']]}>
+      <Grid columns={[[1, 'fr'], [2, 'fr']]}>
         <InputGroup leftIcon="search" autoFocus value={listFilter.name || ""} onChange={this.onChangeNameFilter} />
       </Grid>
     )

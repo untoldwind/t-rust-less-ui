@@ -27,6 +27,16 @@ body {
       @include modifier("row-gap--" + $spacingSize) {
         grid-row-gap: #{$value};
       }
+
+      @include modifier("pad-x--" + $spacingSize) {
+        padding-left: #{$value};
+        padding-right: #{$value};
+      }
+
+      @include modifier("pad-y--" + $spacingSize) {
+        padding-top: #{$value};
+        padding-bottom: #{$value};
+      }
     }
   }
 
