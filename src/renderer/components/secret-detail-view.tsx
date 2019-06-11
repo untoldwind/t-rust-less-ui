@@ -3,7 +3,11 @@ import { State } from "../reducers/state";
 import { returntypeof } from "../helpers/returntypeof";
 import { BoundActions, actionBinder } from "../actions/bindable";
 import { connect } from "react-redux";
-import { Grid } from "./ui/grid";
+import { FlexVertical, FlexItem } from "./ui/flex";
+import { FieldText } from "./field-text";
+import { translations } from "../i18n";
+import { FieldPassword } from "./field-password";
+import { FieldNote } from "./field-note";
 
 const mapStateToProps = (state: State) => ({
   currentSecret: state.store.currentSecret,
@@ -13,6 +17,8 @@ const stateProps = returntypeof(mapStateToProps);
 export type Props = typeof stateProps & BoundActions;
 
 class SecretDetailViewImpl extends React.Component<Props, {}> {
+  private translate = translations();
+
   render(): React.ReactNode {
     const { currentSecret } = this.props;
 
@@ -20,14 +26,37 @@ class SecretDetailViewImpl extends React.Component<Props, {}> {
 
     return (
       <div style={{ overflowY: "auto" }}>
-        <Grid columns={2}>
-          <div>Name:</div>
-          <div>{currentSecret.current.name}</div>
-          <div>Type:</div>
-          <div>{currentSecret.current.secret_type}</div>
-        </Grid>
+        <FlexVertical gap="md">
+          <FlexItem grow={0}>
+            <FieldText label={this.translate.secret.name} value={currentSecret.current.name} />
+          </FlexItem>
+          <FlexItem grow={0}>
+            <FieldText label={this.translate.secret.type} value={currentSecret.current.secret_type} />
+          </FlexItem>
+          {Object.keys(currentSecret.current.properties).map(name => {
+            const value = currentSecret.current.properties[name];
+            { this.renderProperty(name, value) }
+          })}
+        </FlexVertical>
       </div>
     )
+  }
+
+  private renderProperty(name: string, value: string): React.ReactNode {
+    switch (name) {
+      case "note":
+        return (
+          <FieldNote key={name} label={this.translate.secret.property(name)} value={value} />
+        );
+      case "password":
+        return (
+          <FieldPassword key={name} label={this.translate.secret.property(name)} value={value} />
+        );
+      default:
+        return (
+          <FieldText key={name} label={this.translate.secret.property(name)} value={value} />
+        );
+    }
   }
 }
 

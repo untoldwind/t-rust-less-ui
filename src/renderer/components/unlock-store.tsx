@@ -7,6 +7,7 @@ import { Grid, GridItem } from "./ui/grid";
 import { Button, InputGroup, HTMLSelect } from "@blueprintjs/core";
 import { bind } from "decko";
 import { ServiceErrorPanel } from "./service-error-panel";
+import { translations } from "../i18n";
 
 const mapStateToProps = (state: State) => ({
   stores: state.service.stores,
@@ -24,6 +25,8 @@ interface ComponentState {
 }
 
 class UnlockStoreImpl extends React.Component<Props, ComponentState> {
+  private translate = translations();
+
   constructor(props: Props) {
     super(props);
 
@@ -64,7 +67,7 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
                 ))}
               </HTMLSelect>
               <InputGroup value={passphrase} type="password" leftIcon="key" large autoFocus onChange={(event: React.FormEvent<HTMLElement>) => this.setState({ passphrase: (event.target as HTMLInputElement).value })} />
-              <Button type="submit" icon="log-in" intent="success" large loading={unlockInProgress} disabled={!this.isValid()}>Unlock</Button>
+              <Button type="submit" icon="unlock" intent="success" large loading={unlockInProgress} disabled={!this.isValid()}>{this.translate.action.unlock}</Button>
             </Grid>
           </form>
         </GridItem>

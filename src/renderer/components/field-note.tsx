@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Grid } from "./ui/grid";
+import { FlexHorizontal } from "./ui/flex";
+import { Button } from "@blueprintjs/core";
 
 export interface FieldNoteProps {
   label: string
@@ -8,9 +9,10 @@ export interface FieldNoteProps {
 
 export const FieldNote: React.FunctionComponent<FieldNoteProps> = props => {
   return (
-    <Grid columns={2}>
+    <FlexHorizontal>
       <div>{props.label}</div>
       <div>{props.value}</div>
-    </Grid>
+      <Button icon="clipboard" minimal />
+    </FlexHorizontal>
   )
 }

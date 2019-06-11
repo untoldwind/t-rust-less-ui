@@ -47,6 +47,27 @@ body {
     @include element("vertical") {
       flex-direction: column;
       height: 100%;
+
+      @each $spacingSize, $value in $spacingSizes {
+        @include modifier("gap--" + $spacingSize) {
+          & > *:not(:last-child) {
+            margin-bottom: $value;
+          }
+        }
+      }
+    }
+
+    @include element("horizontal") {
+      flex-direction: row;
+      width: 100%;
+
+      @each $spacingSize, $value in $spacingSizes {
+        @include modifier("gap--" + $spacingSize) {
+          & > *:not(:last-child) {
+            margin-right: $value;
+          }
+        }
+      }
     }
   }
 }
