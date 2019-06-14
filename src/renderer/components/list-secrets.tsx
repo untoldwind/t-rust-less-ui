@@ -6,11 +6,16 @@ import { connect } from "react-redux";
 import { Grid, GridItem } from "./ui/grid";
 import { SecretEntryList } from "./secret-entry-list";
 import { SecretDetailView } from "./secret-detail-view";
-import { InputGroup } from "@blueprintjs/core";
+import { InputGroup, Button, ProgressBar } from "@blueprintjs/core";
 import { bind } from "decko";
+import { FlexHorizontal } from "./ui/flex";
+import { translations } from "../i18n";
+import moment from "moment";
 
 const mapStateToProps = (state: State) => ({
   listFilter: state.store.listFilter,
+  selectedStore: state.service.selectedStore,
+  status: state.store.status,
   error: state.service.error,
 });
 const stateProps = returntypeof(mapStateToProps);
@@ -18,6 +23,8 @@ const stateProps = returntypeof(mapStateToProps);
 export type Props = typeof stateProps & BoundActions;
 
 class ListSecretsImpl extends React.Component<Props, {}> {
+  private translate = translations();
+
   render() {
     return (
       <Grid height={[100, "vh"]} columns={[[1, 'fr'], [2, 'fr']]} rows={[[40, 'px'], [1, 'fr']]}>
@@ -35,7 +42,15 @@ class ListSecretsImpl extends React.Component<Props, {}> {
 
     return (
       <Grid columns={[[1, 'fr'], [2, 'fr']]}>
-        <InputGroup leftIcon="search" autoFocus value={listFilter.name || ""} onChange={this.onChangeNameFilter} />
+        <GridItem padding={["base", "base"]}>
+          <InputGroup leftIcon="search" autoFocus value={listFilter.name || ""} onChange={this.onChangeNameFilter} />
+        </GridItem>
+        <FlexHorizontal reverse>
+          <Grid columns={1}>
+            <Button onClick={this.onLock}>{this.translate.action.lock}</Button>
+            <ProgressBar stripes={false} animate={false} value={this.autoLockProgress()} />
+          </Grid>
+        </FlexHorizontal>
       </Grid>
     )
     return null
@@ -50,6 +65,23 @@ class ListSecretsImpl extends React.Component<Props, {}> {
       ...listFilter,
       name: value.length > 0 ? value : undefined,
     })
+  }
+
+  @bind
+  private onLock() {
+    const { selectedStore } = this.props;
+
+    selectedStore && this.props.doLockStore(selectedStore);
+  }
+
+  private autoLockProgress(): number {
+    const { status } = this.props;
+
+    if (!status || status.locked) return 0;
+
+    const autoLockIn = moment(status.autolock_at).diff(moment()) / 5.0 / 60.0 / 1000.0;
+
+    return autoLockIn > 1 ? 1 : autoLockIn;
   }
 }
 

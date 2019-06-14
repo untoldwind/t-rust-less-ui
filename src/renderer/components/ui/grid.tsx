@@ -43,10 +43,11 @@ export interface GridItemProps {
   rowStart?: number
   rowEnd?: number
   rowSpan?: number
+  padding?: Spacing | [Spacing, Spacing]
 }
 
 export const GridItem: React.FunctionComponent<GridItemProps> = props => {
-  const classes: string[] = [];
+  const classes: string[] = ["grid__item"];
   const style: React.CSSProperties = {}
 
   if (props.colStart) style.gridColumnStart = props.colStart;
@@ -55,6 +56,10 @@ export const GridItem: React.FunctionComponent<GridItemProps> = props => {
   if (props.rowStart) style.gridRowStart = props.rowStart;
   if (props.rowEnd) style.gridRowEnd = props.rowEnd;
   if (props.rowSpan) style.gridRow = `span ${props.rowSpan}`;
+  if (props.padding) {
+    classes.push(`grid__item--pad-x--${typeof props.padding === "string" ? props.padding : props.padding[0]}`)
+    classes.push(`grid__item--pad-y--${typeof props.padding === "string" ? props.padding : props.padding[1]}`)
+  }
 
   return (
     <div className={classes.join(" ")} style={style}>

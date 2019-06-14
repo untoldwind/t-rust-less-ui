@@ -3,12 +3,14 @@ import { Spacing, SizeSpec } from "./common";
 
 export interface FlexVerticalProps {
   gap?: Spacing
+  reverse?: boolean
 }
 
 export const FlexVertical: React.FunctionComponent<FlexVerticalProps> = props => {
-  const classes: string[] = ["flex", "flex__vertical"];
+  const baseClass = props.reverse ? "flex__vertical_reverse" : "flex__vertical";
+  const classes: string[] = ["flex", baseClass];
 
-  if (props.gap) classes.push(`flex__vertical--gap--${props.gap}`);
+  if (props.gap) classes.push(`${baseClass}--gap--${props.gap}`);
 
   return (
     <div className={classes.join(" ")}>
@@ -19,12 +21,14 @@ export const FlexVertical: React.FunctionComponent<FlexVerticalProps> = props =>
 
 export interface FlexHorizontalProps {
   gap?: Spacing
+  reverse?: boolean
 }
 
 export const FlexHorizontal: React.FunctionComponent<FlexHorizontalProps> = props => {
-  const classes: string[] = ["flex", "flex__horizontal"];
+  const baseClass = props.reverse ? "flex__horizontal_reverse" : "flex__horizontal";
+  const classes: string[] = ["flex", baseClass];
 
-  if (props.gap) classes.push(`flex__horizontal--gap--${props.gap}`);
+  if (props.gap) classes.push(`${baseClass}--gap--${props.gap}`);
 
   return (
     <div className={classes.join(" ")}>
