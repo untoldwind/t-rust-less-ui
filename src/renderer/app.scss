@@ -121,5 +121,7 @@ body {
 }
 
 @include block("sidebar") {
-  background-color: $dark-gray3;
+  background-color: $dark-gray4;
+  display: flex;
+  flex-direction: column;
 }

@@ -8,10 +8,10 @@ import { SecretEntryList } from "./secret-entry-list";
 import { SecretDetailView } from "./secret-detail-view";
 import { InputGroup, Button, ProgressBar, Menu, MenuItem } from "@blueprintjs/core";
 import { bind } from "decko";
-import { FlexHorizontal } from "./ui/flex";
+import { FlexHorizontal, FlexItem } from "./ui/flex";
 import { translations } from "../i18n";
 import moment from "moment";
-import { SECRET_TYPES } from "../../common/model";
+import { SECRET_TYPES, SecretType } from "../../common/model";
 
 const mapStateToProps = (state: State) => ({
   listFilter: state.store.listFilter,
@@ -40,12 +40,24 @@ class ListSecretsImpl extends React.Component<Props, {}> {
   }
 
   private renderSideBar(): React.ReactNode {
+    const { listFilter } = this.props;
+
     return (
       <div className="bp3-dark sidebar">
         <Menu>
           {SECRET_TYPES.map((t, i) => (
-            <MenuItem key={i} text={this.translate.secret.typeName[t]} />
+            <MenuItem key={i}
+              text={this.translate.secret.typeName[t]}
+              active={listFilter.type === t}
+              onClick={this.onFilterType(t)} />
           ))}
+        </Menu>
+        <FlexItem grow={1} />
+        <Menu>
+          <MenuItem text={this.translate.secret.deleted}
+            icon="trash"
+            active={listFilter.deleted}
+            onClick={this.onFilterDeleted} />
         </Menu>
       </div>
     )
@@ -96,6 +108,30 @@ class ListSecretsImpl extends React.Component<Props, {}> {
     const autoLockIn = moment(status.autolock_at).diff(moment()) / 5.0 / 60.0 / 1000.0;
 
     return autoLockIn > 1 ? 1 : autoLockIn;
+  }
+
+  @bind
+  private onFilterType(secretType: SecretType): () => void {
+    const { listFilter } = this.props;
+
+    return () => {
+      this.props.doUpdateListFilter({
+        ...listFilter,
+        type: secretType,
+        deleted: undefined,
+      })
+    }
+  }
+
+  @bind
+  private onFilterDeleted() {
+    const { listFilter } = this.props;
+
+    this.props.doUpdateListFilter({
+      ...listFilter,
+      type: undefined,
+      deleted: true,
+    })
   }
 }
 

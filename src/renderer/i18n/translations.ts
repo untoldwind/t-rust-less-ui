@@ -15,6 +15,7 @@ export interface SecretTranslations {
     cracktime: string
     score: string
   }
+  deleted: string
 }
 
 export interface Translations {

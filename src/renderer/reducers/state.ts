@@ -45,7 +45,9 @@ export const INITIAL_STATE: State = {
     identities: [],
     listIdentitiesInProgress: false,
     status: null,
-    listFilter: {},
+    listFilter: {
+      type: "login",
+    },
     list: null,
     listInProgress: false,
     currentSecret: null,

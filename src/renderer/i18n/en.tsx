@@ -28,5 +28,6 @@ export const EN: Translations = {
       cracktime: "Cracktime",
       score: "Score",
     },
+    deleted: "Deleted",
   },
 }

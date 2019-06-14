@@ -25,7 +25,7 @@ export const SECRET_TYPES: SecretType[] = ["login", "note", "licence", "wlan", "
 export interface SecretListFilter {
   url?: string
   tag?: string
-  secret_type?: SecretType
+  type?: SecretType
   name?: string
   deleted?: boolean
 }
