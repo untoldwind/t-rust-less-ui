@@ -8,6 +8,7 @@ import { FieldText } from "./field-text";
 import { translations } from "../i18n";
 import { FieldPassword } from "./field-password";
 import { FieldNote } from "./field-note";
+import { PasswordStrength } from "../../common/model";
 
 const mapStateToProps = (state: State) => ({
   currentSecret: state.store.currentSecret,
@@ -35,9 +36,10 @@ class SecretDetailViewImpl extends React.Component<Props, {}> {
           </FlexItem>
           {Object.keys(currentSecret.current.properties).map(name => {
             const value = currentSecret.current.properties[name];
+            const strength = currentSecret.password_strengths[name];
             return (
               <FlexItem grow={0}>
-                {this.renderProperty(name, value)}
+                {this.renderProperty(name, value, strength)}
               </FlexItem>
             )
           })}
@@ -46,7 +48,7 @@ class SecretDetailViewImpl extends React.Component<Props, {}> {
     )
   }
 
-  private renderProperty(name: string, value: string): React.ReactNode {
+  private renderProperty(name: string, value: string, strength?: PasswordStrength): React.ReactNode {
     switch (name) {
       case "note":
         return (
@@ -54,7 +56,7 @@ class SecretDetailViewImpl extends React.Component<Props, {}> {
         );
       case "password":
         return (
-          <FieldPassword key={name} label={this.translate.secret.property(name)} value={value} />
+          <FieldPassword key={name} label={this.translate.secret.property(name)} value={value} strength={strength} />
         );
       default:
         return (

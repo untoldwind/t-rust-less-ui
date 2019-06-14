@@ -23,5 +23,10 @@ export const EN: Translations = {
       "other": "Other",
       "note": "Note",
     },
+    strength: {
+      entropy: "Entropy",
+      cracktime: "Cracktime",
+      score: "Score",
+    },
   },
 }

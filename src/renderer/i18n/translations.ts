@@ -10,6 +10,11 @@ export interface SecretTranslations {
   type: string
   property: (name: string) => string
   typeName: { [type in SecretType]: string }
+  strength: {
+    entropy: string
+    cracktime: string
+    score: string
+  }
 }
 
 export interface Translations {
