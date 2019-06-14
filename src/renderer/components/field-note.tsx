@@ -9,7 +9,7 @@ export interface FieldNoteProps {
 
 export const FieldNote: React.FunctionComponent<FieldNoteProps> = props => {
   return (
-    <FlexHorizontal>
+    <FlexHorizontal gap="md">
       <div>{props.label}</div>
       <div>{props.value}</div>
       <Button icon="clipboard" minimal />

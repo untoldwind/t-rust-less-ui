@@ -4,16 +4,22 @@ import { Spacing, SizeSpec } from "./common";
 export interface FlexVerticalProps {
   gap?: Spacing
   reverse?: boolean
+  height?: SizeSpec
 }
 
 export const FlexVertical: React.FunctionComponent<FlexVerticalProps> = props => {
   const baseClass = props.reverse ? "flex__vertical_reverse" : "flex__vertical";
   const classes: string[] = ["flex", baseClass];
+  const style: React.CSSProperties = {};
 
+  if (props.height) {
+    style.height = props.height.join("");
+    style.maxHeight = props.height.join("");
+  }
   if (props.gap) classes.push(`${baseClass}--gap--${props.gap}`);
 
   return (
-    <div className={classes.join(" ")}>
+    <div style={style} className={classes.join(" ")}>
       {props.children}
     </div>
   )

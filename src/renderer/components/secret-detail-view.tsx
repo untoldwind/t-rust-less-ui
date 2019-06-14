@@ -35,7 +35,11 @@ class SecretDetailViewImpl extends React.Component<Props, {}> {
           </FlexItem>
           {Object.keys(currentSecret.current.properties).map(name => {
             const value = currentSecret.current.properties[name];
-            { this.renderProperty(name, value) }
+            return (
+              <FlexItem grow={0}>
+                {this.renderProperty(name, value)}
+              </FlexItem>
+            )
           })}
         </FlexVertical>
       </div>

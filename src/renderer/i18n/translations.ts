@@ -1,3 +1,4 @@
+import { SecretType } from "../../common/model";
 
 export interface ActionTranslations {
   lock: string
@@ -8,6 +9,7 @@ export interface SecretTranslations {
   name: string
   type: string
   property: (name: string) => string
+  typeName: { [type in SecretType]: string }
 }
 
 export interface Translations {

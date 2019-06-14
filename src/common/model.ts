@@ -20,6 +20,8 @@ export interface Status {
 
 export type SecretType = "login" | "note" | "licence" | "wlan" | "password" | "other";
 
+export const SECRET_TYPES: SecretType[] = ["login", "note", "licence", "wlan", "password", "other"];
+
 export interface SecretListFilter {
   url?: string
   tag?: string

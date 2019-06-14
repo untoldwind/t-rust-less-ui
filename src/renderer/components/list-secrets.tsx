@@ -6,11 +6,12 @@ import { connect } from "react-redux";
 import { Grid, GridItem } from "./ui/grid";
 import { SecretEntryList } from "./secret-entry-list";
 import { SecretDetailView } from "./secret-detail-view";
-import { InputGroup, Button, ProgressBar } from "@blueprintjs/core";
+import { InputGroup, Button, ProgressBar, Menu, MenuItem } from "@blueprintjs/core";
 import { bind } from "decko";
 import { FlexHorizontal } from "./ui/flex";
 import { translations } from "../i18n";
 import moment from "moment";
+import { SECRET_TYPES } from "../../common/model";
 
 const mapStateToProps = (state: State) => ({
   listFilter: state.store.listFilter,
@@ -27,13 +28,26 @@ class ListSecretsImpl extends React.Component<Props, {}> {
 
   render() {
     return (
-      <Grid height={[100, "vh"]} columns={[[1, 'fr'], [2, 'fr']]} rows={[[40, 'px'], [1, 'fr']]}>
-        <GridItem colSpan={2}>
+      <Grid height={[100, "vh"]} columns={[[200, 'px'], [1, 'fr'], [2, 'fr']]} rows={[[40, 'px'], [1, 'fr']]}>
+        <GridItem colSpan={3}>
           {this.renderHeader()}
         </GridItem>
+        {this.renderSideBar()}
         <SecretEntryList />
         <SecretDetailView />
       </Grid>
+    )
+  }
+
+  private renderSideBar(): React.ReactNode {
+    return (
+      <div className="bp3-dark sidebar">
+        <Menu>
+          {SECRET_TYPES.map((t, i) => (
+            <MenuItem key={i} text={this.translate.secret.typeName[t]} />
+          ))}
+        </Menu>
+      </div>
     )
   }
 

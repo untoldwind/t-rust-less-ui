@@ -11,9 +11,17 @@ export const EN: Translations = {
     property: (name: string) => {
       switch (name) {
         case "username": return "Username";
-        case "password": return "password";
+        case "password": return "Password";
         default: return name;
       }
+    },
+    typeName: {
+      "login": "Login",
+      "licence": "Licence",
+      "wlan": "WLAN",
+      "password": "Password",
+      "other": "Other",
+      "note": "Note",
     },
   },
 }

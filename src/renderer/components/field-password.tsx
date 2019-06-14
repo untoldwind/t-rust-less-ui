@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FlexHorizontal } from "./ui/flex";
+import { FlexHorizontal, FlexItem } from "./ui/flex";
 import { Button } from "@blueprintjs/core";
 
 export interface FieldPasswordProps {
@@ -25,11 +25,15 @@ export class FieldPassword extends React.Component<FieldPasswordProps, FieldPass
     const { reveal } = this.state;
 
     return (
-      <FlexHorizontal>
-        <div>{label}</div>
-        <div>{reveal ? value : "*".repeat(value.length)}</div>
-        <Button active={reveal} minimal onClick={() => { this.setState({ reveal: !reveal }) }} icon={reveal ? "eye-off" : "eye-on"} />
-        <Button icon="clipboard" minimal />
+      <FlexHorizontal gap="md">
+        <FlexItem grow={0} basis={[10, '%']}>{label}</FlexItem>
+        <FlexItem grow={1}>{reveal ? value : "*".repeat(value.length)}</FlexItem>
+        <FlexItem grow={0}>
+          <FlexHorizontal>
+            <Button active={reveal} minimal onClick={() => { this.setState({ reveal: !reveal }) }} icon={reveal ? "eye-off" : "eye-on"} />
+            <Button icon="clipboard" minimal />
+          </FlexHorizontal>
+        </FlexItem>
       </FlexHorizontal>
     )
   }

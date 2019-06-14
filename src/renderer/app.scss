@@ -1,5 +1,6 @@
 @import "~sass-bem/bem";
 @import "styles/spacing";
+@import "~@blueprintjs/core/lib/scss/variables";
 
 html {
     font-family: "Lato", "Roboto", "Arial", "Helvetica", sans-serif;
@@ -117,4 +118,8 @@ body {
             }
         }
     }
+}
+
+@include block("sidebar") {
+  background-color: $dark-gray3;
 }
