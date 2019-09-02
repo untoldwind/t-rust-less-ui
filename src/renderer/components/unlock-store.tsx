@@ -1,5 +1,4 @@
 import * as React from "react";
-import { returntypeof } from "../helpers/returntypeof";
 import { State } from "../reducers/state";
 import { BoundActions, actionBinder } from "../actions/bindable";
 import { connect } from "react-redux";
@@ -15,9 +14,8 @@ const mapStateToProps = (state: State) => ({
   identities: state.store.identities,
   unlockInProgress: state.store.unlockInProgress,
 });
-const stateProps = returntypeof(mapStateToProps);
 
-export type Props = typeof stateProps & BoundActions;
+export type Props = ReturnType<typeof mapStateToProps> & BoundActions;
 
 interface ComponentState {
   selectedIdentity: string

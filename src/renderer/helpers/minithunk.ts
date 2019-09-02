@@ -5,12 +5,11 @@ export type BindableActions<S, T> = {
 };
 
 export function bindBindableActions<S, T extends { [name: string]: (...args: any[]) => void }>(dispatch: Dispatch<S>, actions: BindableActions<S, T>): T {
-  const result = {} as T;
+  const result : { [name: string]: (...args: any[]) => void } = {};
   for (const actionName in actions) {
-    const stringActionName: string = actionName
     if (actions.hasOwnProperty(actionName)) {
-      result[stringActionName] = (...args: any[]) => actions[actionName](dispatch)(...args);
+      result[actionName] = (...args: any[]) => actions[actionName](dispatch)(...args);
     }
   }
-  return result;
+  return result as T;
 }

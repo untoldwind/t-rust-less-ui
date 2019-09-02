@@ -1,6 +1,5 @@
 import * as React from "react";
 import { BoundActions, actionBinder } from "../actions/bindable";
-import { returntypeof } from "../helpers/returntypeof";
 import { State } from "../reducers/state";
 import { connect } from "react-redux";
 import { Grid, GridItem } from "./ui/grid";
@@ -19,9 +18,8 @@ const mapStateToProps = (state: State) => ({
   status: state.store.status,
   error: state.service.error,
 });
-const stateProps = returntypeof(mapStateToProps);
 
-export type Props = typeof stateProps & BoundActions;
+export type Props = ReturnType<typeof mapStateToProps> & BoundActions;
 
 class ListSecretsImpl extends React.Component<Props, {}> {
   private translate = translations();
