@@ -5,6 +5,7 @@ import { Button } from "@blueprintjs/core";
 export interface FieldNoteProps {
   label: string
   value: string
+  onCopy: () => void
 }
 
 export const FieldNote: React.FunctionComponent<FieldNoteProps> = props => {
@@ -12,7 +13,7 @@ export const FieldNote: React.FunctionComponent<FieldNoteProps> = props => {
     <FlexHorizontal gap="md">
       <div>{props.label}</div>
       <div>{props.value}</div>
-      <Button icon="clipboard" minimal />
+      <Button icon="clipboard" minimal onClick={props.onCopy}/>
     </FlexHorizontal>
   )
 }

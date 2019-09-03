@@ -62,7 +62,6 @@ app.on("activate", () => {
 
 app.on("ready", () => {
   mainWindow = createWindow();
-  console.log("Sending");
 
   backend.sendCommand("list_stores", result => console.log(result));
 })

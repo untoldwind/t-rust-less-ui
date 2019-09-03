@@ -53,6 +53,15 @@ export interface GetSecret {
   }
 }
 
+export interface SecretToClipboard {
+  secret_to_clipboard: {
+    store_name: string
+    secret_id: string
+    properties: string[]
+    display_name: string
+  }
+}
+
 export type Command = "list_stores"
   | GetStoreConfig
   | SetStoreConfig
@@ -63,4 +72,5 @@ export type Command = "list_stores"
   | Unlock
   | Lock
   | ListSecrets
-  | GetSecret;
+  | GetSecret
+  | SecretToClipboard;

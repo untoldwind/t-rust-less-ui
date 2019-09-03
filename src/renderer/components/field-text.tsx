@@ -5,6 +5,7 @@ import { Button } from "@blueprintjs/core";
 export interface FieldTextProps {
   label: string
   value: string
+  onCopy?: () => void
 }
 
 export const FieldText: React.FunctionComponent<FieldTextProps> = props => {
@@ -12,7 +13,7 @@ export const FieldText: React.FunctionComponent<FieldTextProps> = props => {
     <FlexHorizontal gap="md">
       <FlexItem grow={0} basis={[10, '%']}>{props.label}</FlexItem>
       <FlexItem grow={1}>{props.value}</FlexItem>
-      <FlexItem grow={0}><Button icon="clipboard" minimal /></FlexItem>
+      {props.onCopy && <FlexItem grow={0}><Button icon="clipboard" minimal onClick={props.onCopy}/></FlexItem>}
     </FlexHorizontal>
   );
 };

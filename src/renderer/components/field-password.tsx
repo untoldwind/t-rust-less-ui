@@ -9,6 +9,7 @@ export interface FieldPasswordProps {
   label: string
   value: string
   strength?: PasswordStrength
+  onCopy: () => void
 }
 
 export interface FieldPasswordState {
@@ -27,7 +28,7 @@ export class FieldPassword extends React.Component<FieldPasswordProps, FieldPass
   }
 
   render(): React.ReactNode {
-    const { label, value, strength } = this.props;
+    const { label, value, strength, onCopy } = this.props;
     const { reveal } = this.state;
 
     return (
@@ -44,7 +45,7 @@ export class FieldPassword extends React.Component<FieldPasswordProps, FieldPass
         <FlexItem grow={0}>
           <FlexHorizontal>
             <Button active={reveal} minimal onClick={() => { this.setState({ reveal: !reveal }) }} icon={reveal ? "eye-off" : "eye-open"} />
-            <Button icon="clipboard" minimal />
+            <Button icon="clipboard" minimal onClick={onCopy}/>
           </FlexHorizontal>
         </FlexItem>
       </FlexHorizontal>
