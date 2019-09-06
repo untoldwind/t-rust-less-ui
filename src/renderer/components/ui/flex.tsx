@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Spacing, SizeSpec } from "./common";
+import { Spacing, SizeSpec, size2CSS } from "./common";
 
 export interface FlexVerticalProps {
   gap?: Spacing
@@ -13,8 +13,8 @@ export const FlexVertical: React.FunctionComponent<FlexVerticalProps> = props =>
   const style: React.CSSProperties = {};
 
   if (props.height) {
-    style.height = props.height.join("");
-    style.maxHeight = props.height.join("");
+    style.height = size2CSS(props.height);
+    style.maxHeight = size2CSS(props.height);
   }
   if (props.gap) classes.push(`${baseClass}--gap--${props.gap}`);
 
@@ -54,7 +54,7 @@ export const FlexItem: React.FunctionComponent<FlexItemProps> = props => {
 
   if (typeof props.grow !== "undefined") style.flexGrow = props.grow;
   if (typeof props.shrink !== "undefined") style.flexShrink = props.shrink;
-  if (typeof props.basis !== "undefined") style.flexBasis = props.basis.join("");
+  if (typeof props.basis !== "undefined") style.flexBasis = size2CSS(props.basis);
 
   return (
     <div style={style}>

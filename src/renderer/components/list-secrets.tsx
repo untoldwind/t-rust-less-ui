@@ -5,9 +5,9 @@ import { connect } from "react-redux";
 import { Grid, GridItem } from "./ui/grid";
 import { SecretEntryList } from "./secret-entry-list";
 import { SecretDetailView } from "./secret-detail-view";
-import { InputGroup, Button, ProgressBar, Menu, MenuItem } from "@blueprintjs/core";
+import { InputGroup, Button, ProgressBar, Menu, MenuItem, Navbar } from "@blueprintjs/core";
 import { bind } from "decko";
-import { FlexHorizontal, FlexItem } from "./ui/flex";
+import { FlexItem } from "./ui/flex";
 import { translations } from "../i18n";
 import moment from "moment";
 import { SECRET_TYPES, SecretType } from "../../common/model";
@@ -26,7 +26,7 @@ class ListSecretsImpl extends React.Component<Props, {}> {
 
   render() {
     return (
-      <Grid height={[100, "vh"]} columns={[[200, 'px'], [1, 'fr'], [2, 'fr']]} rows={[[40, 'px'], [1, 'fr']]}>
+      <Grid height={[100, "vh"]} columns={[[200, 'px'], [1, 'fr'], [2, 'fr']]} rows={["min-height", [1, 'fr']]}>
         <GridItem colSpan={3}>
           {this.renderHeader()}
         </GridItem>
@@ -65,17 +65,17 @@ class ListSecretsImpl extends React.Component<Props, {}> {
     const { listFilter } = this.props;
 
     return (
-      <Grid columns={[[1, 'fr'], [2, 'fr']]}>
-        <GridItem padding={["base", "base"]}>
+      <Navbar>
+        <Navbar.Group align="left">
           <InputGroup leftIcon="search" autoFocus value={listFilter.name || ""} onChange={this.onChangeNameFilter} />
-        </GridItem>
-        <FlexHorizontal reverse>
-          <Grid columns={1}>
+        </Navbar.Group>
+        <Navbar.Group align="right">
+        <Grid columns={1}>
             <Button onClick={this.onLock}>{this.translate.action.lock}</Button>
             <ProgressBar stripes={false} animate={false} value={this.autoLockProgress()} />
           </Grid>
-        </FlexHorizontal>
-      </Grid>
+        </Navbar.Group>
+      </Navbar>
     )
     return null
   }

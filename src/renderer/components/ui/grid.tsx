@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SizeSpec, Spacing } from "./common";
+import { SizeSpec, Spacing, size2CSS } from "./common";
 
 export interface GridProps {
   columns?: number | SizeSpec[]
@@ -12,13 +12,13 @@ export interface GridProps {
 export const Grid: React.FunctionComponent<GridProps> = props => {
   const classes: string[] = ["grid", "grid__container"];
   const style: React.CSSProperties = {
-    gridTemplateColumns: typeof props.columns === "number" ? `repeat(${props.columns}, 1fr)` : (props.columns ? props.columns.map(elem => elem.join("")).join(" ") : "1fr"),
+    gridTemplateColumns: typeof props.columns === "number" ? `repeat(${props.columns}, 1fr)` : (props.columns ? props.columns.map(size2CSS).join(" ") : "1fr"),
   };
-  if (props.columns) style.gridTemplateColumns = typeof props.columns === "number" ? `repeat(${props.columns}, 1fr)` : props.columns.map(elem => elem.join("")).join(" ");
-  if (props.rows) style.gridTemplateRows = typeof props.rows === "number" ? `repeat(${props.rows}, 1fr)` : props.rows.map(element => element.join("")).join(" ");
+  if (props.columns) style.gridTemplateColumns = typeof props.columns === "number" ? `repeat(${props.columns}, 1fr)` : props.columns.map(size2CSS).join(" ");
+  if (props.rows) style.gridTemplateRows = typeof props.rows === "number" ? `repeat(${props.rows}, 1fr)` : props.rows.map(size2CSS).join(" ");
   if (props.height) {
-    style.height = props.height.join("");
-    style.maxHeight = props.height.join("");
+    style.height = size2CSS(props.height);
+    style.maxHeight = size2CSS(props.height);
   }
   if (props.gap) {
     classes.push(`grid__container--column-gap--${typeof props.gap === "string" ? props.gap : props.gap[0]}`)
