@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 import { bindBindableActions } from "../helpers/minithunk";
-import { doLockStore, doUnlockStore, doSelectEntry, doUpdateListFilter } from "./store-actions";
+import { doLockStore, doUnlockStore, doSelectEntry, doUpdateListFilter, doSelectUp, doSelectDown } from "./store-actions";
 import { doDismissError, doSecretToClipboard } from "./service-actions";
 import { State } from "../reducers/state";
 
@@ -9,6 +9,8 @@ const bindableActions = {
   doLockStore,
   doUnlockStore,
   doSelectEntry,
+  doSelectUp,
+  doSelectDown,
   doUpdateListFilter,
   doSecretToClipboard,
 }

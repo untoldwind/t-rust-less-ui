@@ -2,7 +2,7 @@ import { Dispatch } from "redux";
 import { StoreActionCreators } from "./store-action-creators";
 import { sendCommand, expectStatus, expectIdentities, expectSuccess, expectSecretList, expectSecret } from "./backend";
 import { ServiceActionCreators } from "./service-action-creators";
-import { SecretListFilter } from "../../common/model";
+import { SecretListFilter, SecretList, Secret } from "../../common/model";
 import { debounce } from "../helpers/debounce";
 
 export function doListIdentities(dispatch: Dispatch): (store_name: string) => void {
@@ -76,6 +76,39 @@ export function doSelectEntry(dispatch: Dispatch): (store_name: string, secret_i
       },
       error => dispatch(ServiceActionCreators.setError.create(error))
     ))
+  }
+}
+
+export function doSelectUp(dispatch: Dispatch): (store_name: string, secret_list: SecretList, current_secret: Secret | null) => void {
+  return (store_name: string, secret_list: SecretList, current_secret: Secret | null) => {
+    if (secret_list.entries.length === 0) return;
+
+    const current_index = current_secret ? secret_list.entries.findIndex(entry => entry.entry.id === current_secret.id) : -1;
+    if (current_index < 1) {
+      const last = secret_list.entries[secret_list.entries.length - 1].entry;
+
+      doSelectEntry(dispatch)(store_name, last.id);
+    } else {
+      const prev = secret_list.entries[current_index - 1].entry;
+
+      doSelectEntry(dispatch)(store_name, prev.id);
+    }
+  }
+}
+
+export function doSelectDown(dispatch: Dispatch): (store_name: string, secret_list: SecretList, current_secret: Secret | null) => void {
+  return (store_name: string, secret_list: SecretList, current_secret: Secret | null) => {
+    if (secret_list.entries.length === 0) return;
+    const current_index = current_secret ? secret_list.entries.findIndex(entry => entry.entry.id === current_secret.id) : -1;
+    if (current_index < 0 || current_index >= secret_list.entries.length - 1) {
+      const first = secret_list.entries[0].entry;
+
+      doSelectEntry(dispatch)(store_name, first.id);
+    } else {
+      const next = secret_list.entries[current_index + 1].entry;
+
+      doSelectEntry(dispatch)(store_name, next.id);
+    }
   }
 }
 

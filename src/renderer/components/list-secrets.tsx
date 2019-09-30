@@ -11,10 +11,13 @@ import { FlexItem } from "./ui/flex";
 import { translations } from "../i18n";
 import moment from "moment";
 import { SECRET_TYPES, SecretType } from "../../common/model";
+import Mousetrap from "mousetrap";
 
 const mapStateToProps = (state: State) => ({
   listFilter: state.store.listFilter,
+  list: state.store.list,
   selectedStore: state.service.selectedStore,
+  currentSecret: state.store.currentSecret,
   status: state.store.status,
   error: state.service.error,
 });
@@ -22,7 +25,22 @@ const mapStateToProps = (state: State) => ({
 export type Props = ReturnType<typeof mapStateToProps> & BoundActions;
 
 class ListSecretsImpl extends React.Component<Props, {}> {
+  private searchInput: HTMLElement | null = null;
   private translate = translations();
+
+  componentDidMount() {
+    Mousetrap.bind("up", this.onSelectUp);
+    Mousetrap.bind("down", this.onSelectDown);
+    this.searchInput && Mousetrap(this.searchInput).bind("up", this.onSelectUp);
+    this.searchInput && Mousetrap(this.searchInput).bind("down", this.onSelectDown);
+  }
+
+  componentWillUnmount() {
+    Mousetrap.unbind("up");
+    Mousetrap.unbind("down");
+    this.searchInput && Mousetrap(this.searchInput).unbind("up");
+    this.searchInput && Mousetrap(this.searchInput).unbind("down");
+  }
 
   render() {
     return (
@@ -67,7 +85,7 @@ class ListSecretsImpl extends React.Component<Props, {}> {
     return (
       <Navbar>
         <Navbar.Group align="left">
-          <InputGroup leftIcon="search" autoFocus value={listFilter.name || ""} onChange={this.onChangeNameFilter} />
+          <InputGroup leftIcon="search" autoFocus value={listFilter.name || ""} onChange={this.onChangeNameFilter} inputRef={el => this.searchInput = el} />
         </Navbar.Group>
         <Navbar.Group align="right">
           <Grid columns={1}>
@@ -77,7 +95,6 @@ class ListSecretsImpl extends React.Component<Props, {}> {
         </Navbar.Group>
       </Navbar>
     )
-    return null
   }
 
   @bind
@@ -130,6 +147,28 @@ class ListSecretsImpl extends React.Component<Props, {}> {
       type: undefined,
       deleted: true,
     })
+  }
+
+  @bind
+  private onSelectUp(event: KeyboardEvent) {
+    const { selectedStore, list, currentSecret } = this.props;
+
+    if (!selectedStore || !list) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.doSelectUp(selectedStore, list, currentSecret);
+  }
+
+  @bind
+  private onSelectDown(event: KeyboardEvent) {
+    const { selectedStore, list, currentSecret } = this.props;
+
+    if (!selectedStore || !list) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.doSelectDown(selectedStore, list, currentSecret);
   }
 }
 
