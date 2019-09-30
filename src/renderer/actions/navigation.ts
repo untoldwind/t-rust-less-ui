@@ -1,6 +1,6 @@
 import { ActionCreator } from "../helpers/action-creator";
 
-export type NavigationPage = "UnlockStore" | "ListSecrets";
+export type NavigationPage = "Initializing" | "UnlockStore" | "ListSecrets";
 
 
 export const NavigationActionCreators = {

@@ -51,20 +51,20 @@ class SecretDetailViewImpl extends React.Component<Props, {}> {
     switch (name) {
       case "note":
         return (
-          <FieldNote key={name} label={this.translate.secret.property(name)} value={value} onCopy={this.onCopyProperty(name)}/>
+          <FieldNote key={name} label={this.translate.secret.property(name)} value={value} onCopy={this.onCopyProperty(name)} />
         );
       case "password":
         return (
-          <FieldPassword key={name} label={this.translate.secret.property(name)} value={value} strength={strength} onCopy={this.onCopyProperty(name)}/>
+          <FieldPassword key={name} label={this.translate.secret.property(name)} value={value} strength={strength} onCopy={this.onCopyProperty(name)} />
         );
       default:
         return (
-          <FieldText key={name} label={this.translate.secret.property(name)} value={value} onCopy={this.onCopyProperty(name)}/>
+          <FieldText key={name} label={this.translate.secret.property(name)} value={value} onCopy={this.onCopyProperty(name)} />
         );
     }
   }
 
-  private onCopyProperty(name: string) : () => void {
+  private onCopyProperty(name: string): () => void {
     return () => {
       const { selectedStore, currentSecret } = this.props;
 

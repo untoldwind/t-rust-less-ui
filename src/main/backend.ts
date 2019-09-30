@@ -3,6 +3,7 @@ import * as os from "os";
 import { Command } from "../common/commands";
 import { CommandResult } from "../common/command_results";
 import { ipcMain, Event } from "electron";
+import { BackendResponse, isCommandResponse, isEventResponse } from "./backend_response";
 
 const native = childProcess.spawn(process.env["HOME"] + "/.cargo/bin/t-rust-less-native", [], { stdio: ['pipe', 'pipe', process.stderr] });
 
@@ -15,38 +16,42 @@ const resultReceivers: Map<number, (result: CommandResult) => void> = new Map();
 function processResponse(chunk: Buffer) {
   chunks.push(chunk);
 
-  if (chunks.map(chunk => chunk.length).reduce((a, b) => a + b) < 4) return;
+  for (; ;) {
+    if (chunks.length == 0 || chunks.map(chunk => chunk.length).reduce((a, b) => a + b) < 4) return;
 
-  const data = Buffer.concat(chunks);
-  chunks = [];
+    const data = Buffer.concat(chunks);
+    chunks = [];
 
-  let len;
-  if (os.endianness() === "LE") {
-    len = data.readUInt32LE(0);
-  } else {
-    len = data.readUInt32BE(0);
-  }
-  if (data.length < 4 + len) {
-    chunks.push(data);
-    return;
-  }
-  const message = JSON.parse(data.toString("utf8", 4, 4 + len));
+    let len;
+    if (os.endianness() === "LE") {
+      len = data.readUInt32LE(0);
+    } else {
+      len = data.readUInt32BE(0);
+    }
+    if (data.length < 4 + len) {
+      chunks.push(data);
+      return;
+    }
+    const message: BackendResponse = JSON.parse(data.toString("utf8", 4, 4 + len));
 
-  if (data.length > 4 + len) {
-    chunks.push(data.slice(4 + len));
-  }
+    if (data.length > 4 + len) {
+      chunks.push(data.slice(4 + len));
+    }
 
-  if (typeof message !== "object" || typeof message.id !== "number" || typeof message.result === "undefined") {
-    console.log("Droping invalid response: ", message);
-    return;
+    if (isCommandResponse(message)) {
+      const resultReceiver = resultReceivers.get(message.command.id);
+      if (!resultReceiver) {
+        console.log("No receiver for: ", message);
+      } else {
+        resultReceiver(message.command.result);
+        resultReceivers.delete(message.command.id);
+      }
+    } else if (isEventResponse) {
+      console.log("Event: ", message.event);
+    } else {
+      console.log("Droping invalid response: ", message);
+    }
   }
-  const resultReceiver = resultReceivers.get(message.id);
-  if (!resultReceiver) {
-    console.log("No receiver for: ", message);
-    return;
-  }
-  resultReceiver(message.result);
-  resultReceivers.delete(message.id);
 }
 
 function sendRequest(request: any) {

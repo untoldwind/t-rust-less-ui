@@ -28,7 +28,7 @@ class SecretEntryListImpl extends React.Component<Props, {}> {
       );
     }
     return (
-      <div style={{ overflowY: "auto" }}>
+      <div style={{ overflowY: "auto", borderRight: "1px solid black" }}>
         <Menu>
           {list.entries.map(this.renderListEntry)}
         </Menu>

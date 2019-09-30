@@ -26,7 +26,7 @@ class ListSecretsImpl extends React.Component<Props, {}> {
 
   render() {
     return (
-      <Grid height={[100, "vh"]} columns={[[200, 'px'], [1, 'fr'], [2, 'fr']]} rows={["min-height", [1, 'fr']]}>
+      <Grid height={[100, "vh"]} columns={[[200, 'px'], [1, 'fr'], [2, 'fr']]} rows={["min-content", [1, 'fr']]}>
         <GridItem colSpan={3}>
           {this.renderHeader()}
         </GridItem>
@@ -70,7 +70,7 @@ class ListSecretsImpl extends React.Component<Props, {}> {
           <InputGroup leftIcon="search" autoFocus value={listFilter.name || ""} onChange={this.onChangeNameFilter} />
         </Navbar.Group>
         <Navbar.Group align="right">
-        <Grid columns={1}>
+          <Grid columns={1}>
             <Button onClick={this.onLock}>{this.translate.action.lock}</Button>
             <ProgressBar stripes={false} animate={false} value={this.autoLockProgress()} />
           </Grid>

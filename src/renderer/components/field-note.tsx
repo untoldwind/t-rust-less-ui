@@ -13,7 +13,7 @@ export const FieldNote: React.FunctionComponent<FieldNoteProps> = props => {
     <FlexHorizontal gap="md">
       <div>{props.label}</div>
       <div>{props.value}</div>
-      <Button icon="clipboard" minimal onClick={props.onCopy}/>
+      <Button icon="clipboard" minimal onClick={props.onCopy} />
     </FlexHorizontal>
   )
 }

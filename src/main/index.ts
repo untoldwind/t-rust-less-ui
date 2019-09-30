@@ -24,6 +24,13 @@ function createWindow(): BrowserWindow {
       .then((name: any) => console.log(`Added Extension:  ${name}`))
       .catch((err: any) => console.log('An error occurred: ', err));
 
+    window.webContents.on('devtools-opened', () => {
+      window.webContents.focus();
+      setImmediate(() => {
+        window.webContents.focus();
+      });
+    });
+
     window.webContents.openDevTools();
     window.loadURL("http://localhost:8080");
   } else {
@@ -37,13 +44,6 @@ function createWindow(): BrowserWindow {
   window.on('closed', () => {
     mainWindow = null;
   })
-
-  window.webContents.on('devtools-opened', () => {
-    window.focus();
-    setImmediate(() => {
-      window.focus();
-    });
-  });
 
   return window;
 }

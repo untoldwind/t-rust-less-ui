@@ -32,7 +32,7 @@ export interface State {
 
 export const INITIAL_STATE: State = {
   navigation: {
-    page: "UnlockStore",
+    page: "Initializing",
   },
   service: {
     error: null,

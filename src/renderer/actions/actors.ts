@@ -7,7 +7,7 @@ import { SecretListFilter } from "../../common/model";
 import { bind } from "decko";
 
 function ensureStoreList(state: State, dispatch: Dispatch) {
-  if (state.navigation.page === "UnlockStore" && !state.service.listStoresInProgress && state.service.stores.length === 0) {
+  if (state.navigation.page === "Initializing" && !state.service.listStoresInProgress && state.service.stores.length === 0) {
     doListStores(dispatch)();
   }
 }

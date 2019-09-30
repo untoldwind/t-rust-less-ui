@@ -45,7 +45,7 @@ export class FieldPassword extends React.Component<FieldPasswordProps, FieldPass
         <FlexItem grow={0}>
           <FlexHorizontal>
             <Button active={reveal} minimal onClick={() => { this.setState({ reveal: !reveal }) }} icon={reveal ? "eye-off" : "eye-open"} />
-            <Button icon="clipboard" minimal onClick={onCopy}/>
+            <Button icon="clipboard" minimal onClick={onCopy} />
           </FlexHorizontal>
         </FlexItem>
       </FlexHorizontal>
