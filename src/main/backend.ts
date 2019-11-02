@@ -2,7 +2,7 @@ import * as childProcess from "child_process";
 import * as os from "os";
 import { Command } from "../common/commands";
 import { CommandResult } from "../common/command_results";
-import { ipcMain, Event } from "electron";
+import { ipcMain, IpcMainEvent } from "electron";
 import { BackendResponse, isCommandResponse, isEventResponse } from "./backend_response";
 
 const native = childProcess.spawn(process.env["HOME"] + "/.cargo/bin/t-rust-less-native", [], { stdio: ['pipe', 'pipe', process.stderr] });
@@ -76,7 +76,7 @@ export function sendCommand(command: Command, resultReceiver: (result: CommandRe
   sendRequest({ id, command });
 }
 
-ipcMain.on("backend", (event: Event, args: { command: Command, replyChannel: string }) => {
+ipcMain.on("backend", (event: IpcMainEvent, args: { command: Command, replyChannel: string }) => {
   sendCommand(args.command, result => {
     event.sender.send(args.replyChannel, result);
   })
