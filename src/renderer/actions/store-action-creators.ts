@@ -21,3 +21,4 @@ export const StoreActionCreators = {
 };
 
 export type StoreAction = typeof StoreActionCreators[keyof typeof StoreActionCreators];
+export type StoreActionTypes = ReturnType<StoreAction["create"]>;

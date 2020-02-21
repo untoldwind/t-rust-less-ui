@@ -46,7 +46,7 @@ function processResponse(chunk: Buffer) {
         resultReceiver(message.command.result);
         resultReceivers.delete(message.command.id);
       }
-    } else if (isEventResponse) {
+    } else if (isEventResponse(message)) {
       console.log("Event: ", message.event);
     } else {
       console.log("Droping invalid response: ", message);
