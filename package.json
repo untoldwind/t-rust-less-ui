@@ -8,7 +8,8 @@
         "dev": "webpack-dev-server --config webpack.config.js --hot --inline --mode development",
         "electron": "electron app",
         "format": "tsfmt -r && scssfmt --recursive sass/**/*.scss && tslint -c tslint.json --project .",
-        "clean": "rimraf dist app"
+        "clean": "rimraf dist app",
+        "dist": "npm run build:app && electron-builder"
     },
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^5.8.2",
