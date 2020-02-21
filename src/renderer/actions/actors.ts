@@ -5,14 +5,15 @@ import { doListStores, doGetDefaultStore } from "./service-actions";
 import { doListIdentities, doGetStatus, doUpdateSecretList } from "./store-actions";
 import { SecretListFilter } from "../../common/model";
 import { bind } from "decko";
+import { Actions } from "./actions";
 
-function ensureStoreList(state: State, dispatch: Dispatch) {
+function ensureStoreList(state: State, dispatch: Dispatch<Actions>) {
   if (state.navigation.page === "UnlockStore" && !state.service.listStoresInProgress && state.service.stores.length === 0) {
     doListStores(dispatch)();
   }
 }
 
-function ensureIdentities(state: State, dispatch: Dispatch) {
+function ensureIdentities(state: State, dispatch: Dispatch<Actions>) {
   if (state.service.stores.length > 0 && !state.service.selectedStore) {
     doGetDefaultStore(dispatch)(state.service.stores[0]);
   } else if (state.service.selectedStore && !state.store.listIdentitiesInProgress && state.store.identities.length == 0) {
@@ -24,7 +25,7 @@ class UpdateStatus {
   private intervalId: number | null = null;
 
   @bind
-  trigger(state: State, dispatch: Dispatch) {
+  trigger(state: State, dispatch: Dispatch<Actions>) {
     if (state.service.selectedStore && !this.intervalId) {
       const store = state.service.selectedStore;
 
@@ -44,7 +45,7 @@ class UpdateSecretList {
   private lastFilter: SecretListFilter | null = null;
 
   @bind
-  trigger(state: State, dispatch: Dispatch) {
+  trigger(state: State, dispatch: Dispatch<Actions>) {
     if (!state.service.selectedStore || !state.store.status || state.store.status.locked) return;
 
     if (state.service.selectedStore !== this.lastStore || state.store.listFilter !== this.lastFilter) {

@@ -12,3 +12,4 @@ export const ServiceActionCreators = {
 };
 
 export type ServiceAction = typeof ServiceActionCreators[keyof typeof ServiceActionCreators];
+export type ServiceActionTypes = ReturnType<ServiceAction["create"]>;

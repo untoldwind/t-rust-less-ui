@@ -4,8 +4,9 @@ import { sendCommand, expectStatus, expectIdentities, expectSuccess, expectSecre
 import { ServiceActionCreators } from "./service-action-creators";
 import { SecretListFilter } from "../../common/model";
 import { debounce } from "../helpers/debounce";
+import { Actions } from "./actions";
 
-export function doListIdentities(dispatch: Dispatch): (store_name: string) => void {
+export function doListIdentities(dispatch: Dispatch<Actions>): (store_name: string) => void {
   return (store_name: string) => {
     dispatch(StoreActionCreators.listIdentitiesStart.create(undefined));
 
@@ -18,7 +19,7 @@ export function doListIdentities(dispatch: Dispatch): (store_name: string) => vo
 
 let getStatusInProgress: boolean = false;
 
-export function doGetStatus(dispatch: Dispatch): (store_name: string) => void {
+export function doGetStatus(dispatch: Dispatch<Actions>): (store_name: string) => void {
   return (store_name: string) => {
     if (!getStatusInProgress) {
       getStatusInProgress = true;
@@ -36,7 +37,7 @@ export function doGetStatus(dispatch: Dispatch): (store_name: string) => void {
   }
 }
 
-export function doLockStore(dispatch: Dispatch): (store_name: string) => void {
+export function doLockStore(dispatch: Dispatch<Actions>): (store_name: string) => void {
   return (store_name: string) => {
     sendCommand({ lock: { store_name } }, expectSuccess(
       () => doGetStatus(dispatch)(store_name),
@@ -45,7 +46,7 @@ export function doLockStore(dispatch: Dispatch): (store_name: string) => void {
   }
 }
 
-export function doUnlockStore(dispatch: Dispatch): (store_name: string, identity_id: string, passphrase: string) => void {
+export function doUnlockStore(dispatch: Dispatch<Actions>): (store_name: string, identity_id: string, passphrase: string) => void {
   return (store_name: string, identity_id: string, passphrase: string) => {
     sendCommand({ unlock: { store_name, identity_id, passphrase } }, expectSuccess(
       () => doGetStatus(dispatch)(store_name),
@@ -54,7 +55,7 @@ export function doUnlockStore(dispatch: Dispatch): (store_name: string, identity
   }
 }
 
-export function doUpdateSecretList(dispatch: Dispatch): (store_name: string, filter: SecretListFilter) => void {
+export function doUpdateSecretList(dispatch: Dispatch<Actions>): (store_name: string, filter: SecretListFilter) => void {
   return debounce((store_name: string, filter: SecretListFilter) => {
     dispatch(StoreActionCreators.listEntriesStart.create(undefined));
 
@@ -67,7 +68,7 @@ export function doUpdateSecretList(dispatch: Dispatch): (store_name: string, fil
 
 let expected_secret_id: string | null = null;
 
-export function doSelectEntry(dispatch: Dispatch): (store_name: string, secret_id: string) => void {
+export function doSelectEntry(dispatch: Dispatch<Actions>): (store_name: string, secret_id: string) => void {
   return (store_name: string, secret_id: string) => {
     expected_secret_id = secret_id;
     sendCommand({ "get_secret": { store_name, secret_id } }, expectSecret(
@@ -79,7 +80,7 @@ export function doSelectEntry(dispatch: Dispatch): (store_name: string, secret_i
   }
 }
 
-export function doUpdateListFilter(dispatch: Dispatch): (filter: SecretListFilter) => void {
+export function doUpdateListFilter(dispatch: Dispatch<Actions>): (filter: SecretListFilter) => void {
   return (filter: SecretListFilter) => {
     dispatch(StoreActionCreators.setListFilter.create(filter))
   }

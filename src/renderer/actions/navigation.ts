@@ -8,3 +8,4 @@ export const NavigationActionCreators = {
 };
 
 export type NavigationAction = typeof NavigationActionCreators[keyof typeof NavigationActionCreators];
+export type NavigationActionTypes = ReturnType<NavigationAction["create"]>
