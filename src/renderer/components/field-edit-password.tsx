@@ -1,5 +1,6 @@
 import * as React from "react";
-import { FlexHorizontal, FlexItem } from "./ui/flex";
+import { Flex } from "./ui/flex";
+import { FlexItem } from "./ui/flex-item";
 import { InputGroup, Button } from "@blueprintjs/core";
 
 export interface FieldEditPasswordProps {
@@ -26,17 +27,17 @@ export class FieldEditPassword extends React.Component<FieldEditPasswordProps, F
     const { reveal } = this.state;
 
     return (
-      <FlexHorizontal gap="md">
-        <FlexItem grow={0} basis={[10, '%']}>{label}</FlexItem>
-        <FlexItem grow={1}>
+      <Flex flexDirection="row" gap={5}>
+        <FlexItem flexGrow={0} flexBasis={[10, '%']}>{label}</FlexItem>
+        <FlexItem flexGrow={1}>
           <InputGroup value={value} type={reveal ? "text" : "password"} onChange={(event: React.FormEvent<HTMLElement>) => onChange((event.target as HTMLInputElement).value)} />
         </FlexItem>
-        <FlexItem grow={0}>
-          <FlexHorizontal>
+        <FlexItem flexGrow={0}>
+        <Flex flexDirection="row">
             <Button active={reveal} onClick={() => { this.setState({ reveal: !reveal }) }} icon={reveal ? "eye-off" : "eye-open"} />
-          </FlexHorizontal>
+          </Flex>
         </FlexItem>
-      </FlexHorizontal>
+      </Flex>
     )
   }
 }

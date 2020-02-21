@@ -1,64 +1,53 @@
 import * as React from "react";
-import { Spacing, SizeSpec, size2CSS } from "./common";
+import { css, cx, ObjectInterpolation } from "emotion";
+import { SizeSpec, AlignSpec, OffsetSpec, offsetSpecToPadding, Size } from "./constraints";
 
-export interface FlexVerticalProps {
-  gap?: Spacing
-  reverse?: boolean
+export type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
+
+const flexClass = css({
+  display: "flex",
+});
+
+export interface FlexProps {
+  flexDirection: FlexDirection
+  alignItems?: AlignSpec
+  flexGrow?: number
+  flexShrink?: number
+  width?: SizeSpec
   height?: SizeSpec
+  padding?: OffsetSpec
+  gap?: Size
+  backgroundColor?: string
 }
 
-export const FlexVertical: React.FunctionComponent<FlexVerticalProps> = props => {
-  const baseClass = props.reverse ? "flex__vertical_reverse" : "flex__vertical";
-  const classes: string[] = ["flex", baseClass];
-  const style: React.CSSProperties = {};
+export const Flex: React.FunctionComponent<FlexProps> = props => {
+  const classes = [flexClass];
+  const { flexDirection, alignItems, flexGrow, flexShrink, width, height, gap, padding, backgroundColor } = props;
+  const emotionStyles: ObjectInterpolation<undefined>[] = []
 
-  if (props.height) {
-    style.height = size2CSS(props.height);
-    style.maxHeight = size2CSS(props.height);
+  emotionStyles.push({ flexDirection });
+  alignItems !== undefined && emotionStyles.push({ alignItems });
+  flexGrow !== undefined && emotionStyles.push({ flexGrow });
+  flexShrink !== undefined && emotionStyles.push({ flexShrink });
+  height !== undefined && emotionStyles.push({ height: height.join("") });
+  width !== undefined && emotionStyles.push({ width: width.join(""), });
+  padding !== undefined && emotionStyles.push(offsetSpecToPadding(padding))
+  backgroundColor !== undefined && emotionStyles.push({ backgroundColor });
+
+  if (gap !== undefined) {
+    switch (flexDirection) {
+      case "row": emotionStyles.push({ "> :not(:last-child)": { marginRight: `${gap}px` } }); break;
+      case "row-reverse": emotionStyles.push({ "> :not(:first-child)": { marginRight: `${gap}px` } }); break;
+      case "column": emotionStyles.push({ "> :not(:last-child)": { marginBottom: `${gap}px` } }); break;
+      case "column-reverse": emotionStyles.push({ "> :not(:first-child)": { marginBottom: `${gap}px` } }); break;
+    }
   }
-  if (props.gap) classes.push(`${baseClass}--gap--${props.gap}`);
+
+  classes.push(css(emotionStyles))
 
   return (
-    <div style={style} className={classes.join(" ")}>
+    <div className={cx(classes)}>
       {props.children}
     </div>
   )
-}
-
-export interface FlexHorizontalProps {
-  gap?: Spacing
-  reverse?: boolean
-}
-
-export const FlexHorizontal: React.FunctionComponent<FlexHorizontalProps> = props => {
-  const baseClass = props.reverse ? "flex__horizontal_reverse" : "flex__horizontal";
-  const classes: string[] = ["flex", baseClass];
-
-  if (props.gap) classes.push(`${baseClass}--gap--${props.gap}`);
-
-  return (
-    <div className={classes.join(" ")}>
-      {props.children}
-    </div>
-  )
-}
-
-export interface FlexItemProps {
-  grow?: number
-  shrink?: number
-  basis?: SizeSpec
-}
-
-export const FlexItem: React.FunctionComponent<FlexItemProps> = props => {
-  const style: React.CSSProperties = {};
-
-  if (typeof props.grow !== "undefined") style.flexGrow = props.grow;
-  if (typeof props.shrink !== "undefined") style.flexShrink = props.shrink;
-  if (typeof props.basis !== "undefined") style.flexBasis = size2CSS(props.basis);
-
-  return (
-    <div style={style}>
-      {props.children}
-    </div>
-  )
-}
+};

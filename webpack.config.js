@@ -5,7 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const commonConfig = {
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'app'),
         filename: '[name].js',
         sourceMapFilename: '[name].js.map'
     },
@@ -67,7 +67,7 @@ module.exports = [
         target: "electron-main",
         entry: { main: "./src/main/index.ts" },
         plugins: [new WriteFilePlugin(), new CopyWebpackPlugin([
-            { from: "./src/main/app-package.json", to: path.join(__dirname, "dist", "package.json") }
+            { from: "./src/main/app-package.json", to: path.join(__dirname, "app", "package.json") }
         ])],
         node: {
             __dirname: false,
@@ -93,8 +93,8 @@ module.exports = [
             ],
         },
         plugins: [new WriteFilePlugin(), new CopyWebpackPlugin([
-            { from: "./src/renderer/index.html", to: path.join(__dirname, "dist", "index.html") },
-            { from: "./src/renderer/preload.js", to: path.join(__dirname, "dist", "preload.js") }
+            { from: "./src/renderer/index.html", to: path.join(__dirname, "app", "index.html") },
+            { from: "./src/renderer/preload.js", to: path.join(__dirname, "app", "preload.js") }
         ]), new MiniCssExtractPlugin({
             filename: "[name].css",
             chunkFilename: "[id].css",

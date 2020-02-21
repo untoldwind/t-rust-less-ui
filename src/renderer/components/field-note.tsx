@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FlexHorizontal } from "./ui/flex";
+import { Flex } from "./ui/flex";
 import { Button } from "@blueprintjs/core";
 
 export interface FieldNoteProps {
@@ -10,10 +10,10 @@ export interface FieldNoteProps {
 
 export const FieldNote: React.FunctionComponent<FieldNoteProps> = props => {
   return (
-    <FlexHorizontal gap="md">
+    <Flex flexDirection="row" gap={5}>
       <div>{props.label}</div>
       <div>{props.value}</div>
       <Button icon="clipboard" minimal onClick={props.onCopy} />
-    </FlexHorizontal>
+    </Flex>
   )
 }

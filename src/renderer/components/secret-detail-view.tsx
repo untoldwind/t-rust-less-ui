@@ -2,7 +2,8 @@ import * as React from "react";
 import { State } from "../reducers/state";
 import { BoundActions, actionBinder } from "../actions/bindable";
 import { connect } from "react-redux";
-import { FlexVertical, FlexItem } from "./ui/flex";
+import { Flex } from "./ui/flex";
+import { FlexItem } from "./ui/flex-item";
 import { FieldText } from "./field-text";
 import { translations } from "../i18n";
 import { FieldPassword } from "./field-password";
@@ -26,23 +27,23 @@ class SecretDetailViewImpl extends React.Component<Props, {}> {
 
     return (
       <div style={{ overflowY: "auto" }}>
-        <FlexVertical gap="md">
-          <FlexItem grow={0}>
+        <Flex flexDirection="column" gap={5}>
+          <FlexItem flexGrow={0}>
             <FieldText label={this.translate.secret.name} value={currentSecret.current.name} />
           </FlexItem>
-          <FlexItem grow={0}>
+          <FlexItem flexGrow={0}>
             <FieldText label={this.translate.secret.type} value={currentSecret.current.secret_type} />
           </FlexItem>
           {Object.keys(currentSecret.current.properties).map(name => {
             const value = currentSecret.current.properties[name];
             const strength = currentSecret.password_strengths[name];
             return (
-              <FlexItem grow={0}>
+              <FlexItem flexGrow={0}>
                 {this.renderProperty(name, value, strength)}
               </FlexItem>
             )
           })}
-        </FlexVertical>
+        </Flex>
       </div>
     )
   }

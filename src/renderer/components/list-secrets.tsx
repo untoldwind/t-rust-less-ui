@@ -2,12 +2,13 @@ import * as React from "react";
 import { BoundActions, actionBinder } from "../actions/bindable";
 import { State } from "../reducers/state";
 import { connect } from "react-redux";
-import { Grid, GridItem } from "./ui/grid";
+import { Grid } from "./ui/grid";
+import { GridItem } from "./ui/grid-item";
 import { SecretEntryList } from "./secret-entry-list";
 import { SecretDetailView } from "./secret-detail-view";
 import { InputGroup, Button, ProgressBar, Menu, MenuItem, Navbar } from "@blueprintjs/core";
 import { bind } from "decko";
-import { FlexItem } from "./ui/flex";
+import { FlexItem } from "./ui/flex-item";
 import { translations } from "../i18n";
 import moment from "moment";
 import { SECRET_TYPES, SecretType } from "../../common/model";
@@ -44,7 +45,7 @@ class ListSecretsImpl extends React.Component<Props, {}> {
 
   render() {
     return (
-      <Grid height={[100, "vh"]} columns={[[200, 'px'], [1, 'fr'], [2, 'fr']]} rows={["min-content", [1, 'fr']]}>
+      <Grid height={[100, "vh"]} columnSpec={[[200, 'px'], [1, 'fr'], [2, 'fr']]} rowSpec="min-content 1fr">
         <GridItem colSpan={3}>
           {this.renderHeader()}
         </GridItem>
@@ -68,7 +69,7 @@ class ListSecretsImpl extends React.Component<Props, {}> {
               onClick={this.onFilterType(t)} />
           ))}
         </Menu>
-        <FlexItem grow={1} />
+        <FlexItem flexGrow={1} />
         <Menu>
           <MenuItem text={this.translate.secret.deleted}
             icon="trash"

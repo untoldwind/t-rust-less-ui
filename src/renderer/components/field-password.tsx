@@ -1,5 +1,6 @@
 import * as React from "react";
-import { FlexHorizontal, FlexItem } from "./ui/flex";
+import { Flex } from "./ui/flex";
+import { FlexItem } from "./ui/flex-item";
 import { Button, ProgressBar, Tooltip } from "@blueprintjs/core";
 import { PasswordStrength } from "../../common/model";
 import { Grid } from "./ui/grid";
@@ -32,9 +33,9 @@ export class FieldPassword extends React.Component<FieldPasswordProps, FieldPass
     const { reveal } = this.state;
 
     return (
-      <FlexHorizontal gap="md">
-        <FlexItem grow={0} basis={[10, '%']}>{label}</FlexItem>
-        <FlexItem grow={1}>
+      <Flex flexDirection="row" gap={5}>
+        <FlexItem flexGrow={0} flexBasis={[10, '%']}>{label}</FlexItem>
+        <FlexItem flexGrow={1}>
           <Tooltip targetTagName="div" content={this.renderStrengthDetail(strength)}>
             <Grid columns={1}>
               <div>{reveal ? value : "*".repeat(value.length)}</div>
@@ -42,13 +43,13 @@ export class FieldPassword extends React.Component<FieldPasswordProps, FieldPass
             </Grid>
           </Tooltip>
         </FlexItem>
-        <FlexItem grow={0}>
-          <FlexHorizontal>
+        <FlexItem flexGrow={0}>
+         <Flex flexDirection="row">
             <Button active={reveal} minimal onClick={() => { this.setState({ reveal: !reveal }) }} icon={reveal ? "eye-off" : "eye-open"} />
             <Button icon="clipboard" minimal onClick={onCopy} />
-          </FlexHorizontal>
+          </Flex>
         </FlexItem>
-      </FlexHorizontal>
+      </Flex>
     )
   }
 
@@ -56,7 +57,7 @@ export class FieldPassword extends React.Component<FieldPasswordProps, FieldPass
     if (!strength) return undefined;
 
     return (
-      <Grid columns={2} gap="base">
+      <Grid columns={2} gap={5}>
         <div>{this.translate.secret.strength.score}</div>
         <div>{strength.score}</div>
         <div>{this.translate.secret.strength.entropy}</div>

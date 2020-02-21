@@ -7,7 +7,7 @@ import { BackendResponse, isCommandResponse, isEventResponse } from "./backend_r
 
 const native = childProcess.spawn(process.env["HOME"] + "/.cargo/bin/t-rust-less-native", [], { stdio: ['pipe', 'pipe', process.stderr] });
 
-native.stdout.on("data", processResponse);
+native.stdout?.on("data", processResponse);
 
 let idCounter = 0;
 let chunks: Buffer[] = [];
@@ -66,7 +66,7 @@ function sendRequest(request: any) {
   }
   buffer.write(json, 4, len, "utf8");
 
-  native.stdin.write(buffer);
+  native.stdin?.write(buffer);
 }
 
 export function sendCommand(command: Command, resultReceiver: (result: CommandResult) => void) {

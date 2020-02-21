@@ -1,5 +1,6 @@
 import * as React from "react";
-import { FlexHorizontal, FlexItem } from "./ui/flex";
+import { Flex } from "./ui/flex";
+import { FlexItem } from "./ui/flex-item";
 import { InputGroup } from "@blueprintjs/core";
 
 export interface FieldEditTextProps {
@@ -12,12 +13,12 @@ export const FieldEditText: React.FunctionComponent<FieldEditTextProps> = props 
   const { label, value, onChange } = props;
 
   return (
-    <FlexHorizontal gap="md">
-      <FlexItem grow={0} basis={[10, '%']}>{label}</FlexItem>
-      <FlexItem grow={1}>
+    <Flex flexDirection="row" gap={5}>
+      <FlexItem flexGrow={0} flexBasis={[10, '%']}>{label}</FlexItem>
+      <FlexItem flexGrow={1}>
         <InputGroup value={value} onChange={(event: React.FormEvent<HTMLElement>) => onChange((event.target as HTMLInputElement).value)} />
       </FlexItem>
-    </FlexHorizontal>
+    </Flex>
   )
 }
 

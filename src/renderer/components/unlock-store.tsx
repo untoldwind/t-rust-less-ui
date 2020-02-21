@@ -2,7 +2,8 @@ import * as React from "react";
 import { State } from "../reducers/state";
 import { BoundActions, actionBinder } from "../actions/bindable";
 import { connect } from "react-redux";
-import { Grid, GridItem } from "./ui/grid";
+import { Grid } from "./ui/grid";
+import { GridItem } from "./ui/grid-item";
 import { Button, InputGroup, HTMLSelect } from "@blueprintjs/core";
 import { bind } from "decko";
 import { ServiceErrorPanel } from "./service-error-panel";
@@ -47,13 +48,13 @@ class UnlockStoreImpl extends React.Component<Props, ComponentState> {
     const { selectedIdentity, passphrase } = this.state;
 
     return (
-      <Grid height={[100, '%']} columns={[[1, 'fr'], [1, 'fr'], [1, 'fr']]} rows={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}>
+      <Grid height={[100, '%']} columnSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]} rowSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}>
         <GridItem colSpan={3}>
           <ServiceErrorPanel />
         </GridItem>
         <GridItem colStart={2}>
           <form onSubmit={this.onUnlock}>
-            <Grid columns={1} gap="md">
+            <Grid columns={1} gap={5}>
               <HTMLSelect value={selectedStore || ""} large>
                 {stores.map(store => (
                   <option key={store} value={store}>{store}</option>

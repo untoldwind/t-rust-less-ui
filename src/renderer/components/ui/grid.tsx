@@ -1,69 +1,55 @@
 import * as React from "react";
-import { SizeSpec, Spacing, size2CSS } from "./common";
+import { Size, SizeSpec, OffsetSpec, offsetSpecToPadding, JustifySpec, AlignSpec } from "./constraints";
+import { css, cx, ObjectInterpolation } from "emotion";
+
+const gridClass = css({
+  display: "grid",
+});
 
 export interface GridProps {
-  columns?: number | SizeSpec[]
-  rows?: number | SizeSpec[]
+  padding?: OffsetSpec
+  gap?: Size
+  rowGap?: Size
+  colGap?: Size
+  width?: SizeSpec
   height?: SizeSpec
-  gap?: Spacing | [Spacing, Spacing]
-  padding?: Spacing | [Spacing, Spacing]
+  columns?: number
+  columnSpec?: SizeSpec[] | string
+  rowSpec?: SizeSpec[] | string
+  alignItems?: AlignSpec
+  justifyItems?: JustifySpec
+  backgroundColor?: string
 }
 
 export const Grid: React.FunctionComponent<GridProps> = props => {
-  const classes: string[] = ["grid", "grid__container"];
-  const style: React.CSSProperties = {
-    gridTemplateColumns: typeof props.columns === "number" ? `repeat(${props.columns}, 1fr)` : (props.columns ? props.columns.map(size2CSS).join(" ") : "1fr"),
-  };
-  if (props.columns) style.gridTemplateColumns = typeof props.columns === "number" ? `repeat(${props.columns}, 1fr)` : props.columns.map(size2CSS).join(" ");
-  if (props.rows) style.gridTemplateRows = typeof props.rows === "number" ? `repeat(${props.rows}, 1fr)` : props.rows.map(size2CSS).join(" ");
-  if (props.height) {
-    style.height = size2CSS(props.height);
-    style.maxHeight = size2CSS(props.height);
-  }
-  if (props.gap) {
-    classes.push(`grid__container--column-gap--${typeof props.gap === "string" ? props.gap : props.gap[0]}`)
-    classes.push(`grid__container--row-gap--${typeof props.gap === "string" ? props.gap : props.gap[1]}`)
-  }
-  if (props.padding) {
-    classes.push(`grid__container--pad-x--${typeof props.padding === "string" ? props.padding : props.padding[0]}`)
-    classes.push(`grid__container--pad-y--${typeof props.padding === "string" ? props.padding : props.padding[1]}`)
-  }
+  const classes = [gridClass];
+
+  const { gap, rowGap, colGap, padding, columnSpec, rowSpec, height, width, alignItems, justifyItems, backgroundColor } = props;
+  const emotionStyles: ObjectInterpolation<undefined>[] = []
+
+  padding !== undefined && emotionStyles.push(offsetSpecToPadding(padding))
+  gap !== undefined && emotionStyles.push({ gridGap: `${gap}px` });
+  rowGap !== undefined && emotionStyles.push({ gridRowGap: `${rowGap}px` });
+  colGap !== undefined && emotionStyles.push({ gridColumnGap: `${colGap}px` });
+  height !== undefined && emotionStyles.push({ height: height.join("") });
+  width !== undefined && emotionStyles.push({ width: width.join(""), });
+  alignItems !== undefined && emotionStyles.push({ alignItems });
+  justifyItems !== undefined && emotionStyles.push({ justifyItems });
+  backgroundColor !== undefined && emotionStyles.push({ backgroundColor });
+
+  classes.push(css(emotionStyles))
+
+  classes.push(css({
+    gridTemplateColumns: columnSpec ? (typeof columnSpec === "string" ? columnSpec : columnSpec.map(elem => elem.join("")).join(" ")) : `repeat(${props.columns || 12}, 1fr)`,
+  }));
+
+  rowSpec && classes.push(css({
+    gridTemplateRows: typeof rowSpec === "string" ? rowSpec : rowSpec.map(elem => elem.join("")).join(" "),
+  }));
 
   return (
-    <div className={classes.join(" ")} style={style}>
+    <div className={cx(classes)}>
       {props.children}
     </div>
   )
 };
-
-export interface GridItemProps {
-  colStart?: number
-  colEnd?: number
-  colSpan?: number
-  rowStart?: number
-  rowEnd?: number
-  rowSpan?: number
-  padding?: Spacing | [Spacing, Spacing]
-}
-
-export const GridItem: React.FunctionComponent<GridItemProps> = props => {
-  const classes: string[] = ["grid__item"];
-  const style: React.CSSProperties = {}
-
-  if (props.colStart) style.gridColumnStart = props.colStart;
-  if (props.colEnd) style.gridColumnEnd = props.colEnd;
-  if (props.colSpan) style.gridColumn = `span ${props.colSpan}`;
-  if (props.rowStart) style.gridRowStart = props.rowStart;
-  if (props.rowEnd) style.gridRowEnd = props.rowEnd;
-  if (props.rowSpan) style.gridRow = `span ${props.rowSpan}`;
-  if (props.padding) {
-    classes.push(`grid__item--pad-x--${typeof props.padding === "string" ? props.padding : props.padding[0]}`)
-    classes.push(`grid__item--pad-y--${typeof props.padding === "string" ? props.padding : props.padding[1]}`)
-  }
-
-  return (
-    <div className={classes.join(" ")} style={style}>
-      {props.children}
-    </div>
-  )
-}
