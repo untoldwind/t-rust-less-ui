@@ -2,11 +2,13 @@ import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import * as url from "url";
 import * as backend from "./backend";
+import { helloWorld } from "../../native/index";
+
+console.log(helloWorld());
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let mainWindow: BrowserWindow | null = null;
-
 
 function createWindow(): BrowserWindow {
   const window = new BrowserWindow({

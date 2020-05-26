@@ -11,7 +11,7 @@ const commonConfig = {
     },
     devtool: 'source-map',
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".jsx", ".scss", ".css", ".json"]
+        extensions: [".ts", ".tsx", ".js", ".jsx", ".scss", ".css", ".json", ".node"]
     },
     module: {
         rules: [
@@ -47,6 +47,14 @@ const commonConfig = {
                         implementation: require("sass")
                     }
                 }]
+            },
+            {
+                test: /\.node$/,
+                use: [{
+                    loader:"native-ext-loader",
+                    options: {
+                    }
+                }],
             },
             {
                 test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
