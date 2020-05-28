@@ -1,79 +1,67 @@
 import * as React from "react";
-import { State } from "../reducers/state";
-import { BoundActions, actionBinder } from "../actions/bindable";
-import { connect } from "react-redux";
+import { useService } from "@xstate/react";
+import { mainInterpreter } from "../machines/main";
+import { translations } from "../i18n";
+import { NonIdealState } from "@blueprintjs/core";
 import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";
 import { FieldText } from "./field-text";
-import { translations } from "../i18n";
-import { FieldPassword } from "./field-password";
+import { PasswordStrength } from "../../../native";
 import { FieldNote } from "./field-note";
-import { PasswordStrength } from "../../common/model";
+import { FieldPassword } from "./field-password";
 
-const mapStateToProps = (state: State) => ({
-  selectedStore: state.service.selectedStore,
-  currentSecret: state.store.currentSecret,
-});
+export const SecretDetailView: React.FunctionComponent<{}> = props => {
+  const translate = React.useMemo(translations, [translations]);
+  const [state] = useService(mainInterpreter);
 
-export type Props = ReturnType<typeof mapStateToProps> & BoundActions;
-
-class SecretDetailViewImpl extends React.Component<Props, {}> {
-  private translate = translations();
-
-  render(): React.ReactNode {
-    const { currentSecret } = this.props;
-
-    if (!currentSecret) return null;
-
-    return (
-      <div style={{ overflowY: "auto" }}>
-        <Flex flexDirection="column" gap={5}>
-          <FlexItem flexGrow={0}>
-            <FieldText label={this.translate.secret.name} value={currentSecret.current.name} />
-          </FlexItem>
-          <FlexItem flexGrow={0}>
-            <FieldText label={this.translate.secret.type} value={currentSecret.current.secret_type} />
-          </FlexItem>
-          {Object.keys(currentSecret.current.properties).map(name => {
-            const value = currentSecret.current.properties[name];
-            const strength = currentSecret.password_strengths[name];
-            return (
-              <FlexItem flexGrow={0}>
-                {this.renderProperty(name, value, strength)}
-              </FlexItem>
-            )
-          })}
-        </Flex>
-      </div>
-    )
+  function onCopyProperty(name: string): () => void {
+    return () => { }
   }
 
-  private renderProperty(name: string, value: string, strength?: PasswordStrength): React.ReactNode {
+  function renderProperty(name: string, value: string, strength?: PasswordStrength): React.ReactNode {
     switch (name) {
       case "note":
         return (
-          <FieldNote key={name} label={this.translate.secret.property(name)} value={value} onCopy={this.onCopyProperty(name)} />
+          <FieldNote key={name} label={translate.secret.property(name)} value={value} onCopy={onCopyProperty(name)} />
         );
       case "password":
         return (
-          <FieldPassword key={name} label={this.translate.secret.property(name)} value={value} strength={strength} onCopy={this.onCopyProperty(name)} />
+          <FieldPassword key={name} label={translate.secret.property(name)} value={value} strength={strength} onCopy={onCopyProperty(name)} />
         );
       default:
         return (
-          <FieldText key={name} label={this.translate.secret.property(name)} value={value} onCopy={this.onCopyProperty(name)} />
+          <FieldText key={name} label={translate.secret.property(name)} value={value} onCopy={onCopyProperty(name)} />
         );
     }
   }
 
-  private onCopyProperty(name: string): () => void {
-    return () => {
-      const { selectedStore, currentSecret } = this.props;
-
-      if (!selectedStore || !currentSecret) return;
-
-      this.props.doSecretToClipboard(selectedStore, currentSecret.id, [name]);
-    }
+  if (!state.matches("unlocked.display_secret")) {
+    return (
+      <NonIdealState
+        title={translate.secret.noSecretTitle}
+        description={translate.secret.noSecretDescription} />
+    )
   }
-}
 
-export const SecretDetailView = connect(mapStateToProps, actionBinder)(SecretDetailViewImpl);
+  return (
+    <div style={{ overflowY: "auto" }}>
+      <Flex flexDirection="column" gap={5}>
+        <FlexItem flexGrow={0}>
+          <FieldText label={translate.secret.name} value={state.context.currentSecret.current.name} />
+        </FlexItem>
+        <FlexItem flexGrow={0}>
+          <FieldText label={translate.secret.type} value={state.context.currentSecret.current.type} />
+        </FlexItem>
+        {Object.keys(state.context.currentSecret.current.properties).map(name => {
+          const value = state.context.currentSecret.current.properties[name];
+          const strength = state.context.currentSecret.password_strengths[name];
+          return (
+            <FlexItem flexGrow={0}>
+              {renderProperty(name, value, strength)}
+            </FlexItem>
+          )
+        })}
+      </Flex>
+    </div>
+  )
+}

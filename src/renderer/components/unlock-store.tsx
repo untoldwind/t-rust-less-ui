@@ -1,99 +1,77 @@
 import * as React from "react";
-import { State } from "../reducers/state";
-import { BoundActions, actionBinder } from "../actions/bindable";
-import { connect } from "react-redux";
+import { translations } from "../i18n";
+import { useService } from "@xstate/react";
+import { mainInterpreter } from "../machines/main";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
-import { Button, InputGroup, HTMLSelect } from "@blueprintjs/core";
-import { bind } from "decko";
-import { ServiceErrorPanel } from "./service-error-panel";
-import { translations } from "../i18n";
+import { HTMLSelect, InputGroup, Button, Toaster, Toast } from "@blueprintjs/core";
 
-const mapStateToProps = (state: State) => ({
-  stores: state.service.stores,
-  selectedStore: state.service.selectedStore,
-  identities: state.store.identities,
-  unlockInProgress: state.store.unlockInProgress,
-});
+export const UnlockStore: React.FunctionComponent<{}> = props => {
+  const translate = React.useMemo(translations, [translations])
+  const [ownState, setOwnState] = React.useState({
+    passphrase: "",
+  });
+  const [state, send] = useService(mainInterpreter);
+  const isValid = ownState.passphrase.length > 0 && typeof state.context.selectedIdentityId === "string";
+  const passphraseRef = React.useRef<HTMLInputElement>(null);
 
-export type Props = ReturnType<typeof mapStateToProps> & BoundActions;
+  React.useEffect(() => {
+    passphraseRef.current?.focus();
+  }, [passphraseRef.current?.disabled]);
 
-interface ComponentState {
-  selectedIdentity: string
-  passphrase: string
-}
-
-class UnlockStoreImpl extends React.Component<Props, ComponentState> {
-  private translate = translations();
-
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      selectedIdentity: props.identities.length > 0 ? props.identities[0].id : "",
-      passphrase: "",
-    };
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    if (this.props.identities !== prevProps.identities && this.props.identities.length > 0 && this.state.selectedIdentity === "") {
-      this.setState({
-        selectedIdentity: this.props.identities[0].id,
-      })
-    }
-  }
-
-  render(): React.ReactNode {
-    const { selectedStore, stores, identities, unlockInProgress } = this.props;
-    const { selectedIdentity, passphrase } = this.state;
-
-    return (
-      <Grid height={[100, '%']} columnSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]} rowSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}>
-        <GridItem colSpan={3}>
-          <ServiceErrorPanel />
-        </GridItem>
-        <GridItem colStart={2}>
-          <form onSubmit={this.onUnlock}>
-            <Grid columns={1} gap={5}>
-              <HTMLSelect value={selectedStore || ""} large>
-                {stores.map(store => (
-                  <option key={store} value={store}>{store}</option>
-                ))}
-              </HTMLSelect>
-              <HTMLSelect value={selectedIdentity} large>
-                {identities.map(identity => (
-                  <option key={identity.id} value={identity.id}>{identity.name} {`<${identity.email}>`}</option>
-                ))}
-              </HTMLSelect>
-              <InputGroup value={passphrase} type="password" leftIcon="key" large autoFocus onChange={(event: React.FormEvent<HTMLElement>) => this.setState({ passphrase: (event.target as HTMLInputElement).value })} />
-              <Button type="submit" icon="unlock" intent="success" large loading={unlockInProgress} disabled={!this.isValid()}>{this.translate.action.unlock}</Button>
-            </Grid>
-          </form>
-        </GridItem>
-      </Grid>
-    )
-  }
-
-  private isValid() {
-    const { selectedStore } = this.props;
-    const { selectedIdentity, passphrase } = this.state;
-
-    return selectedStore && selectedIdentity.length > 0 && passphrase.length > 0;
-  }
-
-  @bind
-  private onUnlock(event: React.FormEvent<HTMLElement>) {
+  function onUnlock(event: React.FormEvent<HTMLElement>) {
     event.preventDefault();
     event.stopPropagation();
 
-    const { selectedStore } = this.props;
-    const { selectedIdentity, passphrase } = this.state;
-
-    if (selectedStore && selectedIdentity.length > 0 && passphrase.length > 0) {
-      this.setState({ passphrase: "" });
-      this.props.doUnlockStore(selectedStore, selectedIdentity, passphrase)
-    }
+    setOwnState({ passphrase: "" });
+    isValid && send({ type: "TRY_UNLOCK", passphrase: ownState.passphrase });
   }
-}
 
-export const UnlockStore = connect(mapStateToProps, actionBinder)(UnlockStoreImpl);
+
+  return (
+    <Grid
+      height={[100, '%']}
+      columnSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}
+      rowSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}>
+      <GridItem colSpan={3}>
+        {state.matches("locked.error") && <Toaster>
+          <Toast
+            intent="danger"
+            message={state.context.errorMessage}
+            timeout={2000}
+            onDismiss={() => send({ type: "CONFIRM_ERROR" })} />
+        </Toaster>}
+      </GridItem>
+      <GridItem colStart={2}>
+        <form onSubmit={onUnlock}>
+          <Grid columns={1} gap={5}>
+            <HTMLSelect value={state.context.selectedStore} large disabled={!state.matches("locked.select_store")}>
+              {state.context.storeNames.map(store => (
+                <option key={store} value={store}>{store}</option>
+              ))}
+            </HTMLSelect>
+            <HTMLSelect value={state.context.selectedIdentityId} large disabled={!state.matches("locked.select_store")}>
+              {(state.context.identities || []).map(identity => (
+                <option key={identity.id} value={identity.id}>
+                  {identity.name} {`<${identity.email}>`}
+                </option>
+              ))}
+            </HTMLSelect>
+            <InputGroup
+              type="password" leftIcon="key" large autoFocus
+              value={ownState.passphrase}
+              disabled={!state.matches("locked.select_store")}
+              inputRef={passphraseRef}
+              onChange={(event: React.FormEvent<HTMLInputElement>) => setOwnState({ passphrase: event.currentTarget.value })} />
+            <Button
+              type="submit" icon="unlock" intent="success" large
+              loading={state.matches("locked.try_unlock")}
+              disabled={!isValid}>
+              {translate.action.unlock}
+            </Button>
+          </Grid>
+        </form>
+      </GridItem>
+    </Grid>
+  )
+};

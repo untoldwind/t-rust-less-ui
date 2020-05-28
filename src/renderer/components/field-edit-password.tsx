@@ -33,7 +33,7 @@ export class FieldEditPassword extends React.Component<FieldEditPasswordProps, F
           <InputGroup value={value} type={reveal ? "text" : "password"} onChange={(event: React.FormEvent<HTMLElement>) => onChange((event.target as HTMLInputElement).value)} />
         </FlexItem>
         <FlexItem flexGrow={0}>
-        <Flex flexDirection="row">
+          <Flex flexDirection="row">
             <Button active={reveal} onClick={() => { this.setState({ reveal: !reveal }) }} icon={reveal ? "eye-off" : "eye-open"} />
           </Flex>
         </FlexItem>

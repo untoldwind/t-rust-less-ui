@@ -14,6 +14,8 @@
         "dist": "npm run build:app && electron-builder"
     },
     "devDependencies": {
+        "@babel/core": "^7.10.2",
+        "@babel/preset-env": "^7.10.2",
         "@fortawesome/fontawesome-free": "^5.8.2",
         "@types/electron-devtools-installer": "^2.2.0",
         "@types/mousetrap": "^1.6.3",
@@ -48,6 +50,7 @@
         "@blueprintjs/core": "^3.28.1",
         "@blueprintjs/icons": "^3.18.0",
         "@blueprintjs/select": "^3.12.2",
+        "@xstate/react": "^1.0.0-rc.4",
         "decko": "^1.2.0",
         "emotion": "^10.0.27",
         "moment": "^2.24.0",
@@ -55,6 +58,7 @@
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "react-redux": "^7.2.0",
-        "redux": "^4.0.5"
+        "redux": "^4.0.5",
+        "xstate": "^4.10.0"
     }
 }

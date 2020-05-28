@@ -2,9 +2,7 @@ import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import * as url from "url";
 import * as backend from "./backend";
-import { helloWorld } from "../../native/index";
-
-console.log(helloWorld());
+import { registerBackend } from "./backend-neon";
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -60,10 +58,11 @@ app.on("activate", () => {
   if (mainWindow === null) {
     mainWindow = createWindow();
   }
-})
+});
 
 app.on("ready", () => {
   mainWindow = createWindow();
 
   backend.sendCommand("list_stores", result => console.log(result));
-})
+  registerBackend();
+});

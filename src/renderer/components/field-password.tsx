@@ -2,9 +2,9 @@ import * as React from "react";
 import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";
 import { Button, ProgressBar, Tooltip } from "@blueprintjs/core";
-import { PasswordStrength } from "../../common/model";
 import { Grid } from "./ui/grid";
 import { translations } from "../i18n";
+import { PasswordStrength } from "../../../native";
 
 export interface FieldPasswordProps {
   label: string
@@ -44,7 +44,7 @@ export class FieldPassword extends React.Component<FieldPasswordProps, FieldPass
           </Tooltip>
         </FlexItem>
         <FlexItem flexGrow={0}>
-         <Flex flexDirection="row">
+          <Flex flexDirection="row">
             <Button active={reveal} minimal onClick={() => { this.setState({ reveal: !reveal }) }} icon={reveal ? "eye-off" : "eye-open"} />
             <Button icon="clipboard" minimal onClick={onCopy} />
           </Flex>

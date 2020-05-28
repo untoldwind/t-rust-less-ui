@@ -2,8 +2,8 @@
     "compilerOptions": {
       "sourceMap": true,
       "inlineSourceMap": false,
-      "target": "es2017",
-      "module": "es2015",
+      "target": "esnext",
+      "module": "esnext",
       "moduleResolution": "node",
       "jsx": "react",
       "experimentalDecorators": true,

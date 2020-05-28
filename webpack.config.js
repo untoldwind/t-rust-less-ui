@@ -19,6 +19,17 @@ const commonConfig = {
                 test: /\.tsx?$/,
                 use: [{
                     loader: 'awesome-typescript-loader',
+                    options: {
+                        useBabel: true,
+                        useCache: true,
+                        babelOptions: {
+                            babelrc: false,
+                            presets: [
+                                "@babel/preset-env"
+                            ],
+                        },
+                        babelCore: "@babel/core",
+                    },
                 }],
             },
             {

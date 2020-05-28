@@ -1,5 +1,4 @@
 import { StoreConfig, SecretListFilter } from "./model";
-import { ListSecrets } from "../renderer/components/list-secrets";
 
 export interface GetStoreConfig {
   get_store_config: string

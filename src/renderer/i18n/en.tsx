@@ -1,9 +1,14 @@
 import { Translations } from "./translations";
 
+function pad(num: number): string {
+  return ("0" + num).slice(-2);
+}
+
 export const EN: Translations = {
   action: {
     lock: "Lock",
     unlock: "Unlock",
+    autolockIn: (seconds: number) => `Autolock in ${Math.floor(seconds / 60)}:${pad(Math.floor(seconds) % 60)}`,
   },
   secret: {
     name: "Name",
@@ -29,5 +34,7 @@ export const EN: Translations = {
       score: "Score",
     },
     deleted: "Deleted",
+    noSecretTitle: "No secret",
+    noSecretDescription: "Select an existing secret of create a new",
   },
 }

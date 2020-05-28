@@ -1,3 +1,5 @@
+import { SecretType, PasswordStrength } from "../../native";
+
 export interface StoreConfig {
   name: string
   store_url: string
@@ -17,8 +19,6 @@ export interface Status {
   autolock_at?: string
   version: string
 }
-
-export type SecretType = "login" | "note" | "licence" | "wlan" | "password" | "other";
 
 export const SECRET_TYPES: SecretType[] = ["login", "note", "licence", "wlan", "password", "other"];
 
@@ -75,13 +75,6 @@ export interface SecretVersion {
 export interface PasswordEstimate {
   password: string
   inputs: string[]
-}
-
-export interface PasswordStrength {
-  entropy: number
-  crack_time: string
-  crack_time_display: string
-  score: number
 }
 
 export interface Secret {

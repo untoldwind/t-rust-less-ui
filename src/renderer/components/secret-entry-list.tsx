@@ -1,62 +1,37 @@
 import * as React from "react";
-import { State } from "../reducers/state";
-import { BoundActions, actionBinder } from "../actions/bindable";
-import { connect } from "react-redux";
+import { Menu, Spinner, MenuItem } from "@blueprintjs/core";
+import { useService } from "@xstate/react";
+import { mainInterpreter } from "../machines/main";
 import { Grid } from "./ui/grid";
-import { Spinner, Menu, MenuItem } from "@blueprintjs/core";
-import { SecretEntryMatch } from "../../common/model";
-import { bind } from "decko";
+import { SecretEntryMatch } from "../../../native";
 
-const mapStateToProps = (state: State) => ({
-  selectedStore: state.service.selectedStore,
-  listInProgress: state.store.listInProgress,
-  list: state.store.list,
-  currentSecret: state.store.currentSecret,
-});
+export const SecretEntryList: React.FunctionComponent<{}> = props => {
+  const [state, send] = useService(mainInterpreter);
 
-export type Props = ReturnType<typeof mapStateToProps> & BoundActions;
-
-class SecretEntryListImpl extends React.Component<Props, {}> {
-  render(): React.ReactNode {
-    const { listInProgress, list } = this.props;
-
-    if (!list || listInProgress) {
-      return (
-        <Grid columns={1}>
-          <Spinner />
-        </Grid>
-      );
-    }
+  if (!state.matches("unlocked.select_secret") &&
+    !state.matches("unlocked.fetch_secret") &&
+    !state.matches("unlocked.display_secret")) {
     return (
-      <div style={{ overflowY: "auto", borderRight: "1px solid black" }}>
-        <Menu>
-          {list.entries.map(this.renderListEntry)}
-        </Menu>
-      </div>
+      <Grid columns={1}>
+        <Spinner />
+      </Grid>
     )
   }
 
-  @bind
-  private renderListEntry(entryMatch: SecretEntryMatch): React.ReactNode {
-    const { currentSecret } = this.props;
-
+  function renderListEntry(entryMatch: SecretEntryMatch): React.ReactNode {
     return (
       <MenuItem key={entryMatch.entry.id}
         text={entryMatch.entry.name}
-        active={currentSecret !== null && currentSecret.id === entryMatch.entry.id}
-        onClick={this.onEntrySelect(entryMatch.entry.id)} />
+        active={entryMatch.entry.id === state.context.selectedSecretId}
+        onClick={() => send({ type: "SELECT_SECRET", selectedSecretId: entryMatch.entry.id })} />
     )
   }
 
-  @bind
-  private onEntrySelect(secret_id: string) {
-    return () => {
-      const { selectedStore } = this.props;
-
-      if (!selectedStore) return;
-      this.props.doSelectEntry(selectedStore, secret_id)
-    }
-  }
+  return (
+    <div style={{ overflowY: "auto", borderRight: "1px solid black" }}>
+      <Menu>
+        {state.context.secretList.entries.map(renderListEntry)}
+      </Menu>
+    </div>
+  )
 }
-
-export const SecretEntryList = connect(mapStateToProps, actionBinder)(SecretEntryListImpl);
