@@ -1,5 +1,5 @@
 import { NeonCommand, NeonResult } from "../../common/neon-command";
-import { Status, Identity, SecretListFilter, SecretList, Secret } from "../../../native";
+import { Status, Identity, SecretListFilter, SecretList, Secret, SecretVersion } from "../../../native";
 import { IpcRenderer } from "electron";
 
 declare global {
@@ -57,4 +57,20 @@ export function listSecrets(storeName: string, filter: SecretListFilter): Promis
 
 export function getSecret(storeName: string, secretId: string): Promise<Secret> {
   return sendNeonCommand({ type: "get-secret", storeName, secretId });
+}
+
+export function getSecretVersion(storeName: string, blockId: string): Promise<SecretVersion> {
+  return sendNeonCommand({ type: "get-secret-version", storeName, blockId });
+}
+
+export function addSecretVersion(storeName: string, secretVersion: SecretVersion): Promise<string> {
+  return sendNeonCommand({ type: "add-secret-version", storeName, secretVersion })
+}
+
+export function secretToClipboard(storeName: string, secretId: string, properties: string[]): Promise<void> {
+  return sendNeonCommand({ type: "secret-to-clipboard", storeName, secretId, properties });
+}
+
+export function clearClipboard(): Promise<void> {
+  return sendNeonCommand({ type: "clear-clipboard" });
 }

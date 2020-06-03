@@ -2,13 +2,16 @@ import * as React from "react";
 import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { translations } from "../i18n";
-import { NonIdealState } from "@blueprintjs/core";
+import { NonIdealState, Spinner } from "@blueprintjs/core";
 import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";
 import { FieldText } from "./field-text";
 import { PasswordStrength } from "../../../native";
 import { FieldNote } from "./field-note";
 import { FieldPassword } from "./field-password";
+import { SecretVersionSelect } from "./secret-versions-select";
+import { Grid } from "./ui/grid";
+import { GridItem } from "./ui/grid-item";
 
 export const SecretDetailView: React.FunctionComponent<{}> = props => {
   const translate = React.useMemo(translations, [translations]);
@@ -35,7 +38,16 @@ export const SecretDetailView: React.FunctionComponent<{}> = props => {
     }
   }
 
-  if (!state.matches("unlocked.display_secret")) {
+  if (state.matches("unlocked.fetch_secret") ||
+    state.matches("unlocked.fetch_secret_version")) {
+    return (
+      <Grid height={[100, '%']}>
+        <GridItem alignSelf="center" justifySelf="center">
+          <Spinner />
+        </GridItem>
+      </Grid>
+    )
+  } else if (!state.matches("unlocked.display_secret")) {
     return (
       <NonIdealState
         title={translate.secret.noSecretTitle}
@@ -46,17 +58,20 @@ export const SecretDetailView: React.FunctionComponent<{}> = props => {
   return (
     <div style={{ overflowY: "auto" }}>
       <Flex flexDirection="column" gap={5}>
-        <FlexItem flexGrow={0}>
-          <FieldText label={translate.secret.name} value={state.context.currentSecret.current.name} />
+        <FlexItem flexGrow={0} alignSelf="center">
+          <SecretVersionSelect />
         </FlexItem>
         <FlexItem flexGrow={0}>
-          <FieldText label={translate.secret.type} value={state.context.currentSecret.current.type} />
+          <FieldText label={translate.secret.name} value={state.context.currentSecretVersion.name} />
         </FlexItem>
-        {Object.keys(state.context.currentSecret.current.properties).map(name => {
-          const value = state.context.currentSecret.current.properties[name];
+        <FlexItem flexGrow={0}>
+          <FieldText label={translate.secret.type} value={state.context.currentSecretVersion.type} />
+        </FlexItem>
+        {Object.keys(state.context.currentSecretVersion.properties).map((name, idx) => {
+          const value = state.context.currentSecretVersion.properties[name];
           const strength = state.context.currentSecret.password_strengths[name];
           return (
-            <FlexItem flexGrow={0}>
+            <FlexItem key={idx} flexGrow={0}>
               {renderProperty(name, value, strength)}
             </FlexItem>
           )

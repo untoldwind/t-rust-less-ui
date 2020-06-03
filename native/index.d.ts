@@ -86,6 +86,7 @@ export interface Secret {
   id: string
   type: SecretType
   current: SecretVersion
+  current_block_id: string
   versions: SecretVersionRef[]
   password_strengths: { [key: string]: PasswordStrength }
 }
@@ -104,8 +105,15 @@ export declare class Store {
   getVersion(blockId: string): SecretVersion
 }
 
+export declare class ClipboardControl {
+  isDone(): boolean
+  currentlyProviding(): string | undefined
+  destroy(): void
+}
+
 export declare class Service {
   listStores(): string[]
   getDefaultStore(): string | null
   openStore(name: string): Store
+  secretToClipboard(storeName: string, secretId: string, properties: string[], displayName: string): ClipboardControl
 }

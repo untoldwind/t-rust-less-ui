@@ -10,6 +10,7 @@ export const SecretEntryList: React.FunctionComponent<{}> = props => {
 
   if (!state.matches("unlocked.select_secret") &&
     !state.matches("unlocked.fetch_secret") &&
+    !state.matches("unlocked.fetch_secret_version") &&
     !state.matches("unlocked.display_secret")) {
     return (
       <Grid columns={1}>

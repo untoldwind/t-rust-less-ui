@@ -1,12 +1,49 @@
 import * as React from "react";
-import { Flex } from "./ui/flex";
-import { Button } from "@blueprintjs/core";
+import { Button, ButtonGroup, Menu, MenuItem, Popover } from "@blueprintjs/core";
+import { useService } from "@xstate/react";
+import { mainInterpreter } from "../machines/main";
+import { translations } from "../i18n";
 
 export const SecretVersionSelect: React.FunctionComponent<{}> = props => {
+  const translate = React.useMemo(translations, [translations]);
+  const [state, send] = useService(mainInterpreter);
+
+  if (!state.matches("unlocked.display_secret")) return null;
+
+  function renderMenu() {
+    return (
+      <Menu>
+        {state.context.currentSecret?.versions.map(versionRef => (
+          <MenuItem
+            key={versionRef.block_id}
+            active={state.context.currentBlockId === versionRef.block_id}
+            label={translate.formatTimestamp(versionRef.timestamp)}
+            onClick={() => send({ type: "SELECT_SECRET_VERSION", blockId: versionRef.block_id })}
+          />
+        ))}
+      </Menu>
+    )
+  }
+
+  const idx = state.context.currentSecret.versions.findIndex(versionRef => versionRef.block_id === state.context.currentBlockId);
+
   return (
-    <Flex flexDirection="row">
-      <Button icon="chevron-backward" />
-      <Button icon="chevron-forward" />
-    </Flex>
+    <ButtonGroup>
+      <Button
+        icon="chevron-left"
+        disabled={idx >= state.context.currentSecret.versions.length - 1}
+        onClick={() => {
+          idx < state.context.currentSecret.versions.length - 1 && send({ type: "SELECT_SECRET_VERSION", blockId: state.context.currentSecret.versions[idx + 1].block_id })
+        }} />
+      <Popover content={renderMenu()}>
+        <Button text={translate.formatTimestamp(state.context.currentSecret.current.timestamp)} rightIcon="caret-down" />
+      </Popover>
+      <Button
+        icon="chevron-right"
+        disabled={idx <= 0}
+        onClick={() => {
+          idx > 0 && send({ type: "SELECT_SECRET_VERSION", blockId: state.context.currentSecret.versions[idx - 1].block_id })
+        }} />
+    </ButtonGroup>
   )
 }

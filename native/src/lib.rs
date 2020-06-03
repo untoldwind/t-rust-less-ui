@@ -1,5 +1,6 @@
 use neon::prelude::*;
 
+mod clipboard;
 mod errors;
 mod service;
 mod store;

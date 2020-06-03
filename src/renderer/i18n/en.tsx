@@ -1,4 +1,5 @@
 import { Translations } from "./translations";
+import moment from "moment";
 
 function pad(num: number): string {
   return ("0" + num).slice(-2);
@@ -37,4 +38,5 @@ export const EN: Translations = {
     noSecretTitle: "No secret",
     noSecretDescription: "Select an existing secret of create a new",
   },
+  formatTimestamp: (timestamp: string) => moment(timestamp).format("YYYY-MM-DD HH:mm:ss Z"),
 }

@@ -1,13 +1,15 @@
 import { MachineConfig, assign, send } from "xstate"
 import { MainEvents, MainContext } from "./main"
-import { SecretListFilter, SecretList, Secret } from "../../../native"
-import { listSecrets, lock, getSecret } from "./backend-neon"
+import { SecretListFilter, SecretList, Secret, SecretVersion } from "../../../native"
+import { listSecrets, lock, getSecret, getSecretVersion } from "./backend-neon"
 
 export interface UnlockedContext {
   secretFilter: SecretListFilter
   secretList?: SecretList
   selectedSecretId?: string
   currentSecret?: Secret
+  currentBlockId?: string
+  currentSecretVersion?: SecretVersion
   errorMessage?: string
   autolockIn?: number
   autolockTimeout?: number
@@ -17,8 +19,10 @@ export type UnlockedEvent =
   | { type: "SET_SECRET_FILTER", secretFilter: SecretListFilter }
   | { type: "UPDATE_AUTOLOCK_IN", autoLockIn: number, autoLockTimeout: number }
   | { type: "SELECT_SECRET", selectedSecretId: string }
+  | { type: "SELECT_SECRET_VERSION", blockId: string }
   | { type: "SELECT_PREVIOUS" }
   | { type: "SELECT_NEXT" }
+  | { type: "STORE_SECRET_VERSION", secretVersion: SecretVersion }
   | { type: "LOCK" }
 
 export type UnlockedState =
@@ -35,10 +39,20 @@ export type UnlockedState =
     }
   }
   | {
+    value: "unlocked.fetch_secret_version"
+    context: MainContext & {
+      secretList: SecretList
+      currentSecret: Secret
+      currentBlockId: string
+    }
+  }
+  | {
     value: "unlocked.display_secret"
     context: MainContext & {
       secretList: SecretList
       currentSecret: Secret
+      currentBlockId: string
+      currentSecretVersion: SecretVersion
     }
   }
   | {
@@ -64,6 +78,8 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
             secretList: event.data,
             selectedSecretId: undefined,
             currentSecret: undefined,
+            currentBlockId: undefined,
+            currentSecretVersion: undefined,
           })),
         },
         onError: {
@@ -96,7 +112,27 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
           target: "display_secret",
           actions: assign((_, event) => ({
             currentSecret: event.data,
+            currentBlockId: event.data.current_block_id,
+            currentSecretVersion: event.data.current,
           })),
+        },
+        onError: {
+          target: "error",
+          actions: assign({ errorMessage: (_, event) => event.data }),
+        },
+      },
+    },
+    fetch_secret_version: {
+      invoke: {
+        src: (context, event) => {
+          const { selectedStore, selectedSecretId, currentBlockId } = context;
+          if (!selectedStore || !selectedSecretId || !currentBlockId) return Promise.reject("Invalid state");
+
+          return getSecretVersion(selectedStore, currentBlockId);
+        },
+        onDone: {
+          target: "display_secret",
+          actions: assign({ currentSecretVersion: (_, event) => event.data }),
         },
         onError: {
           target: "error",
@@ -106,6 +142,17 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     },
     display_secret: {
       on: {
+        SELECT_SECRET: {
+          target: "fetch_secret",
+          actions: assign({ selectedSecretId: (_, event) => event.selectedSecretId }),
+        },
+        SELECT_SECRET_VERSION: {
+          target: "fetch_secret_version",
+          actions: assign((_, event) => ({
+            currentBlockId: event.blockId,
+            currentSecretVersion: undefined,
+          })),
+        },
         SELECT_NEXT: {
           cond: context => {
             const idx = context.secretList?.entries.findIndex(match => match.entry.id === context.selectedSecretId);
@@ -139,6 +186,17 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
           }),
         },
       },
+    },
+    edit_secret_version: {
+      on: {
+        STORE_SECRET_VERSION: {
+          target: "store_secret_version",
+          actions: assign({ currentSecretVersion: (_, event) => event.secretVersion }),
+        },
+      },
+    },
+    store_secret_version: {
+
     },
     lock_store: {
       invoke: {

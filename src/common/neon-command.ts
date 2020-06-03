@@ -1,4 +1,4 @@
-import { SecretListFilter } from "../../native"
+import { SecretListFilter, SecretVersion } from "../../native"
 
 export type NeonCommand =
   | {
@@ -31,9 +31,28 @@ export type NeonCommand =
     filter: SecretListFilter
   }
   | {
-    type: "get-secret",
+    type: "get-secret"
     storeName: string
     secretId: string
+  }
+  | {
+    type: "get-secret-version"
+    storeName: string
+    blockId: string
+  }
+  | {
+    type: "add-secret-version"
+    storeName: string
+    secretVersion: SecretVersion
+  }
+  | {
+    type: "secret-to-clipboard"
+    storeName: string
+    secretId: string
+    properties: string[]
+  }
+  | {
+    type: "clear-clipboard"
   }
 
 export type NeonResult<T> =

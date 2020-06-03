@@ -24,4 +24,5 @@ export interface SecretTranslations {
 export interface Translations {
   action: ActionTranslations
   secret: SecretTranslations
+  formatTimestamp: (timestamp: string) => string,
 }
