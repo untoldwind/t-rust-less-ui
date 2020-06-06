@@ -4,6 +4,7 @@ use crate::store::JsStore;
 use neon::prelude::*;
 use std::sync::Arc;
 use t_rust_less_lib::service::{create_service, TrustlessService};
+use t_rust_less_lib::api::PasswordGeneratorParam;
 
 pub struct ServiceHandle {
     service: Arc<dyn TrustlessService>,
@@ -70,6 +71,24 @@ declare_types! {
             });
 
             Ok(js_clipboard.upcast())
+        }
+
+        method generateId(mut cx) {
+            let this = cx.this();
+
+            cx.borrow(&this, |handle| {
+                handle.service.generate_id()
+            }).to_js(&mut cx)
+        }
+
+        method generatePassword(mut cx) {
+            let this = cx.this();
+            let arg0 = cx.argument::<JsValue>(0)?;
+            let param : PasswordGeneratorParam = neon_serde::from_value(&mut cx, arg0)?;
+
+            cx.borrow(&this, |handle| {
+                handle.service.generate_password(param)
+            }).to_js(&mut cx)
         }
     }
 }

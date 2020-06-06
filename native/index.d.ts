@@ -91,6 +91,25 @@ export interface Secret {
   password_strengths: { [key: string]: PasswordStrength }
 }
 
+export type PasswordGeneratorParam =
+  | {
+    chars: {
+      num_chars: number,
+      include_uppers: boolean
+      include_numbers: boolean
+      include_symbols: boolean
+      require_upper: boolean
+      require_number: boolean
+      require_symbol: boolean
+      exlcude_similar: boolean
+      exclude_ambiguous: boolean
+    }
+  }
+  | {
+    num_words: number
+    delim: string
+  }
+
 export declare class Store {
   status(): Status
   lock(): void
@@ -116,4 +135,6 @@ export declare class Service {
   getDefaultStore(): string | null
   openStore(name: string): Store
   secretToClipboard(storeName: string, secretId: string, properties: string[], displayName: string): ClipboardControl
+  generateId(): string
+  generatePassword(param: PasswordGeneratorParam): string
 }

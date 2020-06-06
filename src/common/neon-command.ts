@@ -1,4 +1,4 @@
-import { SecretListFilter, SecretVersion } from "../../native"
+import { SecretListFilter, SecretVersion, PasswordGeneratorParam } from "../../native"
 
 export type NeonCommand =
   | {
@@ -53,6 +53,13 @@ export type NeonCommand =
   }
   | {
     type: "clear-clipboard"
+  }
+  | {
+    type: "generate-id"
+  }
+  | {
+    type: "generate-password"
+    param: PasswordGeneratorParam
   }
 
 export type NeonResult<T> =

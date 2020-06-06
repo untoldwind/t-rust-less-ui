@@ -1,5 +1,5 @@
 import { NeonCommand, NeonResult } from "../../common/neon-command";
-import { Status, Identity, SecretListFilter, SecretList, Secret, SecretVersion } from "../../../native";
+import { Status, Identity, SecretListFilter, SecretList, Secret, SecretVersion, PasswordGeneratorParam } from "../../../native";
 import { IpcRenderer } from "electron";
 
 declare global {
@@ -73,4 +73,12 @@ export function secretToClipboard(storeName: string, secretId: string, propertie
 
 export function clearClipboard(): Promise<void> {
   return sendNeonCommand({ type: "clear-clipboard" });
+}
+
+export function generateId(): Promise<string> {
+  return sendNeonCommand({ type: "generate-id" });
+}
+
+export function generatePassword(param: PasswordGeneratorParam): Promise<string> {
+  return sendNeonCommand({ type: "generate-password", param });
 }

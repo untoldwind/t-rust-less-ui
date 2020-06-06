@@ -39,6 +39,8 @@ function processCommand(command: NeonCommand): any {
       currentClipboard?.destroy();
       currentClipboard = undefined;
     }
+    case "generate-id": return service.generateId();
+    case "generate-password": return service.generatePassword(command.param);
   }
 }
 
