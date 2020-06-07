@@ -10,10 +10,12 @@ export interface FieldNoteProps {
 
 export const FieldNote: React.FunctionComponent<FieldNoteProps> = props => {
   return (
-    <Flex flexDirection="row" gap={5}>
+    <>
       <div>{props.label}</div>
-      <div>{props.value}</div>
-      <Button icon="clipboard" minimal onClick={props.onCopy} />
-    </Flex>
+      <Flex flexDirection="row" gap={5}>
+        <div>{props.value}</div>
+        <Button icon="clipboard" minimal onClick={props.onCopy} />
+      </Flex>
+    </>
   )
 }

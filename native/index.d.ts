@@ -144,3 +144,13 @@ export declare class Service {
   generateId(): string
   generatePassword(param: PasswordGeneratorParam): string
 }
+
+export type OTPToken = 
+  | "Invalid"
+  | {
+    "totp": {
+      token: string
+      period: number
+      valid_until: number
+    }
+  }

@@ -35,11 +35,11 @@ declare_types! {
 
         method unlock(mut cx) {
             let this = cx.this();
-            let arg0 = cx.argument::<JsValue>(0)?;
-            let arg1 = cx.argument::<JsValue>(1)?;
-            let identity_id : String = neon_serde::from_value(&mut cx, arg0)?;
-            let mut passphrase_str : String = neon_serde::from_value(&mut cx, arg1)?;
-            let passphrase = unsafe { SecretBytes::from(passphrase_str.as_bytes_mut()) };
+            let identity_id = cx.argument::<JsString>(0)?.value();
+            let passphrase = {
+                let mut str = cx.argument::<JsString>(1)?.value();
+                unsafe { SecretBytes::from(str.as_bytes_mut()) }
+            };
 
             cx.borrow(&this, |handle| {
                 handle.store.as_ref().map(|store| store.unlock(&identity_id, passphrase))
@@ -55,11 +55,14 @@ declare_types! {
 
         method addIdentity(mut cx) {
             let this = cx.this();
-            let arg0 = cx.argument::<JsValue>(0)?;
-            let arg1 = cx.argument::<JsValue>(0)?;
-            let identity : Identity = neon_serde::from_value(&mut cx, arg0)?;
-            let mut passphrase_str : String = neon_serde::from_value(&mut cx, arg1)?;
-            let passphrase = unsafe { SecretBytes::from(passphrase_str.as_bytes_mut()) };
+            let identity : Identity = {
+                let arg = cx.argument::<JsValue>(0)?;
+                neon_serde::from_value(&mut cx, arg)?
+            };
+            let passphrase = {
+                let mut str = cx.argument::<JsString>(1)?.value();
+                unsafe { SecretBytes::from(str.as_bytes_mut()) }
+            };
 
             cx.borrow(&this, |handle| {
                 handle.store.as_ref().map(|store| store.add_identity(identity, passphrase))
@@ -68,9 +71,10 @@ declare_types! {
 
         method changePassphrase(mut cx) {
             let this = cx.this();
-            let arg0 = cx.argument::<JsValue>(0)?;
-            let mut passphrase_str : String = neon_serde::from_value(&mut cx, arg0)?;
-            let passphrase = unsafe { SecretBytes::from(passphrase_str.as_bytes_mut()) };
+            let passphrase = {
+                let mut str = cx.argument::<JsString>(0)?.value();
+                unsafe { SecretBytes::from(str.as_bytes_mut()) }
+            };
 
             cx.borrow(&this, |handle| {
                 handle.store.as_ref().map(|store| store.change_passphrase(passphrase))
@@ -97,8 +101,10 @@ declare_types! {
 
         method add(mut cx) {
             let this = cx.this();
-            let arg0 = cx.argument::<JsValue>(0)?;
-            let secret_version : SecretVersion = neon_serde::from_value(&mut cx, arg0)?;
+            let secret_version : SecretVersion = {
+                let arg = cx.argument::<JsValue>(0)?;
+                neon_serde::from_value(&mut cx, arg)?
+            };
 
             cx.borrow(&this, |handle| {
                 handle.store.as_ref().map(|store| store.add(secret_version))
@@ -107,8 +113,7 @@ declare_types! {
 
         method get(mut cx) {
             let this = cx.this();
-            let arg0 = cx.argument::<JsValue>(0)?;
-            let secret_id : String = neon_serde::from_value(&mut cx, arg0)?;
+            let secret_id = cx.argument::<JsString>(0)?.value();
 
             cx.borrow(&this, |handle| {
                 handle.store.as_ref().map(|store| store.get(&secret_id))
@@ -117,8 +122,7 @@ declare_types! {
 
         method getVersion(mut cx) {
             let this = cx.this();
-            let arg0 = cx.argument::<JsValue>(0)?;
-            let block_id : String = neon_serde::from_value(&mut cx, arg0)?;
+            let block_id = cx.argument::<JsString>(0)?.value();
 
             cx.borrow(&this, |handle| {
                 handle.store.as_ref().map(|store| store.get_version(&block_id))

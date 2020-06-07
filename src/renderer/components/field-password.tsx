@@ -33,23 +33,25 @@ export class FieldPassword extends React.Component<FieldPasswordProps, FieldPass
     const { reveal } = this.state;
 
     return (
-      <Flex flexDirection="row" gap={5}>
-        <FlexItem flexGrow={0} flexBasis={[10, '%']}>{label}</FlexItem>
-        <FlexItem flexGrow={1}>
-          <Tooltip targetTagName="div" content={this.renderStrengthDetail(strength)}>
-            <Grid columns={1}>
-              <div>{reveal ? value : "*".repeat(value.length)}</div>
-              {strength && <ProgressBar stripes={false} animate={false} value={strength.entropy / 55.0} />}
-            </Grid>
-          </Tooltip>
-        </FlexItem>
-        <FlexItem flexGrow={0}>
-          <Flex flexDirection="row">
-            <Button active={reveal} minimal onClick={() => { this.setState({ reveal: !reveal }) }} icon={reveal ? "eye-off" : "eye-open"} />
-            <Button icon="clipboard" minimal onClick={onCopy} />
-          </Flex>
-        </FlexItem>
-      </Flex>
+      <>
+        <div>{label}</div>
+        <Flex flexDirection="row" gap={5}>
+          <FlexItem flexGrow={1}>
+            <Tooltip targetTagName="div" content={this.renderStrengthDetail(strength)}>
+              <Grid columns={1}>
+                <div>{reveal ? value : "*".repeat(value.length)}</div>
+                {strength && <ProgressBar stripes={false} animate={false} value={strength.entropy / 55.0} />}
+              </Grid>
+            </Tooltip>
+          </FlexItem>
+          <FlexItem flexGrow={0}>
+            <Flex flexDirection="row">
+              <Button active={reveal} minimal onClick={() => { this.setState({ reveal: !reveal }) }} icon={reveal ? "eye-off" : "eye-open"} />
+              <Button icon="clipboard" minimal onClick={onCopy} />
+            </Flex>
+          </FlexItem>
+        </Flex>
+      </>
     )
   }
 

@@ -3,8 +3,6 @@ import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { translations } from "../i18n";
 import { NonIdealState, Spinner } from "@blueprintjs/core";
-import { Flex } from "./ui/flex";
-import { FlexItem } from "./ui/flex-item";
 import { FieldText } from "./field-text";
 import { PasswordStrength } from "../../../native";
 import { FieldNote } from "./field-note";
@@ -57,26 +55,16 @@ export const SecretDetailView: React.FunctionComponent<{}> = props => {
 
   return (
     <div style={{ overflowY: "auto" }}>
-      <Flex flexDirection="column" gap={5}>
-        <FlexItem flexGrow={0} alignSelf="center">
+      <Grid columnSpec="min-content 1fr" gap={5}>
+        <GridItem colSpan={2} justifySelf="center">
           <SecretVersionSelect />
-        </FlexItem>
-        <FlexItem flexGrow={0}>
-          <FieldText label={translate.secret.name} value={state.context.currentSecretVersion.name} />
-        </FlexItem>
-        <FlexItem flexGrow={0}>
-          <FieldText label={translate.secret.type} value={state.context.currentSecretVersion.type} />
-        </FlexItem>
-        {Object.keys(state.context.currentSecretVersion.properties).map((name, idx) => {
-          const value = state.context.currentSecretVersion.properties[name];
-          const strength = state.context.currentSecret.password_strengths[name];
-          return (
-            <FlexItem key={idx} flexGrow={0}>
-              {renderProperty(name, value, strength)}
-            </FlexItem>
-          )
-        })}
-      </Flex>
+        </GridItem>
+        <FieldText label={translate.secret.name} value={state.context.currentSecretVersion.name} />
+        <FieldText label={translate.secret.type} value={state.context.currentSecretVersion.type} />
+        {Object.keys(state.context.currentSecretVersion.properties).map(name =>
+          renderProperty(name, state.context.currentSecretVersion.properties[name], state.context.currentSecret.password_strengths[name])
+        )}
+      </Grid>
     </div>
   )
 }

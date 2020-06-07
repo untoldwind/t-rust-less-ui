@@ -36,8 +36,7 @@ declare_types! {
 
         method openStore(mut cx) {
             let this = cx.this();
-            let arg0 = cx.argument::<JsValue>(0)?;
-            let store_name : String = neon_serde::from_value(&mut cx, arg0)?;
+            let store_name = cx.argument::<JsString>(0)?.value();
             let store = cx.borrow(&this, |handle| {
                 handle.service.open_store(&store_name)
             }).or_throw(&mut cx)?;
@@ -52,15 +51,14 @@ declare_types! {
 
         method secretToClipboard(mut cx) {
             let this = cx.this();
-            let arg0 = cx.argument::<JsValue>(0)?;
-            let arg1 = cx.argument::<JsValue>(1)?;
-            let arg2 = cx.argument::<JsValue>(2)?;
-            let arg3 = cx.argument::<JsValue>(3)?;
-            let store_name : String = neon_serde::from_value(&mut cx, arg0)?;
-            let secret_id : String = neon_serde::from_value(&mut cx, arg1)?;
-            let properties: Vec<String> = neon_serde::from_value(&mut cx, arg2)?;
-            let display_name : String = neon_serde::from_value(&mut cx, arg3)?;
+            let store_name = cx.argument::<JsString>(0)?.value();
+            let secret_id = cx.argument::<JsString>(1)?.value();
+            let properties: Vec<String> = {
+                let arg = cx.argument::<JsValue>(2)?;
+                neon_serde::from_value(&mut cx, arg)?
+            };
             let properties_str : Vec<&str> = properties.iter().map(String::as_ref).collect();
+            let display_name = cx.argument::<JsString>(3)?.value();
             let clipboard = cx.borrow(&this, |handle| {
                 handle.service.secret_to_clipboard(&store_name, &secret_id, &properties_str, &display_name)
             }).or_throw(&mut cx)?;
