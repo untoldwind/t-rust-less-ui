@@ -4,13 +4,19 @@ export interface Identity {
   email: string
 }
 
-export interface Status {
-  locked: boolean
-  unlocked_by: Identity | null
-  autolock_at: string | null
-  autolock_timeout: number
-  version: string
-}
+export type Status =
+  | {
+    locked: true
+    autolock_timeout: number
+    version: string
+  }
+  | {
+    locked: false
+    unlocked_by: Identity
+    autolock_at: string
+    autolock_timeout: number
+    version: string
+  }
 
 export type SecretType =
   | "login"

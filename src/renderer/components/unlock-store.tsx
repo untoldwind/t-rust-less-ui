@@ -12,7 +12,7 @@ export const UnlockStore: React.FunctionComponent<{}> = props => {
     passphrase: "",
   });
   const [state, send] = useService(mainInterpreter);
-  const isValid = ownState.passphrase.length > 0 && typeof state.context.selectedIdentityId === "string";
+  const isValid = ownState.passphrase.length > 0 && typeof state.context.selectedIdentity === "object";
   const passphraseRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
@@ -45,12 +45,16 @@ export const UnlockStore: React.FunctionComponent<{}> = props => {
       <GridItem colStart={2}>
         <form onSubmit={onUnlock}>
           <Grid columns={1} gap={5}>
-            <HTMLSelect value={state.context.selectedStore} large disabled={!state.matches("locked.select_store")}>
+            <HTMLSelect value={state.context.selectedStore} large
+              disabled={!state.matches("locked.select_store")}
+              onChange={event => send({ type: "SELECT_STORE", storeName: event.currentTarget.value })}>
               {state.context.storeNames.map(store => (
                 <option key={store} value={store}>{store}</option>
               ))}
             </HTMLSelect>
-            <HTMLSelect value={state.context.selectedIdentityId} large disabled={!state.matches("locked.select_store")}>
+            <HTMLSelect value={state.context.selectedIdentity?.id} large
+              disabled={!state.matches("locked.select_store")}
+              onChange={event => send({ type: "SELECT_IDENTITY", identityId: event.currentTarget.value })}>
               {(state.context.identities || []).map(identity => (
                 <option key={identity.id} value={identity.id}>
                   {identity.name} {`<${identity.email}>`}

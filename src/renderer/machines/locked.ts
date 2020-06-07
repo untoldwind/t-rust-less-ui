@@ -7,14 +7,14 @@ import { StatusMonitor } from "./status-monitor";
 export interface LockedContext {
   storeNames: string[]
   selectedStore?: string
-  selectedIdentityId?: string
+  selectedIdentity?: Identity
   errorMessage?: string
   identities: Identity[];
 }
 
 export type LockedEvent =
   | { type: "SELECT_STORE", storeName: string }
-  | { type: "SELECT_IDENTITY", selectedIdentityId: string }
+  | { type: "SELECT_IDENTITY", identityId: string }
   | { type: "TRY_UNLOCK", passphrase: string }
 
 export type LockedState =
@@ -77,7 +77,7 @@ export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
           target: "select_store",
           actions: assign((_, event) => ({
             identities: event.data,
-            selectedIdentityId: event.data.length > 0 ? event.data[0].id : undefined,
+            selectedIdentity: event.data.length > 0 ? event.data[0] : undefined,
           })),
         },
         onError: {
@@ -96,26 +96,33 @@ export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
       },
       on: {
         TRY_UNLOCK: {
-          cond: context => typeof context.selectedIdentityId === "string",
+          cond: context => typeof context.selectedIdentity === "object",
           target: "try_unlock",
         },
         SELECT_STORE: {
           target: "fetch_identities",
           actions: assign({ selectedStore: (_, event) => event.storeName }),
         },
+        SELECT_IDENTITY: {
+          actions: assign({ selectedIdentity: (context, event) => context.identities.find(identity => identity.id === event.identityId) }),
+        },
       },
     },
     try_unlock: {
       invoke: {
         src: (context, event) => {
-          const { selectedStore, selectedIdentityId } = context;
-          if (!selectedStore || !selectedIdentityId) return Promise.reject("Invalid state");
+          const { selectedStore, selectedIdentity } = context;
+          if (!selectedStore || !selectedIdentity) return Promise.reject("Invalid state");
           if (event.type !== "TRY_UNLOCK") return Promise.reject("Invalid event");
 
-          return unlock(selectedStore, selectedIdentityId, event.passphrase);
+          return unlock(selectedStore, selectedIdentity.id, event.passphrase);
         },
         onDone: {
-          actions: send(context => ({ type: "STORE_UNLOCKED", storeName: context.selectedStore })),
+          actions: send(context => ({
+            type: "STORE_UNLOCKED",
+            storeName: context.selectedStore,
+            identity: context.selectedIdentity,
+          })),
         },
         onError: {
           target: "error",

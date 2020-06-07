@@ -2,13 +2,14 @@ import { createMachine, interpret, assign } from "xstate";
 import { LockedContext, LockedEvent, lockedState, LockedState } from "./locked";
 import { UnlockedEvent, UnlockedContext, unlockedState, UnlockedState } from "./unlocked";
 import { StatusMonitor } from "./status-monitor";
+import { Identity } from "../../../native";
 
 export type MainContext = LockedContext & UnlockedContext & {
 }
 
 export type MainEvents = LockedEvent | UnlockedEvent
   | { type: "STORE_LOCKED", storeName: string }
-  | { type: "STORE_UNLOCKED", storeName: string }
+  | { type: "STORE_UNLOCKED", storeName: string, identity: Identity }
   | { type: "CONFIRM_ERROR" }
 
 type MainState =
@@ -19,6 +20,7 @@ type MainState =
   | {
     value: "unlocked"
     context: MainContext & {
+      unlockedIdentity: Identity
       autolockIn: number
       autolockTimeout: number
     }
@@ -55,6 +57,7 @@ const mainMachine = createMachine<MainContext, MainEvents, MainState>({
       actions: assign((_, event) => ({
         secretFilter: { type: "login" },
         selectedStore: event.storeName,
+        unlockedIdentity: event.identity,
         autolockIn: 300,
         autolockTimeout: 300,
       })),

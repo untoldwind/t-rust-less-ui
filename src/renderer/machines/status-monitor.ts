@@ -6,7 +6,7 @@ import { Status } from "../../../native";
 import moment from "moment";
 
 export function calculateAutolockIn(status: Status): number {
-  if (typeof status.autolock_at !== "string") return 0;
+  if (status.locked) return 0;
 
   const autoLockIn = moment(status.autolock_at).diff(moment()) / 1000.0;
 
@@ -41,7 +41,7 @@ export class StatusMonitor {
           this.sender({ type: "STORE_LOCKED", storeName: this.storeName });
           this.state = "LOCKED";
         } else if (!status.locked && this.state === "LOCKED") {
-          this.sender({ type: "STORE_UNLOCKED", storeName: this.storeName });
+          this.sender({ type: "STORE_UNLOCKED", storeName: this.storeName, identity: status.unlocked_by });
           this.state = "UNLOCKED";
         }
         if (!status.locked && this.state === "UNLOCKED") {

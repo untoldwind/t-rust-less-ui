@@ -1,7 +1,8 @@
 import { MachineConfig, assign, send } from "xstate"
 import { MainEvents, MainContext } from "./main"
-import { SecretListFilter, SecretList, Secret, SecretVersion } from "../../../native"
-import { listSecrets, lock, getSecret, getSecretVersion } from "./backend-neon"
+import { SecretListFilter, SecretList, Secret, SecretVersion, SecretType, Identity } from "../../../native"
+import { listSecrets, lock, getSecret, getSecretVersion, generateId, addSecretVersion } from "./backend-neon"
+import moment from "moment"
 
 export interface UnlockedContext {
   secretFilter: SecretListFilter
@@ -11,6 +12,7 @@ export interface UnlockedContext {
   currentBlockId?: string
   currentSecretVersion?: SecretVersion
   errorMessage?: string
+  selectedIdentity?: Identity
   autolockIn?: number
   autolockTimeout?: number
 }
@@ -22,6 +24,8 @@ export type UnlockedEvent =
   | { type: "SELECT_SECRET_VERSION", blockId: string }
   | { type: "SELECT_PREVIOUS" }
   | { type: "SELECT_NEXT" }
+  | { type: "CREATE_SECRET", secret_type: SecretType }
+  | { type: "NEW_SECRET_VERSION" }
   | { type: "STORE_SECRET_VERSION", secretVersion: SecretVersion }
   | { type: "LOCK" }
 
@@ -30,12 +34,14 @@ export type UnlockedState =
     value: "unlocked.select_secret"
     context: MainContext & {
       secretList: SecretList
+      selectedIdentity: Identity
     }
   }
   | {
     value: "unlocked.fetch_secret"
     context: MainContext & {
       secretList: SecretList
+      selectedIdentity: Identity
     }
   }
   | {
@@ -44,6 +50,13 @@ export type UnlockedState =
       secretList: SecretList
       currentSecret: Secret
       currentBlockId: string
+      selectedIdentity: Identity
+    }
+  }
+  | {
+    value: "unlocked.edit_secret_version"
+    context: MainContext & {
+      currentSecretVersion: SecretVersion
     }
   }
   | {
@@ -53,14 +66,36 @@ export type UnlockedState =
       currentSecret: Secret
       currentBlockId: string
       currentSecretVersion: SecretVersion
+      selectedIdentity: Identity
     }
   }
   | {
     value: "unlocked.error"
     context: MainContext & {
       errorMessage: string
+      selectedIdentity: Identity
     }
   }
+
+async function createNewSecret(context: MainContext, event: MainEvents): Promise<SecretVersion> {
+  const { selectedIdentity } = context;
+
+  if (!selectedIdentity) return Promise.reject("Invalid state");
+  if (event.type !== "CREATE_SECRET") return Promise.reject("Invalid event");
+
+  return generateId().then(secret_id => ({
+    secret_id,
+    type: event.secret_type,
+    name: "",
+    timestamp: moment().format(),
+    tags: [],
+    urls: [],
+    properties: {},
+    deleted: false,
+    attachments: [],
+    recipients: [selectedIdentity.id],
+  }))
+}
 
 export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
   initial: "fetch_secret_list",
@@ -162,7 +197,7 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
           target: "fetch_secret",
           actions: assign({
             selectedSecretId: context => {
-              if (typeof context.secretList !== "object") return context.selectedIdentityId;
+              if (typeof context.secretList !== "object") return context.selectedSecretId;
               const idx = context.secretList.entries.findIndex(match => match.entry.id === context.selectedSecretId);
 
               return context.secretList.entries[idx + 1].entry.id;
@@ -178,12 +213,38 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
           target: "fetch_secret",
           actions: assign({
             selectedSecretId: context => {
-              if (typeof context.secretList !== "object") return context.selectedIdentityId;
+              if (typeof context.secretList !== "object") return context.selectedSecretId;
               const idx = context.secretList.entries.findIndex(match => match.entry.id === context.selectedSecretId);
 
               return context.secretList.entries[idx - 1].entry.id;
             },
           }),
+        },
+        CREATE_SECRET: "create_new_secret",
+        NEW_SECRET_VERSION: {
+          target: "edit_secret_version",
+          actions: assign(context => ({
+            currentSecretVersion: {
+              ...(context.currentSecretVersion as SecretVersion),
+              timestamp: moment().format(),
+            },
+          })),
+        },
+      },
+    },
+    create_new_secret: {
+      invoke: {
+        src: createNewSecret,
+        onDone: {
+          target: "edit_secret_version",
+          actions: assign((_, event) => ({
+            currentSecretVersion: event.data,
+            selectedSecretId: event.data.secret_id,
+          })),
+        },
+        onError: {
+          target: "error",
+          actions: assign({ errorMessage: (_, event) => event.data }),
         },
       },
     },
@@ -196,7 +257,21 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
       },
     },
     store_secret_version: {
-
+      invoke: {
+        src: context => {
+          const { selectedStore, currentSecretVersion } = context;
+          if (!selectedStore || !currentSecretVersion) return Promise.resolve("invalid state");
+          return addSecretVersion(selectedStore, currentSecretVersion)
+        },
+        onDone: {
+          target: "fetch_secret",
+          actions: assign({ selectedSecretId: context => context.currentSecretVersion?.secret_id }),
+        },
+        onError: {
+          target: "error",
+          actions: assign({ errorMessage: (_, event) => event.data }),
+        },
+      },
     },
     lock_store: {
       invoke: {
