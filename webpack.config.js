@@ -29,6 +29,9 @@ const commonConfig = {
                             ],
                         },
                         babelCore: "@babel/core",
+                        reportFiles: [
+                            'src/**/*.{ts,tsx}'
+                        ],
                     },
                 }],
             },
@@ -54,7 +57,7 @@ const commonConfig = {
                     loader: "css-loader"
                 }, {
                     loader: "sass-loader",
-                    options: { 
+                    options: {
                         implementation: require("sass")
                     }
                 }]
@@ -62,7 +65,7 @@ const commonConfig = {
             {
                 test: /\.node$/,
                 use: [{
-                    loader:"native-ext-loader",
+                    loader: "native-ext-loader",
                     options: {
                     }
                 }],
@@ -82,42 +85,46 @@ const commonConfig = {
 
 module.exports = [
     Object.assign(
-      {
-        target: "electron-main",
-        entry: { main: "./src/main/index.ts" },
-        plugins: [new WriteFilePlugin(), new CopyWebpackPlugin([
-            { from: "./src/main/app-package.json", to: path.join(__dirname, "app", "package.json") }
-        ])],
-        node: {
-            __dirname: false,
-            __filename: false
-        }
-      },
-      commonConfig),
-    Object.assign(
-      {
-        entry: { 
-            renderer: [
-                "./src/renderer/index.tsx",
-                "./src/renderer/app.scss",
-            ],
-            "blueprint-core": [
-                "@blueprintjs/core/lib/css/blueprint.css",
-            ],
-            "blueprint-icons": [
-                "@blueprintjs/icons/lib/css/blueprint-icons.css",
-            ],
-            "blueprint-select": [
-                "@blueprintjs/select/lib/css/blueprint-select.css",
-            ],
+        {
+            target: "electron-main",
+            entry: { main: "./src/main/index.ts" },
+            plugins: [new WriteFilePlugin(), new CopyWebpackPlugin({
+                patterns: [
+                    { from: "./src/main/app-package.json", to: path.join(__dirname, "app", "package.json") }
+                ]
+            })],
+            node: {
+                __dirname: false,
+                __filename: false
+            }
         },
-        plugins: [new WriteFilePlugin(), new CopyWebpackPlugin([
-            { from: "./src/renderer/index.html", to: path.join(__dirname, "app", "index.html") },
-            { from: "./src/renderer/preload.js", to: path.join(__dirname, "app", "preload.js") }
-        ]), new MiniCssExtractPlugin({
-            filename: "[name].css",
-            chunkFilename: "[id].css",
-        })]
-      },
-      commonConfig)
-  ];
+        commonConfig),
+    Object.assign(
+        {
+            entry: {
+                renderer: [
+                    "./src/renderer/index.tsx",
+                    "./src/renderer/app.scss",
+                ],
+                "blueprint-core": [
+                    "@blueprintjs/core/lib/css/blueprint.css",
+                ],
+                "blueprint-icons": [
+                    "@blueprintjs/icons/lib/css/blueprint-icons.css",
+                ],
+                "blueprint-select": [
+                    "@blueprintjs/select/lib/css/blueprint-select.css",
+                ],
+            },
+            plugins: [new WriteFilePlugin(), new CopyWebpackPlugin({
+                patterns: [
+                    { from: "./src/renderer/index.html", to: path.join(__dirname, "app", "index.html") },
+                    { from: "./src/renderer/preload.js", to: path.join(__dirname, "app", "preload.js") }
+                ]
+            }), new MiniCssExtractPlugin({
+                filename: "[name].css",
+                chunkFilename: "[id].css",
+            })]
+        },
+        commonConfig)
+];
