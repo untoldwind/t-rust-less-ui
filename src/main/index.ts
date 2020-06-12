@@ -1,7 +1,6 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import * as url from "url";
-import * as backend from "./backend";
 import { registerBackend } from "./backend-neon";
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -34,6 +33,7 @@ function createWindow(): BrowserWindow {
     window.webContents.openDevTools();
     window.loadURL("http://localhost:8080");
   } else {
+    window.removeMenu();
     window.loadURL(url.format({
       pathname: path.join(__dirname, 'index.html'),
       protocol: 'file',
@@ -63,6 +63,5 @@ app.on("activate", () => {
 app.on("ready", () => {
   mainWindow = createWindow();
 
-  backend.sendCommand("list_stores", result => console.log(result));
   registerBackend();
 });

@@ -1,7 +1,7 @@
 import * as childProcess from "child_process";
 import * as os from "os";
-import { Command } from "../common/commands";
-import { CommandResult } from "../common/command_results";
+import { Command } from "./commands";
+import { CommandResult } from "./command_results";
 import { ipcMain, IpcMainEvent } from "electron";
 import { BackendResponse, isCommandResponse, isEventResponse } from "./backend_response";
 

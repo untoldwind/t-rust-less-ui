@@ -1,4 +1,4 @@
-import { SecretType, PasswordStrength } from "../../native";
+import { SecretType, PasswordStrength } from "../native";
 
 export interface StoreConfig {
   name: string

@@ -1,11 +1,11 @@
 import * as React from "react";
-import { SECRET_TYPES } from "../../common/model";
 import { FlexItem } from "./ui/flex-item";
 import { Menu, MenuItem } from "@blueprintjs/core";
 import { translations } from "../i18n";
 import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { SecretType } from "../../../native";
+import { SECRET_TYPES } from "../helpers/types";
 
 export const ListSecretsSidebar: React.FunctionComponent<{}> = props => {
   const translate = React.useMemo(translations, [translations])

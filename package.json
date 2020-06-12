@@ -11,7 +11,7 @@
         "electron": "electron app",
         "format": "tsfmt -r && scssfmt --recursive sass/**/*.scss && tslint -c tslint.json --project .",
         "clean": "rimraf dist app",
-        "dist": "npm run build:app && electron-builder"
+        "dist": "npm run build:neon && npm run build:app && electron-builder"
     },
     "devDependencies": {
         "@babel/core": "^7.10.2",
@@ -21,7 +21,6 @@
         "@types/mousetrap": "^1.6.3",
         "@types/react": "^16.9.35",
         "@types/react-dom": "^16.9.8",
-        "@types/react-redux": "^7.1.7",
         "awesome-typescript-loader": "^5.2.1",
         "copy-webpack-plugin": "^5.0.3",
         "css-loader": "^2.1.1",

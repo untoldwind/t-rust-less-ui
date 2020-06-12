@@ -1,5 +1,5 @@
-import { CommandResult } from "../common/command_results";
-import { ServiceEvent } from "../common/service_event";
+import { CommandResult } from "./command_results";
+import { ServiceEvent } from "./service_event";
 
 export interface CommandResponse {
   command: {
