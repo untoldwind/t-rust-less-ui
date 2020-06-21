@@ -1279,6 +1279,7 @@ dependencies = [
 name = "t-rust-less-binding"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "neon",
  "neon-build",
  "neon-serde",

@@ -61,6 +61,10 @@ export type NeonCommand =
     type: "generate-password"
     param: PasswordGeneratorParam
   }
+  | {
+    type: "calculate-otp-token"
+    otpUrl: string
+  }
 
 export type NeonResult<T> =
   | {

@@ -17,3 +17,4 @@ neon-serde = "0.4.0"
 serde = "1"
 serde_derive = "1"
 t-rust-less-lib = { version = "0.1.0", path = "../../t-rust-less/lib" }
+chrono = { version = "0", features = ["serde"] }

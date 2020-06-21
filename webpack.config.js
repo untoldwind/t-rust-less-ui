@@ -27,6 +27,9 @@ const commonConfig = {
                             presets: [
                                 "@babel/preset-env"
                             ],
+                            "plugins": [
+                                "@babel/plugin-transform-runtime",
+                            ],
                         },
                         babelCore: "@babel/core",
                         reportFiles: [

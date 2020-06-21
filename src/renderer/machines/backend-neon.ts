@@ -1,5 +1,5 @@
 import { NeonCommand, NeonResult } from "../../common/neon-command";
-import { Status, Identity, SecretListFilter, SecretList, Secret, SecretVersion, PasswordGeneratorParam } from "../../../native";
+import { Status, Identity, SecretListFilter, SecretList, Secret, SecretVersion, PasswordGeneratorParam, OTPToken } from "../../../native";
 import { IpcRenderer } from "electron";
 
 declare global {
@@ -81,4 +81,8 @@ export function generateId(): Promise<string> {
 
 export function generatePassword(param: PasswordGeneratorParam): Promise<string> {
   return sendNeonCommand({ type: "generate-password", param });
+}
+
+export function calculateOtpToken(otpUrl: string): Promise<OTPToken> {
+  return sendNeonCommand({ type: "calculate-otp-token", otpUrl })
 }

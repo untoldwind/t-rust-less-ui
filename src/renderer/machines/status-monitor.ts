@@ -47,11 +47,11 @@ export class StatusMonitor {
         if (!status.locked && this.state === "UNLOCKED") {
           this.sender({ type: "UPDATE_AUTOLOCK_IN", autoLockIn: calculateAutolockIn(status), autoLockTimeout: status.autolock_timeout });
         }
-        this.timeoutHandle = window.setTimeout(this.loop, 500);
+        this.timeoutHandle = window.setTimeout(this.loop, 1000);
       },
       error => {
         console.log("Error: ", error);
-        this.timeoutHandle = window.setTimeout(this.loop, 500);
+        this.timeoutHandle = window.setTimeout(this.loop, 1000);
       }
     );
   }

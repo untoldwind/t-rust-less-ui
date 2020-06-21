@@ -151,6 +151,9 @@ export type OTPToken =
     "totp": {
       token: string
       period: number
-      valid_until: number
+      valid_until: string
+      valid_for: number
     }
   }
+
+  export declare function calculateOtpToken(otpUrl: string) : OTPToken;

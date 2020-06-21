@@ -3,8 +3,9 @@ import { MainEvents, MainContext } from "./main"
 import { SecretListFilter, SecretList, Secret, SecretVersion, SecretType, Identity } from "../../../native"
 import { listSecrets, lock, getSecret, getSecretVersion, generateId, addSecretVersion } from "./backend-neon"
 import moment from "moment"
+import { DisplaySecretContext, displaySecretState } from "./display-secret"
 
-export interface UnlockedContext {
+export type UnlockedContext = DisplaySecretContext & {
   secretFilter: SecretListFilter
   secretList?: SecretList
   selectedSecretId?: string
@@ -176,6 +177,7 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
       },
     },
     display_secret: {
+      ...displaySecretState,
       on: {
         SELECT_SECRET: {
           target: "fetch_secret",

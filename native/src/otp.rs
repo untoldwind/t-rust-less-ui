@@ -1,35 +1,43 @@
-use serde_derive::{Serialize, Deserialize};
+use chrono::{DateTime, TimeZone, Utc};
 use neon::prelude::*;
+use serde_derive::{Deserialize, Serialize};
+use std::time::{SystemTime, UNIX_EPOCH};
 use t_rust_less_lib::otp::{OTPAuthUrl, OTPType};
-use std::time::{UNIX_EPOCH, SystemTime};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum OTPToken {
     TOPT {
         token: String,
-        valid_until: u64,
+        valid_until: DateTime<Utc>,
+        valid_for: i64,
         period: u32,
     },
     Invalid,
 }
 
 fn calculate_otp_token(otp_url: &str) -> OTPToken {
-        match OTPAuthUrl::parse(&otp_url) {
+    match OTPAuthUrl::parse(&otp_url) {
         Ok(otpauth) => {
-            let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
-            let (token, valid_until) = otpauth.generate(now);
+            let now = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_secs();
+            let (token, valid_until_secs) = otpauth.generate(now);
+            let valid_until = Utc.timestamp(valid_until_secs as i64, 0);
+            let valid_for = (valid_until - Utc::now()).num_seconds();
             match otpauth.otp_type {
-            OTPType::TOTP { period } => OTPToken::TOPT {
-                token,
-                valid_until,
-                period,
-            },
-            _ => OTPToken::Invalid,
-          }
+                OTPType::TOTP { period } => OTPToken::TOPT {
+                    token,
+                    valid_until,
+                    valid_for,
+                    period,
+                },
+                _ => OTPToken::Invalid,
+            }
         }
         _ => OTPToken::Invalid,
-      }
+    }
 }
 
 pub fn js_calculate_otp_token(mut cx: FunctionContext) -> JsResult<JsValue> {

@@ -3,8 +3,8 @@ use crate::errors::{OrThrow, ToJsResult};
 use crate::store::JsStore;
 use neon::prelude::*;
 use std::sync::Arc;
-use t_rust_less_lib::service::{create_service, TrustlessService};
 use t_rust_less_lib::api::PasswordGeneratorParam;
+use t_rust_less_lib::service::{create_service, TrustlessService};
 
 pub struct ServiceHandle {
     service: Arc<dyn TrustlessService>,
