@@ -10,6 +10,7 @@ import { FieldPassword } from "./field-password";
 import { SecretVersionSelect } from "./secret-versions-select";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
+import { FieldTOTP } from "./field-totp";
 
 export const SecretDetailView: React.FunctionComponent<{}> = props => {
   const translate = React.useMemo(translations, [translations]);
@@ -28,6 +29,10 @@ export const SecretDetailView: React.FunctionComponent<{}> = props => {
       case "password":
         return (
           <FieldPassword key={name} label={translate.secret.property(name)} value={value} strength={strength} onCopy={onCopyProperty(name)} />
+        );
+      case "totpUrl":
+        return (
+          <FieldTOTP key={name} label={translate.secret.property(name)} otpUrl={value} otpToken={state.context.otpTokens && state.context.otpTokens[name]} onCopy={onCopyProperty(name)} />
         );
       default:
         return (

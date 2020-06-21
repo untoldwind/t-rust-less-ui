@@ -18,6 +18,8 @@ export const EN: Translations = {
       switch (name) {
         case "username": return "Username";
         case "password": return "Password";
+        case "notes": return "Notes";
+        case "totpUrl": return "TOTP";
         default: return name;
       }
     },
