@@ -46,10 +46,8 @@ export type NeonCommand =
     secretVersion: SecretVersion
   }
   | {
-    type: "secret-to-clipboard"
-    storeName: string
-    secretId: string
-    properties: string[]
+    type: "text-to-clipboard"
+    content: string
   }
   | {
     type: "clear-clipboard"

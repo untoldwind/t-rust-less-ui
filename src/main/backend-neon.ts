@@ -1,11 +1,9 @@
-import { ipcMain, IpcMainEvent } from "electron";
+import { ipcMain, IpcMainEvent, clipboard } from "electron";
 import { NeonCommand } from "../common/neon-command";
-import { Service, Store, ClipboardControl, calculateOtpToken } from "../../native";
-import process from "process";
+import { Service, Store, calculateOtpToken } from "../../native";
 
 const service = new Service();
 const stores = new Map<string, Store>();
-let currentClipboard: ClipboardControl | undefined = undefined;
 
 function getStore(name: string): Store {
   let store = stores.get(name);
@@ -30,14 +28,13 @@ function processCommand(command: NeonCommand): any {
     case "get-secret": return getStore(command.storeName).get(command.secretId);
     case "get-secret-version": return getStore(command.storeName).getVersion(command.blockId);
     case "add-secret-version": return getStore(command.storeName).add(command.secretVersion);
-    case "secret-to-clipboard": {
-      currentClipboard?.destroy();
-      currentClipboard = service.secretToClipboard(command.storeName, command.secretId, command.properties, process.env.DISPLAY || ":0");
+    case "text-to-clipboard": {
+      clipboard.writeText(command.content);
       return;
     }
     case "clear-clipboard": {
-      currentClipboard?.destroy();
-      currentClipboard = undefined;
+      clipboard.clear();
+      return;
     }
     case "generate-id": return service.generateId();
     case "generate-password": return service.generatePassword(command.param);

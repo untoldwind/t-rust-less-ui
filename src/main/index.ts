@@ -31,7 +31,7 @@ function createWindow(): BrowserWindow {
     });
 
     window.webContents.openDevTools();
-    window.loadURL("http://localhost:8080");
+    window.loadURL("http://localhost:8123");
   } else {
     window.removeMenu();
     window.loadURL(url.format({

@@ -67,8 +67,8 @@ export function addSecretVersion(storeName: string, secretVersion: SecretVersion
   return sendNeonCommand({ type: "add-secret-version", storeName, secretVersion })
 }
 
-export function secretToClipboard(storeName: string, secretId: string, properties: string[]): Promise<void> {
-  return sendNeonCommand({ type: "secret-to-clipboard", storeName, secretId, properties });
+export function textToClipboard(content: string): Promise<void> {
+  return sendNeonCommand({ type: "text-to-clipboard", content });
 }
 
 export function clearClipboard(): Promise<void> {

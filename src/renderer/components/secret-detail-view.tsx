@@ -14,10 +14,10 @@ import { FieldTOTP } from "./field-totp";
 
 export const SecretDetailView: React.FunctionComponent<{}> = props => {
   const translate = React.useMemo(translations, [translations]);
-  const [state] = useService(mainInterpreter);
+  const [state, send] = useService(mainInterpreter);
 
-  function onCopyProperty(name: string): () => void {
-    return () => { }
+  function onCopyProperty(propertyName: string): () => void {
+    return () => send({ type: "COPY_SECRET_PROPERTY", propertyName })
   }
 
   function renderProperty(name: string, value: string, strength?: PasswordStrength): React.ReactNode {

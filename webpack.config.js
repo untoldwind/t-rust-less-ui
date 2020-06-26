@@ -13,6 +13,9 @@ const commonConfig = {
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx", ".scss", ".css", ".json", ".node"]
     },
+    devServer: {
+        port: 8123,
+    },
     module: {
         rules: [
             {
