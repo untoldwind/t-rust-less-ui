@@ -32,33 +32,30 @@ export class StatusMonitor {
   }
 
   @bind
-  loop() {
+  async loop() {
     if (this.canceled) return;
 
-    status(this.storeName).then(
-      status => {
-        if (status.locked && this.state === "UNLOCKED") {
-          this.sender({ type: "STORE_LOCKED", storeName: this.storeName });
-          this.state = "LOCKED";
-        } else if (!status.locked && this.state === "LOCKED") {
-          this.sender({ type: "STORE_UNLOCKED", storeName: this.storeName, identity: status.unlocked_by });
-          this.state = "UNLOCKED";
-        }
-        if (!status.locked && this.state === "UNLOCKED") {
-          this.sender({ type: "UPDATE_AUTOLOCK_IN", autoLockIn: calculateAutolockIn(status), autoLockTimeout: status.autolock_timeout });
-        }
-        this.timeoutHandle = window.setTimeout(this.loop, 1000);
-      },
-      error => {
-        console.log("Error: ", error);
-        this.timeoutHandle = window.setTimeout(this.loop, 1000);
+    try {
+      const storeStatus = await status(this.storeName);
+      if (storeStatus.locked && this.state === "UNLOCKED") {
+        this.sender({ type: "STORE_LOCKED", storeName: this.storeName });
+        this.state = "LOCKED";
+      } else if (!storeStatus.locked && this.state === "LOCKED") {
+        this.sender({ type: "STORE_UNLOCKED", storeName: this.storeName, identity: storeStatus.unlocked_by });
+        this.state = "UNLOCKED";
       }
-    );
+      if (!storeStatus.locked && this.state === "UNLOCKED") {
+        this.sender({ type: "UPDATE_AUTOLOCK_IN", autoLockIn: calculateAutolockIn(storeStatus), autoLockTimeout: storeStatus.autolock_timeout });
+      }
+      this.timeoutHandle = window.setTimeout(this.loop, 1000);
+    } catch (error) {
+      console.log("Error: ", error);
+      this.timeoutHandle = window.setTimeout(this.loop, 1000);
+    }
   }
 
   @bind
   shutdown() {
-    console.log("Shutdown " + this);
     this.canceled = true;
     typeof this.timeoutHandle === "number" && window.clearTimeout(this.timeoutHandle);
   }

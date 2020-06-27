@@ -179,7 +179,6 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     display_secret: {
       ...displaySecretState,
       on: {
-        ...displaySecretState.on,
         SELECT_SECRET: {
           target: "fetch_secret",
           actions: assign({ selectedSecretId: (_, event) => event.selectedSecretId }),

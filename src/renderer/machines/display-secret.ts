@@ -1,45 +1,20 @@
 import { MainContext, MainEvents } from "./main"
 import { MachineConfig, assign } from "xstate"
 import { OTPToken, SecretVersion } from "../../../native"
-import { calculateOtpToken, clearClipboard, textToClipboard } from "./backend-neon";
+import { clearClipboard, textToClipboard } from "./backend-neon";
+import { OTPMonitor } from "./otp-monitor";
 
-const OTP_PROPERTIES = ["totpUrl"];
+export type OTPTokens = { [name: string]: OTPToken };
 
 export interface DisplaySecretContext {
   currentSecretVersion?: SecretVersion
-  otpTokens?: { [name: string]: OTPToken }
+  otpTokens?: OTPTokens
   clipboardProperty?: string
 }
 
 export type DisplaySecretEvent =
   | { type: "COPY_SECRET_PROPERTY", propertyName: string }
-
-async function checkOTPTokens(context: MainContext): Promise<{ [name: string]: OTPToken }> {
-  const { currentSecretVersion } = context;
-
-  const result: { [name: string]: OTPToken } = {};
-
-  for (const name of OTP_PROPERTIES) {
-    const otpUrl = currentSecretVersion?.properties[name];
-
-    if (typeof otpUrl !== "string") continue;
-
-    const otpToken = await calculateOtpToken(otpUrl);
-    result[name] = otpToken;
-
-    if (name === context.clipboardProperty && typeof otpToken === "object") {
-      await textToClipboard(otpToken.totp.token);
-    }
-  }
-
-  return result;
-}
-
-function hasTOPT(context: MainContext): boolean {
-  const { otpTokens } = context;
-
-  return Object.keys(otpTokens || {}).length > 0
-}
+  | { type: "UPDATE_OTP_TOKENS", otpTokens: OTPTokens }
 
 function copySecretProperty(context: MainContext, event: { type: "COPY_SECRET_PROPERTY", propertyName: string }): Partial<MainContext> {
   if (!context.currentSecretVersion || !(event.propertyName in context.currentSecretVersion.properties)) return {};
@@ -56,30 +31,39 @@ function copySecretProperty(context: MainContext, event: { type: "COPY_SECRET_PR
   }
 }
 
+function updateOTPClipboard(context: MainContext, event: { type: "UPDATE_OTP_TOKENS", otpTokens: OTPTokens }) {
+  if (typeof context.clipboardProperty !== "string" || !(context.clipboardProperty in event.otpTokens)) return;
+
+  const otpToken = event.otpTokens[context.clipboardProperty];
+
+  if (typeof otpToken !== "object") return;
+
+  textToClipboard(otpToken.totp.token);
+}
+
 export const displaySecretState: MachineConfig<MainContext, any, MainEvents> = {
-  initial: "check_otps",
+  initial: "display",
   exit: () => clearClipboard(),
-  on: {
-    COPY_SECRET_PROPERTY: {
-      actions: assign(copySecretProperty),
-    },
-  },
   states: {
-    check_otps: {
+    display: {
       invoke: {
-        src: checkOTPTokens,
-        onDone: {
-          target: "display",
-          actions: assign({ otpTokens: (_, event) => event.data }),
+        src: context => callback => {
+          const { currentSecretVersion } = context;
+          if (!currentSecretVersion) return () => { };
+          return new OTPMonitor(callback, currentSecretVersion).shutdown;
         },
       },
-    },
-    display: {
-      after: [{
-        delay: 1000,
-        cond: hasTOPT,
-        target: "check_otps",
-      }],
+      on: {
+        COPY_SECRET_PROPERTY: {
+          actions: assign(copySecretProperty),
+        },
+        UPDATE_OTP_TOKENS: {
+          actions: [
+            assign({ otpTokens: (_, event) => event.otpTokens }),
+            updateOTPClipboard,
+          ],
+        },
+      },
     },
   },
 }
