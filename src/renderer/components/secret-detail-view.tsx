@@ -12,7 +12,8 @@ import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
 import { FieldTOTP } from "./field-totp";
 import { SecretCreateMenu } from "./secret-create-menu";
-import { Flex } from "./ui/flex";
+import { FieldType } from "./field-type";
+import { orderProperties } from "../helpers/types";
 
 export const SecretDetailView: React.FunctionComponent<{}> = props => {
   const translate = React.useMemo(translations, [translations]);
@@ -64,18 +65,16 @@ export const SecretDetailView: React.FunctionComponent<{}> = props => {
 
   return (
     <Grid rowSpec="min-content 1fr min-content" columns={1} padding={5}>
-      <GridItem justifySelf="center">
-        <Flex flexDirection="row" gap={10}>
-          <SecretVersionSelect />
-          <Button icon="edit" large minimal />
-        </Flex>
-      </GridItem>
+      <Grid justifyItems="center" alignItems="center" columnSpec="1fr min-content">
+        <SecretVersionSelect />
+        <Button icon="edit" large minimal />
+      </Grid>
       <GridItem overflow="auto">
-        <Grid columnSpec="min-content 1fr" gap={5} padding={5} alignItems="center">
+        <Grid columnSpec="min-content 1fr" gap={5} padding={5}>
           <FieldText label={translate.secret.name} value={state.context.currentSecretVersion.name} />
-          <FieldText label={translate.secret.type} value={state.context.currentSecretVersion.type} />
-          {Object.keys(state.context.currentSecretVersion.properties).map(name =>
-            renderProperty(name, state.context.currentSecretVersion.properties[name], state.context.currentSecret.password_strengths[name])
+          <FieldType value={state.context.currentSecretVersion.type} />
+          {orderProperties(state.context.currentSecretVersion).map(({ name, value }) =>
+            renderProperty(name, value, state.context.currentSecret.password_strengths[name])
           )}
         </Grid>
       </GridItem>

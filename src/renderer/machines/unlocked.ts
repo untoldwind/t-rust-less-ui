@@ -214,6 +214,10 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
           target: "store_secret_version",
           actions: assign({ currentSecretVersion: (_, event) => event.secretVersion }),
         },
+        SELECT_SECRET: {
+          target: "fetch_secret",
+          actions: assign({ selectedSecretId: (_, event) => event.selectedSecretId }),
+        },
       },
     },
     store_secret_version: {

@@ -3,10 +3,11 @@ import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
-import { Spinner } from "@blueprintjs/core";
+import { Spinner, Button } from "@blueprintjs/core";
 import { translations } from "../i18n";
 import { FieldEditText } from "./field-edit-text";
 import { FieldEditType } from "./field-edit-type";
+import { orderProperties } from "../helpers/types";
 
 export const SecretEditView: React.FunctionComponent<{}> = props => {
   const translate = React.useMemo(translations, [translations]);
@@ -32,17 +33,19 @@ export const SecretEditView: React.FunctionComponent<{}> = props => {
     )
   return (
     <Grid rowSpec="min-content 1fr" columns={1} padding={5}>
-      <GridItem justifySelf="center">
+      <Grid justifyItems="center" alignItems="center" columnSpec="1fr min-content min-content" gap={5}>
         {translate.formatTimestamp(state.context.editSecretVersion.timestamp)}
-      </GridItem>
+        <Button icon="tick" large minimal />
+        <Button icon="cross" large minimal />
+      </Grid>
       <GridItem overflow="auto">
         <Grid columnSpec="min-content 1fr" gap={5} padding={5} alignItems="center">
           <FieldEditText label={translate.secret.name} value={state.context.editSecretVersion.name}
             onChange={name => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { name } })} />
           <FieldEditType value={state.context.editSecretVersion.type}
             onChange={type => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { type } })} />
-          {Object.keys(state.context.editSecretVersion.properties).map(name =>
-            renderProperty(name, state.context.editSecretVersion.properties[name])
+          {orderProperties(state.context.editSecretVersion).map(({name, value}) =>
+            renderProperty(name, value)
           )}
         </Grid>
       </GridItem>

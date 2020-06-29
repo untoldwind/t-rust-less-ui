@@ -3,6 +3,7 @@ import { MainContext, MainEvents } from "./main";
 import { SecretVersion } from "../../../native";
 import { generateId } from "./backend-neon";
 import moment from "moment";
+import { BASE_PROPERTIES } from "../helpers/types";
 
 export interface EditSecretContext {
   editSecretVersion?: SecretVersion
@@ -30,6 +31,10 @@ async function cloneOrCreate(context: MainContext, event: MainEvents): Promise<S
   switch (event.type) {
     case "CREATE_SECRET":
       const secret_id = await generateId();
+      const properties : { [name: string]: string} = {};
+      for(const name of BASE_PROPERTIES[event.secretType])
+        properties[name] = "";
+
       return {
         secret_id,
         type: event.secretType,
@@ -37,7 +42,7 @@ async function cloneOrCreate(context: MainContext, event: MainEvents): Promise<S
         timestamp: moment().format(),
         tags: [],
         urls: [],
-        properties: {},
+        properties,
         deleted: false,
         attachments: [],
         recipients: [selectedIdentity.id],
