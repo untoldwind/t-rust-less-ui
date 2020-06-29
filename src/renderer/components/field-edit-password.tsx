@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Flex } from "./ui/flex";
+import { InputGroup, Popover, Button } from "@blueprintjs/core";
 import { FlexItem } from "./ui/flex-item";
-import { InputGroup, Button } from "@blueprintjs/core";
 
 export interface FieldEditPasswordProps {
   label: string
@@ -9,35 +9,25 @@ export interface FieldEditPasswordProps {
   onChange: (newValue: string) => void
 }
 
-export interface FieldEditPasswordState {
-  reveal: boolean
-}
+export const FieldEditPassword: React.FunctionComponent<FieldEditPasswordProps> = props => {
+  const { label, value, onChange } = props;
+  const [generatorOpened, setGeneratorOpened] = React.useState(false);
 
-export class FieldEditPassword extends React.Component<FieldEditPasswordProps, FieldEditPasswordState> {
-  constructor(props: FieldEditPasswordProps) {
-    super(props);
+  return (
+    <>
+      <div>{label}</div>
+      <Popover fill isOpen={generatorOpened}>
+        <Flex flexDirection="row" gap={5}>
+          <FlexItem flexGrow={1}>
+            <InputGroup value={value} fill
+              onChange={(event: React.FormEvent<HTMLInputElement>) => onChange(event.currentTarget.value)} />
+          </FlexItem>
+          <FlexItem flexGrow={0}>
+            <Button active={generatorOpened} minimal onClick={() => setGeneratorOpened(!generatorOpened)} icon="cog" />
+          </FlexItem>
+        </Flex>
+      </Popover>
+    </>
+  )
+};
 
-    this.state = {
-      reveal: false,
-    };
-  }
-
-  render(): React.ReactNode {
-    const { label, value, onChange } = this.props;
-    const { reveal } = this.state;
-
-    return (
-      <Flex flexDirection="row" gap={5}>
-        <FlexItem flexGrow={0} flexBasis={[10, '%']}>{label}</FlexItem>
-        <FlexItem flexGrow={1}>
-          <InputGroup value={value} type={reveal ? "text" : "password"} onChange={(event: React.FormEvent<HTMLElement>) => onChange((event.target as HTMLInputElement).value)} />
-        </FlexItem>
-        <FlexItem flexGrow={0}>
-          <Flex flexDirection="row">
-            <Button active={reveal} onClick={() => { this.setState({ reveal: !reveal }) }} icon={reveal ? "eye-off" : "eye-open"} />
-          </Flex>
-        </FlexItem>
-      </Flex>
-    )
-  }
-}

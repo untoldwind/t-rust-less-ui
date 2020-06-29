@@ -218,6 +218,13 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
           target: "fetch_secret",
           actions: assign({ selectedSecretId: (_, event) => event.selectedSecretId }),
         },
+        ABORT_EDIT: [{
+          target: "display_secret",
+          cond: context => typeof context.currentSecretVersion === "object",
+        }, {
+          target: "select_secret",
+          cond: context => typeof context.currentSecretVersion !== "object",
+        }],
       },
     },
     store_secret_version: {

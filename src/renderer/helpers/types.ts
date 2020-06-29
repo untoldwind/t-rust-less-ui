@@ -3,7 +3,7 @@ import { SecretType, SecretVersion } from "../../../native";
 export const SECRET_TYPES: SecretType[] = ["login", "note", "licence", "wlan", "password", "other"];
 
 export const BASE_PROPERTIES: { [name in SecretType]: string[] } = {
-  login: ["username", "password", "toptUrl", "notes"],
+  login: ["username", "password", "totpUrl", "notes"],
   note: ["notes"],
   licence: ["notes"],
   wlan: [],

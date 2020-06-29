@@ -5,7 +5,7 @@ import { translations } from "../i18n";
 import { NonIdealState, Spinner, Button } from "@blueprintjs/core";
 import { FieldText } from "./field-text";
 import { PasswordStrength } from "../../../native";
-import { FieldNote } from "./field-note";
+import { FieldNotes } from "./field-notes";
 import { FieldPassword } from "./field-password";
 import { SecretVersionSelect } from "./secret-versions-select";
 import { Grid } from "./ui/grid";
@@ -25,9 +25,9 @@ export const SecretDetailView: React.FunctionComponent<{}> = props => {
 
   function renderProperty(name: string, value: string, strength?: PasswordStrength): React.ReactNode {
     switch (name) {
-      case "note":
+      case "notes":
         return (
-          <FieldNote key={name} label={translate.secret.property(name)} value={value} onCopy={onCopyProperty(name)} />
+          <FieldNotes key={name} label={translate.secret.property(name)} value={value} onCopy={onCopyProperty(name)} />
         );
       case "password":
         return (
@@ -67,7 +67,7 @@ export const SecretDetailView: React.FunctionComponent<{}> = props => {
     <Grid rowSpec="min-content 1fr min-content" columns={1} padding={5}>
       <Grid justifyItems="center" alignItems="center" columnSpec="1fr min-content">
         <SecretVersionSelect />
-        <Button icon="edit" large minimal />
+        <Button icon="edit" large minimal onClick={() => send({ type: "NEW_SECRET_VERSION" })} />
       </Grid>
       <GridItem overflow="auto">
         <Grid columnSpec="min-content 1fr" gap={5} padding={5}>

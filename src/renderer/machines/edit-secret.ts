@@ -22,6 +22,9 @@ export type EditSecretEvent =
     type: "CHANGE_EDIT_SECRET_VERSION",
     change: Partial<SecretVersion>,
   }
+  | {
+    type: "ABORT_EDIT",
+  }
 
 async function cloneOrCreate(context: MainContext, event: MainEvents): Promise<SecretVersion> {
   const { selectedIdentity, currentSecretVersion } = context;
@@ -31,8 +34,9 @@ async function cloneOrCreate(context: MainContext, event: MainEvents): Promise<S
   switch (event.type) {
     case "CREATE_SECRET":
       const secret_id = await generateId();
-      const properties : { [name: string]: string} = {};
-      for(const name of BASE_PROPERTIES[event.secretType])
+      const properties: { [name: string]: string } = {};
+
+      for (const name of BASE_PROPERTIES[event.secretType])
         properties[name] = "";
 
       return {

@@ -8,17 +8,27 @@ import { translations } from "../i18n";
 import { FieldEditText } from "./field-edit-text";
 import { FieldEditType } from "./field-edit-type";
 import { orderProperties } from "../helpers/types";
+import { FieldEditNotes } from "./field-edit-notes";
+import { FieldEditPassword } from "./field-edit-password";
 
 export const SecretEditView: React.FunctionComponent<{}> = props => {
   const translate = React.useMemo(translations, [translations]);
   const [state, send] = useService(mainInterpreter);
 
   function renderProperty(name: string, value: string): React.ReactNode {
+    const onChange = (value: string) => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { properties: { [name]: value } } });
     switch (name) {
+      case "notes":
+        return (
+          <FieldEditNotes key={name} label={translate.secret.property(name)} value={value} onChange={onChange} />
+        )
+      case "password":
+        return (
+          <FieldEditPassword key={name} label={translate.secret.property(name)} value={value} onChange={onChange} />
+        )
       default:
         return (
-          <FieldEditText key={name} label={translate.secret.property(name)} value={value}
-            onChange={value => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { properties: { [name]: value } } })} />
+          <FieldEditText key={name} label={translate.secret.property(name)} value={value} onChange={onChange} />
         )
     }
   }
@@ -36,7 +46,7 @@ export const SecretEditView: React.FunctionComponent<{}> = props => {
       <Grid justifyItems="center" alignItems="center" columnSpec="1fr min-content min-content" gap={5}>
         {translate.formatTimestamp(state.context.editSecretVersion.timestamp)}
         <Button icon="tick" large minimal />
-        <Button icon="cross" large minimal />
+        <Button icon="cross" large minimal onClick={() => send({ type: "ABORT_EDIT" })} />
       </Grid>
       <GridItem overflow="auto">
         <Grid columnSpec="min-content 1fr" gap={5} padding={5} alignItems="center">
@@ -44,7 +54,7 @@ export const SecretEditView: React.FunctionComponent<{}> = props => {
             onChange={name => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { name } })} />
           <FieldEditType value={state.context.editSecretVersion.type}
             onChange={type => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { type } })} />
-          {orderProperties(state.context.editSecretVersion).map(({name, value}) =>
+          {orderProperties(state.context.editSecretVersion).map(({ name, value }) =>
             renderProperty(name, value)
           )}
         </Grid>

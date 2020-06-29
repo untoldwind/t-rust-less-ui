@@ -14,7 +14,7 @@ export const FieldEditText: React.FunctionComponent<FieldEditTextProps> = props 
     <>
       <div>{label}</div>
       <InputGroup value={value} fill
-        onChange={(event: React.FormEvent<HTMLElement>) => onChange((event.target as HTMLInputElement).value)} />
+        onChange={(event: React.FormEvent<HTMLInputElement>) => onChange(event.currentTarget.value)} />
     </>
   )
 }
