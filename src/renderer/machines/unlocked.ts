@@ -1,11 +1,11 @@
 import { MachineConfig, assign, send } from "xstate"
 import { MainEvents, MainContext } from "./main"
 import { SecretListFilter, SecretList, Secret, SecretVersion, SecretType, Identity } from "../../../native"
-import { listSecrets, lock, getSecret, getSecretVersion, generateId, addSecretVersion } from "./backend-neon"
-import moment from "moment"
+import { listSecrets, lock, getSecret, getSecretVersion, addSecretVersion } from "./backend-neon"
 import { DisplaySecretContext, displaySecretState, DisplaySecretEvent } from "./display-secret"
+import { editSecretState, EditSecretContext, EditSecretState, EditSecretEvent } from "./edit-secret"
 
-export type UnlockedContext = DisplaySecretContext & {
+export type UnlockedContext = DisplaySecretContext & EditSecretContext & {
   secretFilter: SecretListFilter
   secretList?: SecretList
   selectedSecretId?: string
@@ -18,19 +18,19 @@ export type UnlockedContext = DisplaySecretContext & {
   autolockTimeout?: number
 }
 
-export type UnlockedEvent = DisplaySecretEvent
+export type UnlockedEvent = DisplaySecretEvent | EditSecretEvent
   | { type: "SET_SECRET_FILTER", secretFilter: SecretListFilter }
   | { type: "UPDATE_AUTOLOCK_IN", autoLockIn: number, autoLockTimeout: number }
   | { type: "SELECT_SECRET", selectedSecretId: string }
   | { type: "SELECT_SECRET_VERSION", blockId: string }
   | { type: "SELECT_PREVIOUS" }
   | { type: "SELECT_NEXT" }
-  | { type: "CREATE_SECRET", secret_type: SecretType }
+  | { type: "CREATE_SECRET", secretType: SecretType }
   | { type: "NEW_SECRET_VERSION" }
   | { type: "STORE_SECRET_VERSION", secretVersion: SecretVersion }
   | { type: "LOCK" }
 
-export type UnlockedState =
+export type UnlockedState = EditSecretState
   | {
     value: "unlocked.select_secret"
     context: MainContext & {
@@ -57,7 +57,7 @@ export type UnlockedState =
   | {
     value: "unlocked.edit_secret_version"
     context: MainContext & {
-      currentSecretVersion: SecretVersion
+      secretList: SecretList
     }
   }
   | {
@@ -77,26 +77,6 @@ export type UnlockedState =
       selectedIdentity: Identity
     }
   }
-
-async function createNewSecret(context: MainContext, event: MainEvents): Promise<SecretVersion> {
-  const { selectedIdentity } = context;
-
-  if (!selectedIdentity) return Promise.reject("Invalid state");
-  if (event.type !== "CREATE_SECRET") return Promise.reject("Invalid event");
-
-  return generateId().then(secret_id => ({
-    secret_id,
-    type: event.secret_type,
-    name: "",
-    timestamp: moment().format(),
-    tags: [],
-    urls: [],
-    properties: {},
-    deleted: false,
-    attachments: [],
-    recipients: [selectedIdentity.id],
-  }))
-}
 
 export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
   initial: "fetch_secret_list",
@@ -135,6 +115,7 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
           target: "fetch_secret",
           actions: assign({ selectedSecretId: context => context.secretList?.entries[0].entry.id }),
         },
+        CREATE_SECRET: "edit_secret_version",
       },
     },
     fetch_secret: {
@@ -222,35 +203,12 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
             },
           }),
         },
-        CREATE_SECRET: "create_new_secret",
-        NEW_SECRET_VERSION: {
-          target: "edit_secret_version",
-          actions: assign(context => ({
-            currentSecretVersion: {
-              ...(context.currentSecretVersion as SecretVersion),
-              timestamp: moment().format(),
-            },
-          })),
-        },
-      },
-    },
-    create_new_secret: {
-      invoke: {
-        src: createNewSecret,
-        onDone: {
-          target: "edit_secret_version",
-          actions: assign((_, event) => ({
-            currentSecretVersion: event.data,
-            selectedSecretId: event.data.secret_id,
-          })),
-        },
-        onError: {
-          target: "error",
-          actions: assign({ errorMessage: (_, event) => event.data }),
-        },
+        CREATE_SECRET: "edit_secret_version",
+        NEW_SECRET_VERSION: "edit_secret_version",
       },
     },
     edit_secret_version: {
+      ...editSecretState,
       on: {
         STORE_SECRET_VERSION: {
           target: "store_secret_version",

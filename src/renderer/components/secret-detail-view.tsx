@@ -2,7 +2,7 @@ import * as React from "react";
 import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { translations } from "../i18n";
-import { NonIdealState, Spinner } from "@blueprintjs/core";
+import { NonIdealState, Spinner, Button } from "@blueprintjs/core";
 import { FieldText } from "./field-text";
 import { PasswordStrength } from "../../../native";
 import { FieldNote } from "./field-note";
@@ -11,6 +11,8 @@ import { SecretVersionSelect } from "./secret-versions-select";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
 import { FieldTOTP } from "./field-totp";
+import { SecretCreateMenu } from "./secret-create-menu";
+import { Flex } from "./ui/flex";
 
 export const SecretDetailView: React.FunctionComponent<{}> = props => {
   const translate = React.useMemo(translations, [translations]);
@@ -54,22 +56,30 @@ export const SecretDetailView: React.FunctionComponent<{}> = props => {
     return (
       <NonIdealState
         title={translate.secret.noSecretTitle}
-        description={translate.secret.noSecretDescription} />
+        description={translate.secret.noSecretDescription}
+        action={<SecretCreateMenu />}
+      />
     )
   }
 
   return (
-    <div style={{ overflowY: "auto" }}>
-      <Grid columnSpec="min-content 1fr" gap={5}>
-        <GridItem colSpan={2} justifySelf="center">
+    <Grid rowSpec="min-content 1fr min-content" columns={1} padding={5}>
+      <GridItem justifySelf="center">
+        <Flex flexDirection="row" gap={10}>
           <SecretVersionSelect />
-        </GridItem>
-        <FieldText label={translate.secret.name} value={state.context.currentSecretVersion.name} />
-        <FieldText label={translate.secret.type} value={state.context.currentSecretVersion.type} />
-        {Object.keys(state.context.currentSecretVersion.properties).map(name =>
-          renderProperty(name, state.context.currentSecretVersion.properties[name], state.context.currentSecret.password_strengths[name])
-        )}
-      </Grid>
-    </div>
+          <Button icon="edit" large minimal />
+        </Flex>
+      </GridItem>
+      <GridItem overflow="auto">
+        <Grid columnSpec="min-content 1fr" gap={5} padding={5} alignItems="center">
+          <FieldText label={translate.secret.name} value={state.context.currentSecretVersion.name} />
+          <FieldText label={translate.secret.type} value={state.context.currentSecretVersion.type} />
+          {Object.keys(state.context.currentSecretVersion.properties).map(name =>
+            renderProperty(name, state.context.currentSecretVersion.properties[name], state.context.currentSecret.password_strengths[name])
+          )}
+        </Grid>
+      </GridItem>
+      <SecretCreateMenu />
+    </Grid>
   )
 }

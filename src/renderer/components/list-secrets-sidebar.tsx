@@ -34,11 +34,11 @@ export const ListSecretsSidebar: React.FunctionComponent<{}> = props => {
   return (
     <div className="bp3-dark sidebar">
       <Menu>
-        {SECRET_TYPES.map((t, i) => (
-          <MenuItem key={i}
-            text={translate.secret.typeName[t]}
-            active={state.context.secretFilter.type === t}
-            onClick={onFilterType(t)} />
+        {SECRET_TYPES.map((secretType, idx) => (
+          <MenuItem key={idx}
+            text={translate.secret.typeName[secretType]}
+            active={state.context.secretFilter.type === secretType}
+            onClick={onFilterType(secretType)} />
         ))}
       </Menu>
       <FlexItem flexGrow={1} />

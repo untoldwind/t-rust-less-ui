@@ -8,6 +8,7 @@ import { ListSecretsSidebar } from "./list-secrets-sidebar";
 import { Toaster, Toast } from "@blueprintjs/core";
 import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
+import { SecretEditView } from "./secret-edit-view";
 
 export const ListSecrets: React.FunctionComponent<{}> = props => {
   const [state, send] = useService(mainInterpreter);
@@ -31,7 +32,8 @@ export const ListSecrets: React.FunctionComponent<{}> = props => {
       </GridItem>
       <ListSecretsSidebar />
       <SecretEntryList />
-      <SecretDetailView />
+      {!state.matches("unlocked.edit_secret_version") && <SecretDetailView />}
+      {state.matches("unlocked.edit_secret_version") && <SecretEditView />}
     </Grid>
   )
 };
