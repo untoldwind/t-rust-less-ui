@@ -3,8 +3,8 @@ import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";
 import { Button, ProgressBar, Tooltip } from "@blueprintjs/core";
 import { Grid } from "./ui/grid";
-import { translations } from "../i18n";
 import { PasswordStrength } from "../../../native";
+import { PasswordStrengthDetails } from "./password-strength-details";
 
 export interface FieldPasswordProps {
   label: string
@@ -18,31 +18,15 @@ export interface FieldPasswordState {
 }
 
 export const FieldPassword: React.FunctionComponent<FieldPasswordProps> = props => {
-  const translate = React.useMemo(translations, [translations]);
   const [reveal, setReveal] = React.useState(false);
   const { label, value, strength, onCopy } = props;
-
-  function renderStrengthDetail(strength?: PasswordStrength): JSX.Element | undefined {
-    if (!strength) return undefined;
-
-    return (
-      <Grid columns={2} gap={5}>
-        <div>{translate.secret.strength.score}</div>
-        <div>{strength.score}</div>
-        <div>{translate.secret.strength.entropy}</div>
-        <div>{strength.entropy.toFixed(1)}</div>
-        <div>{translate.secret.strength.cracktime}</div>
-        <div>{strength.crack_time_display}</div>
-      </Grid>
-    )
-  }
 
   return (
     <>
       <div>{label}</div>
       <Flex flexDirection="row" gap={5}>
         <FlexItem flexGrow={1}>
-          <Tooltip targetTagName="div" content={renderStrengthDetail(strength)}>
+          <Tooltip targetTagName="div" content={<PasswordStrengthDetails strength={strength} />}>
             <Grid columns={1}>
               <div>{reveal ? value : "*".repeat(value.length)}</div>
               {strength && <ProgressBar stripes={false} animate={false} value={strength.entropy / 55.0} />}

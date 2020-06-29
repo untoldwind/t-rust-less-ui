@@ -157,3 +157,5 @@ export type OTPToken =
   }
 
 export declare function calculateOtpToken(otpUrl: string) : OTPToken;
+
+export declare function estimatePassword(password: string): PasswordStrength;

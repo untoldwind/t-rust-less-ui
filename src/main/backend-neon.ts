@@ -1,6 +1,6 @@
 import { ipcMain, IpcMainEvent, clipboard } from "electron";
 import { NeonCommand } from "../common/neon-command";
-import { Service, Store, calculateOtpToken } from "../../native";
+import { Service, Store, calculateOtpToken, estimatePassword } from "../../native";
 
 const service = new Service();
 const stores = new Map<string, Store>();
@@ -39,6 +39,7 @@ function processCommand(command: NeonCommand): any {
     case "generate-id": return service.generateId();
     case "generate-password": return service.generatePassword(command.param);
     case "calculate-otp-token": return calculateOtpToken(command.otpUrl);
+    case "estimate-password": return estimatePassword(command.password);
   }
 }
 

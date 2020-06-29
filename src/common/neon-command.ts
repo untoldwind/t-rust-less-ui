@@ -63,6 +63,10 @@ export type NeonCommand =
     type: "calculate-otp-token"
     otpUrl: string
   }
+  | {
+    type: "estimate-password"
+    password: string
+  }
 
 export type NeonResult<T> =
   | {
