@@ -13,17 +13,29 @@ export interface FieldEditPasswordProps {
   onChange: (newValue: string) => void
 }
 
+let timer: number | null = null;
+
+function 	debounce(delay: number, fn: () => void): () => void {
+  return () => {
+    if (!timer) 
+      timer = window.setTimeout( () => {
+        fn();
+        timer = null;
+      }, delay);
+  };
+}
+
 export const FieldEditPassword: React.FunctionComponent<FieldEditPasswordProps> = props => {
   const { label, value, onChange } = props;
   const [generatorOpened, setGeneratorOpened] = React.useState(false);
   const [passwordStrength, setPasswordStrength] = React.useState<PasswordStrength | undefined>(undefined);
 
-  React.useEffect(() => {
+  React.useEffect(debounce(500, () => {
     if (value.length === 0)
       setPasswordStrength(undefined);
     else
       estimatePassword(value).then(setPasswordStrength, () => setPasswordStrength(undefined));
-  }, [value]);
+  }), [value]);
 
   return (
     <>
