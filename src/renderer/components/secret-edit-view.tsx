@@ -45,7 +45,7 @@ export const SecretEditView: React.FunctionComponent<{}> = props => {
     <Grid rowSpec="min-content 1fr" columns={1} padding={5}>
       <Grid justifyItems="center" alignItems="center" columnSpec="1fr min-content min-content" gap={5}>
         {translate.formatTimestamp(state.context.editSecretVersion.timestamp)}
-        <Button icon="tick" large minimal />
+        <Button icon="tick" large minimal onClick={() => send({ type: "STORE_SECRET_VERSION" })} />
         <Button icon="cross" large minimal onClick={() => send({ type: "ABORT_EDIT" })} />
       </Grid>
       <GridItem overflow="auto">

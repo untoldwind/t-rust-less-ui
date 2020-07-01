@@ -28,7 +28,6 @@ function debounce(delay: number, fn: () => void): () => void {
 
 export const FieldEditPassword: React.FunctionComponent<FieldEditPasswordProps> = props => {
   const { label, value, onChange } = props;
-  const [generatorOpened, setGeneratorOpened] = React.useState(false);
   const [passwordStrength, setPasswordStrength] = React.useState<PasswordStrength | undefined>(undefined);
 
   React.useEffect(debounce(500, () => {
@@ -41,23 +40,23 @@ export const FieldEditPassword: React.FunctionComponent<FieldEditPasswordProps> 
   return (
     <>
       <div>{label}</div>
-      <Popover fill isOpen={generatorOpened} content={<PasswordGenerator onPasswordGenerated={onChange} />}>
-        <Flex flexDirection="row" gap={5}>
-          <FlexItem flexGrow={1}>
-            <Tooltip targetTagName="div" content={passwordStrength && <PasswordStrengthDetails strength={passwordStrength} />}>
-              <Grid columns={1}>
-                <InputGroup value={value} fill
-                  onChange={(event: React.FormEvent<HTMLInputElement>) => onChange(event.currentTarget.value)} />
-                {passwordStrength && <ProgressBar stripes={false} animate={false} value={passwordStrength.entropy / 55.0} />}
-              </Grid>
-            </Tooltip>
+      <Flex flexDirection="row" gap={5}>
+        <FlexItem flexGrow={1}>
+          <Tooltip targetTagName="div" content={passwordStrength && <PasswordStrengthDetails strength={passwordStrength} />}>
+            <Grid columns={1}>
+              <InputGroup value={value} fill
+                onChange={(event: React.FormEvent<HTMLInputElement>) => onChange(event.currentTarget.value)} />
+              {passwordStrength && <ProgressBar stripes={false} animate={false} value={passwordStrength.entropy / 55.0} />}
+            </Grid>
+          </Tooltip>
 
-          </FlexItem>
-          <FlexItem flexGrow={0}>
-            <Button active={generatorOpened} minimal onClick={() => setGeneratorOpened(!generatorOpened)} icon="cog" />
-          </FlexItem>
-        </Flex>
-      </Popover>
+        </FlexItem>
+        <FlexItem flexGrow={0}>
+          <Popover fill content={<PasswordGenerator onPasswordGenerated={onChange} />}>
+            <Button minimal icon="cog" />
+          </Popover>
+        </FlexItem>
+      </Flex>
     </>
   )
 };

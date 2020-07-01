@@ -27,7 +27,12 @@ function processCommand(command: NeonCommand): any {
     case "list-secrets": return getStore(command.storeName).list(command.filter);
     case "get-secret": return getStore(command.storeName).get(command.secretId);
     case "get-secret-version": return getStore(command.storeName).getVersion(command.blockId);
-    case "add-secret-version": return getStore(command.storeName).add(command.secretVersion);
+    case "add-secret-version": {
+      const store = getStore(command.storeName);
+      const blockId = store.add(command.secretVersion);
+      store.updateIndex();
+      return blockId;
+    }
     case "text-to-clipboard": {
       clipboard.writeText(command.content);
       return;

@@ -27,7 +27,7 @@ export type UnlockedEvent = DisplaySecretEvent | EditSecretEvent
   | { type: "SELECT_NEXT" }
   | { type: "CREATE_SECRET", secretType: SecretType }
   | { type: "NEW_SECRET_VERSION" }
-  | { type: "STORE_SECRET_VERSION", secretVersion: SecretVersion }
+  | { type: "STORE_SECRET_VERSION" }
   | { type: "LOCK" }
 
 export type UnlockedState = EditSecretState
@@ -210,10 +210,7 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     edit_secret_version: {
       ...editSecretState,
       on: {
-        STORE_SECRET_VERSION: {
-          target: "store_secret_version",
-          actions: assign({ currentSecretVersion: (_, event) => event.secretVersion }),
-        },
+        STORE_SECRET_VERSION: "store_secret_version",
         SELECT_SECRET: {
           target: "fetch_secret",
           actions: assign({ selectedSecretId: (_, event) => event.selectedSecretId }),
@@ -230,13 +227,13 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     store_secret_version: {
       invoke: {
         src: context => {
-          const { selectedStore, currentSecretVersion } = context;
-          if (!selectedStore || !currentSecretVersion) return Promise.resolve("invalid state");
-          return addSecretVersion(selectedStore, currentSecretVersion)
+          const { selectedStore, editSecretVersion } = context;
+          if (!selectedStore || !editSecretVersion) return Promise.resolve("invalid state");
+          return addSecretVersion(selectedStore, editSecretVersion)
         },
         onDone: {
           target: "fetch_secret",
-          actions: assign({ selectedSecretId: context => context.currentSecretVersion?.secret_id }),
+          actions: assign({ selectedSecretId: context => context.editSecretVersion?.secret_id }),
         },
         onError: {
           target: "error",
