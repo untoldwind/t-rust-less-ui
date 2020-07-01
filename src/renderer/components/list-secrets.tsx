@@ -16,7 +16,7 @@ export const ListSecrets: React.FunctionComponent<{}> = props => {
   return (
     <Grid
       height={[100, "vh"]}
-      columnSpec={[[200, 'px'], [1, 'fr'], [2, 'fr']]}
+      columnSpec="min-content minmax(min-content, 1fr) 3fr"
       rowSpec="min-content min-content 1fr">
       <GridItem colSpan={3}>
         <ListSecretsHeader />
