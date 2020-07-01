@@ -21,8 +21,25 @@ export interface SecretTranslations {
   noSecretDescription: string
 }
 
+export interface PasswordGeneratorTranslations {
+  chars: string
+  numChars: string
+  includeUppers: string
+  includeNumbers: string
+  includeSymbols: string
+  requireUpper: string
+  requireNumber: string
+  requireSymbol: string
+  excludeSimilar: string
+  excludeAmbigous: string
+  words: string
+  numWords: string
+  delim: string
+}
+
 export interface Translations {
   action: ActionTranslations
   secret: SecretTranslations
+  passwordGenerator: PasswordGeneratorTranslations
   formatTimestamp: (timestamp: string) => string,
 }

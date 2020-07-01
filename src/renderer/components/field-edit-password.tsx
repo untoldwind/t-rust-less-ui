@@ -6,6 +6,7 @@ import { PasswordStrength } from "../../../native";
 import { estimatePassword } from "../machines/backend-neon";
 import { PasswordStrengthDetails } from "./password-strength-details";
 import { Grid } from "./ui/grid";
+import { PasswordGenerator } from "./password-generator";
 
 export interface FieldEditPasswordProps {
   label: string
@@ -15,10 +16,10 @@ export interface FieldEditPasswordProps {
 
 let timer: number | null = null;
 
-function 	debounce(delay: number, fn: () => void): () => void {
+function debounce(delay: number, fn: () => void): () => void {
   return () => {
-    if (!timer) 
-      timer = window.setTimeout( () => {
+    if (!timer)
+      timer = window.setTimeout(() => {
         fn();
         timer = null;
       }, delay);
@@ -40,10 +41,10 @@ export const FieldEditPassword: React.FunctionComponent<FieldEditPasswordProps> 
   return (
     <>
       <div>{label}</div>
-      <Popover fill isOpen={generatorOpened}>
+      <Popover fill isOpen={generatorOpened} content={<PasswordGenerator onPasswordGenerated={onChange} />}>
         <Flex flexDirection="row" gap={5}>
           <FlexItem flexGrow={1}>
-            <Tooltip targetTagName="div" content={<PasswordStrengthDetails strength={passwordStrength} />}>
+            <Tooltip targetTagName="div" content={passwordStrength && <PasswordStrengthDetails strength={passwordStrength} />}>
               <Grid columns={1}>
                 <InputGroup value={value} fill
                   onChange={(event: React.FormEvent<HTMLInputElement>) => onChange(event.currentTarget.value)} />

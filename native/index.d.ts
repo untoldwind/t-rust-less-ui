@@ -97,23 +97,29 @@ export interface Secret {
   password_strengths: { [key: string]: PasswordStrength }
 }
 
+export interface PasswordGeneratorCharsParam {
+  num_chars: number,
+  include_uppers: boolean
+  include_numbers: boolean
+  include_symbols: boolean
+  require_upper: boolean
+  require_number: boolean
+  require_symbol: boolean
+  exlcude_similar: boolean
+  exclude_ambiguous: boolean
+}
+
+export interface PasswordGeneratorWordsParam {
+  num_words: number
+  delim: string
+}
+
 export type PasswordGeneratorParam =
   | {
-    chars: {
-      num_chars: number,
-      include_uppers: boolean
-      include_numbers: boolean
-      include_symbols: boolean
-      require_upper: boolean
-      require_number: boolean
-      require_symbol: boolean
-      exlcude_similar: boolean
-      exclude_ambiguous: boolean
-    }
+    chars: PasswordGeneratorCharsParam
   }
   | {
-    num_words: number
-    delim: string
+    words: PasswordGeneratorWordsParam
   }
 
 export declare class Store {
