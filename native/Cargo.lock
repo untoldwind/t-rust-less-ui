@@ -543,15 +543,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fuzzy-matcher"
-version = "0.3.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75a03d6d8629fcd151ece9d3a7f59a87fc38a620ab0290bf2888c2ad73821170"
-dependencies = [
- "thread_local",
-]
-
-[[package]]
 name = "generator"
 version = "0.6.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1326,9 +1317,9 @@ dependencies = [
 
 [[package]]
 name = "t-rust-less-lib"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5b8c1a9f48a83255a4be5b77c7561652d083225a422b8adf86bcb310158373d5"
+checksum = "99da03bac17678302ad686c37edea2ecf2ebe8c292465ba901e3cce7c8e24905"
 dependencies = [
  "byteorder",
  "capnp",
@@ -1340,7 +1331,6 @@ dependencies = [
  "data-encoding",
  "dirs",
  "futures",
- "fuzzy-matcher",
  "hmac",
  "itertools 0.9.0",
  "libc",
