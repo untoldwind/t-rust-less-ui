@@ -22,13 +22,15 @@ export const ListSecrets: React.FunctionComponent<{}> = props => {
         <ListSecretsHeader />
       </GridItem>
       <GridItem colSpan={3}>
-        {state.matches("unlocked.error") && <Toaster>
-          <Toast
-            intent="danger"
-            message={state.context.errorMessage}
-            timeout={2000}
-            onDismiss={() => send({ type: "CONFIRM_ERROR" })} />
-        </Toaster>}
+        <Toaster>
+          {state.matches("unlocked.error") &&
+            <Toast
+              intent="danger"
+              message={state.context.errorMessage}
+              timeout={2000}
+              onDismiss={() => send({ type: "CONFIRM_ERROR" })} />
+          }
+        </Toaster>
       </GridItem>
       <ListSecretsSidebar />
       <SecretEntryList />
