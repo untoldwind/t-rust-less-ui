@@ -2,6 +2,7 @@ node_modules/
 dist/
 .awcache/
 *.log
+*.dll
 app/
 native/*.node
 native/target
