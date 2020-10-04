@@ -87,7 +87,7 @@ declare_types! {
             let filter : SecretListFilter = neon_serde::from_value(&mut cx, arg0)?;
 
             cx.borrow(&this, |handle| {
-                handle.store.as_ref().map(|store| store.list(filter))
+                handle.store.as_ref().map(|store| store.list(&filter))
             }).to_js(&mut cx)
         }
 
