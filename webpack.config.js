@@ -125,7 +125,8 @@ module.exports = [
             plugins: [new WriteFilePlugin(), new CopyWebpackPlugin({
                 patterns: [
                     { from: "./src/renderer/index.html", to: path.join(__dirname, "app", "index.html") },
-                    { from: "./src/renderer/preload.js", to: path.join(__dirname, "app", "preload.js") }
+                    { from: "./src/renderer/preload.js", to: path.join(__dirname, "app", "preload.js") },
+                    { from: "./native/target/x86_64-pc-windows-msvc/release/build/openssl-sys-*/out/openssl-build/install/bin/*.dll", flatten: true, toType: "dir", to: path.join(__dirname, "resources") },
                 ]
             }), new MiniCssExtractPlugin({
                 filename: "[name].css",

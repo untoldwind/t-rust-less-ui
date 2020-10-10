@@ -61,6 +61,10 @@
         "xstate": "^4.11.0"
     },
     "build": {
-        "extraFiles": "*.dll"
+        "win": {
+            "icon": "resources/t-rust-less.png",
+            "extraResources": "resources/*.dll",
+            "asar": false
+        }
     }
 }
