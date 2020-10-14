@@ -2,6 +2,7 @@ const path = require("path");
 const WriteFilePlugin = require("write-file-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { platform } = require("os");
 
 const commonConfig = {
     output: {
@@ -123,10 +124,13 @@ module.exports = [
                 ],
             },
             plugins: [new WriteFilePlugin(), new CopyWebpackPlugin({
-                patterns: [
+                patterns: process.platform === "win32" ? [
                     { from: "./src/renderer/index.html", to: path.join(__dirname, "app", "index.html") },
-                    { from: "./src/renderer/preload.js", to: path.join(__dirname, "app", "preload.js") },
+                    { from: "./src/renderer/preload.js", to: path.join(__dirname, "app", "preload.js") },                    
                     { from: "./native/target/x86_64-pc-windows-msvc/release/build/openssl-sys-*/out/openssl-build/install/bin/*.dll", flatten: true, toType: "dir", to: path.join(__dirname, "resources") },
+                ] : [
+                    { from: "./src/renderer/index.html", to: path.join(__dirname, "app", "index.html") },
+                    { from: "./src/renderer/preload.js", to: path.join(__dirname, "app", "preload.js") },                    
                 ]
             }), new MiniCssExtractPlugin({
                 filename: "[name].css",
