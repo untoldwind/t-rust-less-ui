@@ -5,6 +5,18 @@ import { Service, Store, calculateOtpToken, estimatePassword } from "../../nativ
 const service = new Service();
 const stores = new Map<string, Store>();
 
+function checkAutolockLoop() {
+  try {
+    service.checkAutolock();
+  }
+  catch(e) {
+    console.log("UNHANDLED ERRROR", e);
+  }
+  
+  setTimeout(checkAutolockLoop, 500);
+}
+setTimeout(checkAutolockLoop, 500);
+
 function getStore(name: string): Store {
   let store = stores.get(name);
 

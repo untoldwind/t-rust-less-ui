@@ -149,6 +149,7 @@ export declare class Service {
   secretToClipboard(storeName: string, secretId: string, properties: string[], displayName: string): ClipboardControl
   generateId(): string
   generatePassword(param: PasswordGeneratorParam): string
+  checkAutolock(): void
 }
 
 export type OTPToken = 

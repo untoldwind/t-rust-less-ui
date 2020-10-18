@@ -88,5 +88,15 @@ declare_types! {
                 handle.service.generate_password(param)
             }).to_js(&mut cx)
         }
+
+        method checkAutolock(mut cx) {
+            let this = cx.this();
+
+            cx.borrow(&this, |handle| {
+                handle.service.check_autolock();
+            });
+
+            Ok(cx.undefined().upcast())
+        }
     }
 }
