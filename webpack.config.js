@@ -5,12 +5,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { platform } = require("os");
 
 const commonConfig = {
+    devtool: 'inline-source-map',
     output: {
         path: path.resolve(__dirname, 'app'),
         filename: '[name].js',
         sourceMapFilename: '[name].js.map'
     },
-    devtool: 'source-map',
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx", ".scss", ".css", ".json", ".node"]
     },
