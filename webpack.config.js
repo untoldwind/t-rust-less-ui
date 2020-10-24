@@ -14,32 +14,12 @@ const commonConfig = {
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx", ".scss", ".css", ".json", ".node"]
     },
-    devServer: {
-        port: 8123,
-    },
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
                 use: [{
-                    loader: 'awesome-typescript-loader',
-                    options: {
-                        useBabel: true,
-                        useCache: true,
-                        babelOptions: {
-                            babelrc: false,
-                            presets: [
-                                "@babel/preset-env"
-                            ],
-                            "plugins": [
-                                "@babel/plugin-transform-runtime",
-                            ],
-                        },
-                        babelCore: "@babel/core",
-                        reportFiles: [
-                            'src/**/*.{ts,tsx}'
-                        ],
-                    },
+                    loader: 'ts-loader',
                 }],
             },
             {
@@ -122,6 +102,9 @@ module.exports = [
                 "blueprint-select": [
                     "@blueprintjs/select/lib/css/blueprint-select.css",
                 ],
+            },
+            devServer: {
+                port: 8123,
             },
             plugins: [new WriteFilePlugin(), new CopyWebpackPlugin({
                 patterns: process.platform === "win32" ? [
