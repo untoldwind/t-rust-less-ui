@@ -1,5 +1,6 @@
 import * as React from "react";
 import { InputGroup } from "@blueprintjs/core";
+import { NoWrap } from "./ui/nowrap";
 
 export interface FieldEditTextProps {
   label: string
@@ -7,12 +8,10 @@ export interface FieldEditTextProps {
   onChange: (newValue: string) => void
 }
 
-export const FieldEditText: React.FunctionComponent<FieldEditTextProps> = props => {
-  const { label, value, onChange } = props;
-
+export const FieldEditText: React.FunctionComponent<FieldEditTextProps> = ({ label, value, onChange }) => {
   return (
     <>
-      <div>{label}</div>
+      <NoWrap>{label}</NoWrap>
       <InputGroup value={value} fill
         onChange={(event: React.FormEvent<HTMLInputElement>) => onChange(event.currentTarget.value)} />
     </>

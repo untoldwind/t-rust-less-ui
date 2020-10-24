@@ -3,7 +3,11 @@ import { SecretType } from "../../../native";
 export interface ActionTranslations {
   lock: string
   unlock: string
+  config: string
   autolockIn: (seconds: number) => string
+  cancel: string
+  create: string
+  ok: string
 }
 
 export interface SecretTranslations {
@@ -37,9 +41,27 @@ export interface PasswordGeneratorTranslations {
   delim: string
 }
 
+export interface StoreConfigTranslations {
+  stores: string
+  addStore: string
+  clientId: string
+  storeName: string
+  type: string
+  directory: string
+  identities: string
+  autolockTimeout: string
+  autolockTimeoutUnit: string
+  noIdentities: string
+  addIdentity: string
+  identityName: string
+  identityEmail: string
+  identityPassphrase: string
+}
+
 export interface Translations {
   action: ActionTranslations
   secret: SecretTranslations
+  storeConfig: StoreConfigTranslations
   passwordGenerator: PasswordGeneratorTranslations
   formatTimestamp: (timestamp: string) => string,
 }

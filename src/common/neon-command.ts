@@ -1,8 +1,16 @@
-import { SecretListFilter, SecretVersion, PasswordGeneratorParam } from "../../native"
+import { SecretListFilter, SecretVersion, PasswordGeneratorParam, StoreConfig, Identity } from "../../native"
 
 export type NeonCommand =
   | {
     type: "list-stores"
+  }
+  | {
+    type: "upsert-store-config"
+    storeConfig: StoreConfig
+  }
+  | {
+    type: "delete-store-config"
+    storeName: string
   }
   | {
     type: "get-default-store"
@@ -14,6 +22,12 @@ export type NeonCommand =
   | {
     type: "identities"
     storeName: string
+  }
+  | {
+    type: "add-identity"
+    storeName: string
+    identity: Identity
+    passphrase: string
   }
   | {
     type: "lock",
@@ -66,6 +80,10 @@ export type NeonCommand =
   | {
     type: "estimate-password"
     password: string
+  }
+  | {
+    type: "select-store-location"
+    defaultPath?: string
   }
 
 export type NeonResult<T> =

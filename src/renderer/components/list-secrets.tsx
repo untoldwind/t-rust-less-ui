@@ -10,7 +10,7 @@ import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { SecretEditView } from "./secret-edit-view";
 
-export const ListSecrets: React.FunctionComponent<{}> = props => {
+export const ListSecrets: React.FunctionComponent = () => {
   const [state, send] = useService(mainInterpreter);
 
   return (

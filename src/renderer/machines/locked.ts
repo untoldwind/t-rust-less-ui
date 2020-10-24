@@ -1,15 +1,15 @@
 import { MachineConfig, assign, send } from "xstate";
 import { listStores, getDefaultStore, identities, unlock } from "./backend-neon";
-import { Identity } from "../../../native";
+import { Identity, StoreConfig } from "../../../native";
 import { MainEvents, MainContext } from "./main";
 import { StatusMonitor } from "./status-monitor";
 
 export interface LockedContext {
-  storeNames: string[]
-  selectedStore?: string
+  storeConfigs: StoreConfig[]
+  selectedStoreConfig?: StoreConfig
   selectedIdentity?: Identity
   errorMessage?: string
-  identities: Identity[];
+  identities: Identity[]
 }
 
 export type LockedEvent =
@@ -34,14 +34,14 @@ export type LockedState =
   }
 
 export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
-  initial: "fetch_store_names",
+  initial: "fetch_store_configs",
   states: {
-    fetch_store_names: {
+    fetch_store_configs: {
       invoke: {
         src: listStores,
         onDone: {
           target: "fetch_default_store",
-          actions: assign({ storeNames: (_, event) => event.data }),
+          actions: assign({ storeConfigs: (_, event) => event.data }),
         },
         onError: {
           target: "error",
@@ -55,7 +55,7 @@ export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
         onDone: [{
           target: "fetch_identities",
           cond: (_, event) => typeof event.data === "string",
-          actions: assign({ selectedStore: (_, event) => event.data }),
+          actions: assign({ selectedStoreConfig: (context, event) => context.storeConfigs.find(storeConfig => storeConfig.name == event.data) }),
         }, {
           target: "select_store",
           cond: (_, event) => typeof event.data !== "string",
@@ -69,9 +69,9 @@ export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
     fetch_identities: {
       invoke: {
         src: context => {
-          const { selectedStore } = context;
-          if (!selectedStore) return Promise.reject("Invalid state");
-          return identities(selectedStore);
+          const { selectedStoreConfig } = context;
+          if (!selectedStoreConfig) return Promise.reject("Invalid state");
+          return identities(selectedStoreConfig.name);
         },
         onDone: {
           target: "select_store",
@@ -89,9 +89,9 @@ export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
     select_store: {
       invoke: {
         src: context => callback => {
-          const { selectedStore } = context;
-          if (!selectedStore) return () => { };
-          return new StatusMonitor(callback, selectedStore, "LOCKED").shutdown;
+          const { selectedStoreConfig } = context;
+          if (!selectedStoreConfig) return () => { };
+          return new StatusMonitor(callback, selectedStoreConfig.name, "LOCKED").shutdown;
         },
       },
       on: {
@@ -101,7 +101,7 @@ export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
         },
         SELECT_STORE: {
           target: "fetch_identities",
-          actions: assign({ selectedStore: (_, event) => event.storeName }),
+          actions: assign({ selectedStoreConfig: (context, event) => context.storeConfigs.find(storeConfig => storeConfig.name == event.storeName) }),
         },
         SELECT_IDENTITY: {
           actions: assign({ selectedIdentity: (context, event) => context.identities.find(identity => identity.id === event.identityId) }),
@@ -111,16 +111,16 @@ export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
     try_unlock: {
       invoke: {
         src: (context, event) => {
-          const { selectedStore, selectedIdentity } = context;
-          if (!selectedStore || !selectedIdentity) return Promise.reject("Invalid state");
+          const { selectedStoreConfig, selectedIdentity } = context;
+          if (!selectedStoreConfig || !selectedIdentity) return Promise.reject("Invalid state");
           if (event.type !== "TRY_UNLOCK") return Promise.reject("Invalid event");
 
-          return unlock(selectedStore, selectedIdentity.id, event.passphrase);
+          return unlock(selectedStoreConfig.name, selectedIdentity.id, event.passphrase);
         },
         onDone: {
           actions: send(context => ({
             type: "STORE_UNLOCKED",
-            storeName: context.selectedStore,
+            storeName: context.selectedStoreConfig?.name,
             identity: context.selectedIdentity,
           })),
         },

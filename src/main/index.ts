@@ -63,5 +63,5 @@ app.on("activate", () => {
 app.on("ready", () => {
   mainWindow = createWindow();
 
-  registerBackend();
+  registerBackend(mainWindow);
 });

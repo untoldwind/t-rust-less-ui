@@ -3,13 +3,15 @@ import { LockedContext, LockedEvent, lockedState, LockedState } from "./locked";
 import { UnlockedEvent, UnlockedContext, unlockedState, UnlockedState } from "./unlocked";
 import { StatusMonitor } from "./status-monitor";
 import { Identity } from "../../../native";
+import { ConfigContext, ConfigEvent, ConfigState, configState } from "./config";
 
-export type MainContext = LockedContext & UnlockedContext & {
+export type MainContext = LockedContext & UnlockedContext & ConfigContext & {
 }
 
-export type MainEvents = LockedEvent | UnlockedEvent
+export type MainEvents = LockedEvent | UnlockedEvent | ConfigEvent
   | { type: "STORE_LOCKED", storeName: string }
   | { type: "STORE_UNLOCKED", storeName: string, identity: Identity }
+  | { type: "OPEN_CONFIG" }
   | { type: "CONFIRM_ERROR" }
 
 type MainState =
@@ -25,14 +27,19 @@ type MainState =
       autolockTimeout: number
     }
   }
+  | {
+    value: "config"
+    context: MainContext
+  }
   | LockedState
   | UnlockedState
+  | ConfigState
 
 const mainMachine = createMachine<MainContext, MainEvents, MainState>({
   id: "main",
   initial: "locked",
   context: {
-    storeNames: [],
+    storeConfigs: [],
     identities: [],
     secretFilter: {},
   },
@@ -43,12 +50,15 @@ const mainMachine = createMachine<MainContext, MainEvents, MainState>({
     unlocked: {
       invoke: {
         src: context => callback => {
-          const { selectedStore } = context;
-          if (!selectedStore) return () => { };
-          return new StatusMonitor(callback, selectedStore, "UNLOCKED").shutdown;
+          const { selectedStoreConfig } = context;
+          if (!selectedStoreConfig) return () => { };
+          return new StatusMonitor(callback, selectedStoreConfig.name, "UNLOCKED").shutdown;
         },
       },
       ...unlockedState,
+    },
+    config: {
+      ...configState,
     },
   },
   on: {
@@ -63,6 +73,8 @@ const mainMachine = createMachine<MainContext, MainEvents, MainState>({
       })),
     },
     STORE_LOCKED: "locked",
+    OPEN_CONFIG: "config",
+    CLOSE_CONFIG: "locked",
   },
 });
 

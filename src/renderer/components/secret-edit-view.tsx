@@ -11,7 +11,7 @@ import { orderProperties } from "../helpers/types";
 import { FieldEditNotes } from "./field-edit-notes";
 import { FieldEditPassword } from "./field-edit-password";
 
-export const SecretEditView: React.FunctionComponent<{}> = props => {
+export const SecretEditView: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
   const [state, send] = useService(mainInterpreter);
 

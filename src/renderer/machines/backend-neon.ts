@@ -1,5 +1,5 @@
 import { NeonCommand, NeonResult } from "../../common/neon-command";
-import { Status, Identity, SecretListFilter, SecretList, Secret, SecretVersion, PasswordGeneratorParam, OTPToken, PasswordStrength } from "../../../native";
+import { Status, Identity, SecretListFilter, SecretList, Secret, SecretVersion, PasswordGeneratorParam, OTPToken, PasswordStrength, StoreConfig } from "../../../native";
 import { IpcRenderer } from "electron";
 
 declare global {
@@ -31,8 +31,16 @@ export function getDefaultStore(): Promise<string | null> {
   return sendNeonCommand({ type: "get-default-store" });
 }
 
-export function listStores(): Promise<string[]> {
+export function listStores(): Promise<StoreConfig[]> {
   return sendNeonCommand({ type: "list-stores" });
+}
+
+export function upsertStoreConfig(storeConfig: StoreConfig): Promise<StoreConfig> {
+  return sendNeonCommand({ type: "upsert-store-config", storeConfig }).then(() => storeConfig);
+}
+
+export function deleteStoreConfig(storeName: string): Promise<void> {
+  return sendNeonCommand({ type: "delete-store-config", storeName });
 }
 
 export function status(storeName: string): Promise<Status> {
@@ -89,4 +97,12 @@ export function calculateOtpToken(otpUrl: string): Promise<OTPToken> {
 
 export function estimatePassword(password: string): Promise<PasswordStrength> {
   return sendNeonCommand({ type: "estimate-password", password });
+}
+
+export function selectStoreLocation(defaultPath?: string): Promise<string | null> {
+  return sendNeonCommand({ type: "select-store-location", defaultPath });
+}
+
+export function addIdentity(storeName: string, identity: Identity, passphrase: string): Promise<void> {
+  return sendNeonCommand({ type: "add-identity", storeName, identity, passphrase });
 }

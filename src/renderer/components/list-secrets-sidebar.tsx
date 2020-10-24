@@ -7,7 +7,7 @@ import { mainInterpreter } from "../machines/main";
 import { SecretType } from "../../../native";
 import { SECRET_TYPES } from "../helpers/types";
 
-export const ListSecretsSidebar: React.FunctionComponent<{}> = props => {
+export const ListSecretsSidebar: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations])
   const [state, send] = useService(mainInterpreter);
 

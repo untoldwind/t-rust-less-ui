@@ -3,8 +3,9 @@ import { UnlockStore } from "./unlock-store";
 import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { ListSecretsHotkeys } from "./list-secrets-hotkeys";
+import { Configuration } from "./configuration";
 
-export const MainFrame: React.FunctionComponent<{}> = props => {
+export const MainFrame: React.FunctionComponent = () => {
   const [state] = useService(mainInterpreter);
 
   switch (true) {
@@ -16,6 +17,10 @@ export const MainFrame: React.FunctionComponent<{}> = props => {
       return (
         <ListSecretsHotkeys />
       );
+    case state.matches("config"):
+      return (
+        <Configuration />
+      )
     default:
       return null;
   }

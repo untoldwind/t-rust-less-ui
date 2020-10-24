@@ -2,6 +2,7 @@ import * as React from "react";
 import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";
 import { Button } from "@blueprintjs/core";
+import { NoWrap } from "./ui/nowrap";
 
 export interface FieldTextProps {
   label: string
@@ -9,13 +10,13 @@ export interface FieldTextProps {
   onCopy?: () => void
 }
 
-export const FieldText: React.FunctionComponent<FieldTextProps> = props => {
+export const FieldText: React.FunctionComponent<FieldTextProps> = ({ label, value, onCopy }) => {
   return (
     <>
-      <div>{props.label}</div>
+      <NoWrap>{label}</NoWrap>
       <Flex flexDirection="row" gap={5}>
-        <FlexItem flexGrow={1}>{props.value}</FlexItem>
-        {props.onCopy && <FlexItem flexGrow={0}><Button icon="clipboard" minimal onClick={props.onCopy} /></FlexItem>}
+        <FlexItem flexGrow={1}>{value}</FlexItem>
+        {onCopy && <FlexItem flexGrow={0}><Button icon="clipboard" minimal onClick={onCopy} /></FlexItem>}
       </Flex>
     </>
   );

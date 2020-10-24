@@ -5,6 +5,7 @@ import { FlexItem } from "./ui/flex-item";
 import { Grid } from "./ui/grid";
 import { ProgressBar, Button, Popover, PopoverInteractionKind } from "@blueprintjs/core";
 import QRCode from "qrcode.react";
+import { NoWrap } from "./ui/nowrap";
 
 export interface FieldTOPTProps {
   label: string
@@ -13,12 +14,10 @@ export interface FieldTOPTProps {
   onCopy: () => void
 }
 
-export const FieldTOTP: React.FunctionComponent<FieldTOPTProps> = props => {
+export const FieldTOTP: React.FunctionComponent<FieldTOPTProps> = ({ otpToken, otpUrl, label, onCopy }) => {
   const [reveal, setReveal] = React.useState(false);
-  const { otpToken, otpUrl, label, onCopy } = props;
 
   if (typeof otpToken === "object") {
-    const { otpUrl } = props;
     const otp = new URLSearchParams(new URL(otpUrl).search);
     const popoverContent = (
       <Grid columns={1} padding={15} justifyItems="center">
@@ -30,7 +29,7 @@ export const FieldTOTP: React.FunctionComponent<FieldTOPTProps> = props => {
 
     return (
       <>
-        <div>{label}</div>
+        <NoWrap>{label}</NoWrap>
         <Popover fill
           content={popoverContent}
           isOpen={reveal}

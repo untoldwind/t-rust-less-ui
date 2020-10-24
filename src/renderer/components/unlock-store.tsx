@@ -6,7 +6,7 @@ import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
 import { HTMLSelect, InputGroup, Button, Toaster, Toast } from "@blueprintjs/core";
 
-export const UnlockStore: React.FunctionComponent<{}> = props => {
+export const UnlockStore: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations])
   const [ownState, setOwnState] = React.useState({
     passphrase: "",
@@ -27,12 +27,12 @@ export const UnlockStore: React.FunctionComponent<{}> = props => {
     isValid && send({ type: "TRY_UNLOCK", passphrase: ownState.passphrase });
   }
 
-
   return (
     <Grid
       height={[100, '%']}
       columnSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}
-      rowSpec={[[1, 'fr'], [1, 'fr'], [1, 'fr']]}>
+      rowSpec="1fr min-content min-content 1fr"
+      rowGap={40}>
       <GridItem colSpan={3}>
         {state.matches("locked.error") && <Toaster>
           <Toast
@@ -45,11 +45,11 @@ export const UnlockStore: React.FunctionComponent<{}> = props => {
       <GridItem colStart={2}>
         <form onSubmit={onUnlock}>
           <Grid columns={1} gap={5}>
-            <HTMLSelect value={state.context.selectedStore} large
+            <HTMLSelect value={state.context.selectedStoreConfig?.name} large
               disabled={!state.matches("locked.select_store")}
               onChange={event => send({ type: "SELECT_STORE", storeName: event.currentTarget.value })}>
-              {state.context.storeNames.map(store => (
-                <option key={store} value={store}>{store}</option>
+              {state.context.storeConfigs.map(storeConfig => (
+                <option key={storeConfig.name} value={storeConfig.name}>{storeConfig.name}</option>
               ))}
             </HTMLSelect>
             <HTMLSelect value={state.context.selectedIdentity?.id} large
@@ -75,6 +75,11 @@ export const UnlockStore: React.FunctionComponent<{}> = props => {
             </Button>
           </Grid>
         </form>
+      </GridItem>
+      <GridItem colStart={2} justifySelf="end">
+        <Button icon="cog" minimal onClick={() => send({ type: "OPEN_CONFIG" })}>
+          {translate.action.config}
+        </Button>
       </GridItem>
     </Grid>
   )

@@ -2,6 +2,7 @@ export interface Identity {
   id: string
   name: string
   email: string
+  hidden: boolean
 }
 
 export type Status =
@@ -142,8 +143,18 @@ export declare class ClipboardControl {
   destroy(): void
 }
 
+export declare interface StoreConfig {
+  name: string
+  store_url: string
+  client_id: string
+  autolock_timeout_secs: number
+  default_identity_id?: string
+}
+
 export declare class Service {
-  listStores(): string[]
+  listStores(): StoreConfig[]
+  upsertStoreConfig(config: StoreConfig): void
+  deleteStoreConfig(storeName: string): void
   getDefaultStore(): string | null
   openStore(name: string): Store
   secretToClipboard(storeName: string, secretId: string, properties: string[], displayName: string): ClipboardControl

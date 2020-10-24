@@ -4,7 +4,7 @@ import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { translations } from "../i18n";
 
-export const SecretVersionSelect: React.FunctionComponent<{}> = props => {
+export const SecretVersionSelect: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
   const [state, send] = useService(mainInterpreter);
 

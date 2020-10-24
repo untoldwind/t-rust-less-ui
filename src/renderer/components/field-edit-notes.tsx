@@ -1,5 +1,6 @@
 import * as React from "react";
 import { TextArea } from "@blueprintjs/core";
+import { NoWrap } from "./ui/nowrap";
 
 export interface FieldEditNotesProps {
   label: string
@@ -7,12 +8,10 @@ export interface FieldEditNotesProps {
   onChange: (newValue: string) => void
 }
 
-export const FieldEditNotes: React.FunctionComponent<FieldEditNotesProps> = props => {
-  const { label, value, onChange } = props;
-
+export const FieldEditNotes: React.FunctionComponent<FieldEditNotesProps> = ({ label, value, onChange }) => {
   return (
     <>
-      <div>{label}</div>
+      <NoWrap>{label}</NoWrap>
       <TextArea growVertically fill value={value}
         onChange={event => onChange(event.currentTarget.value)} />
     </>

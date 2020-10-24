@@ -84,9 +84,9 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     fetch_secret_list: {
       invoke: {
         src: context => {
-          const { selectedStore, secretFilter } = context;
-          if (!selectedStore) return Promise.reject("Invalid state");
-          return listSecrets(selectedStore, secretFilter);
+          const { selectedStoreConfig, secretFilter } = context;
+          if (!selectedStoreConfig) return Promise.reject("Invalid state");
+          return listSecrets(selectedStoreConfig.name, secretFilter);
         },
         onDone: {
           target: "select_secret",
@@ -121,9 +121,9 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     fetch_secret: {
       invoke: {
         src: context => {
-          const { selectedStore, selectedSecretId } = context;
-          if (!selectedStore || !selectedSecretId) return Promise.reject("Invalid state");
-          return getSecret(selectedStore, selectedSecretId);
+          const { selectedStoreConfig, selectedSecretId } = context;
+          if (!selectedStoreConfig || !selectedSecretId) return Promise.reject("Invalid state");
+          return getSecret(selectedStoreConfig.name, selectedSecretId);
         },
         onDone: {
           target: "display_secret",
@@ -142,10 +142,10 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     fetch_secret_version: {
       invoke: {
         src: (context, event) => {
-          const { selectedStore, selectedSecretId, currentBlockId } = context;
-          if (!selectedStore || !selectedSecretId || !currentBlockId) return Promise.reject("Invalid state");
+          const { selectedStoreConfig, selectedSecretId, currentBlockId } = context;
+          if (!selectedStoreConfig || !selectedSecretId || !currentBlockId) return Promise.reject("Invalid state");
 
-          return getSecretVersion(selectedStore, currentBlockId);
+          return getSecretVersion(selectedStoreConfig.name, currentBlockId);
         },
         onDone: {
           target: "display_secret",
@@ -227,9 +227,9 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     store_secret_version: {
       invoke: {
         src: context => {
-          const { selectedStore, editSecretVersion } = context;
-          if (!selectedStore || !editSecretVersion) return Promise.resolve("invalid state");
-          return addSecretVersion(selectedStore, editSecretVersion)
+          const { selectedStoreConfig, editSecretVersion } = context;
+          if (!selectedStoreConfig || !editSecretVersion) return Promise.resolve("invalid state");
+          return addSecretVersion(selectedStoreConfig.name, editSecretVersion)
         },
         onDone: {
           target: "fetch_secret",
@@ -244,9 +244,9 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     lock_store: {
       invoke: {
         src: context => {
-          const { selectedStore } = context;
-          if (!selectedStore) return Promise.reject("Invalid state");
-          return lock(selectedStore);
+          const { selectedStoreConfig } = context;
+          if (!selectedStoreConfig) return Promise.reject("Invalid state");
+          return lock(selectedStoreConfig.name);
         },
         onDone: {
           actions: send({ type: "STORE_LOCKED" }),

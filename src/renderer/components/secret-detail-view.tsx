@@ -15,7 +15,7 @@ import { SecretCreateMenu } from "./secret-create-menu";
 import { FieldType } from "./field-type";
 import { orderProperties } from "../helpers/types";
 
-export const SecretDetailView: React.FunctionComponent<{}> = props => {
+export const SecretDetailView: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
   const [state, send] = useService(mainInterpreter);
 

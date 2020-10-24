@@ -5,7 +5,7 @@ import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { translations } from "../i18n";
 
-export const ListSecretsHeader: React.FunctionComponent<{}> = props => {
+export const ListSecretsHeader: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
   const [state, send] = useService(mainInterpreter);
 
@@ -43,9 +43,12 @@ export const ListSecretsHeader: React.FunctionComponent<{}> = props => {
           onKeyDown={onKeyDown} />
       </Navbar.Group>
       <Navbar.Group align="right">
+        <Tooltip content={translate.action.config}>
+          <Button icon="cog" large minimal onClick={() => send({ type: "OPEN_CONFIG" })} />
+        </Tooltip>
         <Grid columns={1}>
           <Tooltip content={translate.action.autolockIn(state.context.autolockIn)}>
-            <Button onClick={() => { send({ type: "LOCK" }) }}>
+            <Button icon="lock" onClick={() => { send({ type: "LOCK" }) }}>
               {translate.action.lock}
             </Button>
           </Tooltip>

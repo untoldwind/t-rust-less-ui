@@ -7,7 +7,7 @@ import { mainInterpreter } from "../machines/main";
 import { useService } from "@xstate/react";
 
 
-export const SecretCreateMenu: React.FunctionComponent<{}> = props => {
+export const SecretCreateMenu: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations])
   const send = useService(mainInterpreter)[1];
 

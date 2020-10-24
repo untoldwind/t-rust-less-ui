@@ -5,7 +5,7 @@ import { mainInterpreter } from "../machines/main";
 import { Grid } from "./ui/grid";
 import { SecretEntryMatch } from "../../../native";
 
-export const SecretEntryList: React.FunctionComponent<{}> = props => {
+export const SecretEntryList: React.FunctionComponent = () => {
   const [state, send] = useService(mainInterpreter);
 
   if (!state.matches("unlocked.select_secret") &&
