@@ -1266,9 +1266,9 @@ dependencies = [
 
 [[package]]
 name = "t-rust-less-lib"
-version = "0.1.8"
+version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2382076155469610ce6a7d6c432c45e043e55f38f66bc3924a296341bc501e6a"
+checksum = "9e7cf8e0e5dea543e5fcf104b21cb355ed010825c44ed0376864ccb58d66a377"
 dependencies = [
  "byteorder",
  "capnp",
