@@ -12,38 +12,10 @@ jobs:
       run: yarn install
     - name: Build dist
       run: yarn dist
-    - name: Create sha256sum
-      run: sha256sum t-rust-less-ui.AppImage > t-rust-less-ui.AppImage.sha256sum
-      working-directory: ./dist
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+    - uses: actions/upload-artifact@v2
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: ""
-        draft: false
-        prerelease: false
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./dist/t-rust-less-ui.AppImage
-        asset_name: t-rust-less-ui.AppImage
-        asset_content_type: application/x-executable
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./dist/t-rust-less-ui.AppImage.sha256sum
-        asset_name: t-rust-less-ui.AppImage.sha256sum
-        asset_content_type: text/plain
+        name: t-rust-less-ui.AppImage
+        path: ./dist/t-rust-less-ui.AppImage
 
   build_windows:
     runs-on: windows-2019
@@ -53,6 +25,25 @@ jobs:
       run: yarn install
     - name: Build dist
       run: yarn dist
+    - uses: actions/upload-artifact@v2
+      with:
+        name: t-rust-less-ui.msi
+        path: ./dist/t-rust-less-ui.msi
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [build_linux, build_windows]
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: t-rust-less-ui.AppImage
+    - uses: actions/download-artifact@v2
+      with:
+        name: t-rust-less-ui.msi
+    - name: Create sha256sum appimage
+      run: sha256sum t-rust-less-ui.AppImage > t-rust-less-ui.AppImage.sha256sum
+    - name: Create sha256sum appimage
+      run: sha256sum t-rust-less-ui.msi > t-rust-less-ui.msi.sha256sum
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -70,6 +61,33 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./dist/t-rust-less-ui.msi
+        asset_path: t-rust-less-ui.AppImage
+        asset_name: t-rust-less-ui.AppImage
+        asset_content_type: application/x-executable
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+        asset_path: t-rust-less-ui.AppImage.sha256sum
+        asset_name: t-rust-less-ui.AppImage.sha256sum
+        asset_content_type: text/plain
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+        asset_path: t-rust-less-ui.msi
         asset_name: t-rust-less-ui.msi
         asset_content_type: application/x-executable
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+        asset_path: t-rust-less-ui.msi.sha256sum
+        asset_name: t-rust-less-ui.msi.sha256sum
+        asset_content_type: text/plain
