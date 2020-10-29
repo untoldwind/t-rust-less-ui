@@ -1,0 +1,16 @@
+name: Build
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install requirements
+      run: sudo apt-get install capnproto
+    - uses: actions/checkout@v2
+    - name: Install packages
+      run: yarn install
+    - name: Build neon
+      run: yarn build:neon
+    - name: Build app
+      run: yarn build:app
+      
