@@ -23,5 +23,5 @@ jobs:
       run: yarn dist
     - uses: actions/upload-artifact@v2
       with:
-        name: t-rust-less-ui.msi
-        path: ./dist/t-rust-less-ui.msi
+        name: t-rust-less-ui-setup.exe
+        path: ./dist/t-rust-less-ui-setup.exe
