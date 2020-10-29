@@ -28,7 +28,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: t-rust-less-ui-setup.exe
-        path: ./dist/ t-rust-less-ui-setup.exe
+        path: ./dist/t-rust-less-ui-setup.exe
 
   publish:
     runs-on: ubuntu-latest
