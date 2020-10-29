@@ -62,6 +62,14 @@
         "win": {
             "icon": "resources/t-rust-less.png",
             "asar": false
+        },
+        "linux": {
+        },
+        "nsis": {
+            "artifactName": "t-rust-less-ui.msi"
+        },
+        "appImage": {
+            "artifactName": "t-rust-less-ui.AppImage"
         }
     }
 }

@@ -13,11 +13,7 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
-    - name: Show
-      run: ls -l    
     - name: Install packages
       run: yarn install
     - name: Build dist
       run: yarn dist
-    - name: Show
-      run: ls -l dist
