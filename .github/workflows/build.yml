@@ -7,17 +7,17 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install packages
       run: yarn install
-    - name: Build neon
-      run: yarn build:neon
-    - name: Build app
-      run: yarn build:app
+    - name: Build dist
+      run: yarn dist
   build_windows:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
+    - name: Show
+      run: ls -l    
     - name: Install packages
       run: yarn install
-    - name: Build neon
-      run: yarn build:neon
-    - name: Build app
-      run: yarn build:app
+    - name: Build dist
+      run: yarn dist
+    - name: Show
+      run: ls -l dist

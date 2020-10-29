@@ -11,7 +11,7 @@
         "electron": "electron app",
         "format": "tsfmt -r && scssfmt --recursive sass/**/*.scss && tslint -c tslint.json --project .",
         "clean": "rimraf dist app",
-        "dist": "npm run build:neon && npm run build:app && electron-builder"
+        "dist": "npm run build:neon && npm run build:app && electron-builder --publish never"
     },
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^5.13.1",
