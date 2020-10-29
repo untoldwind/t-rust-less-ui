@@ -68,8 +68,7 @@ export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
     },
     fetch_identities: {
       invoke: {
-        src: context => {
-          const { selectedStoreConfig } = context;
+        src: ({ selectedStoreConfig }) => {
           if (!selectedStoreConfig) return Promise.reject("Invalid state");
           return identities(selectedStoreConfig.name);
         },
@@ -88,15 +87,14 @@ export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
     },
     select_store: {
       invoke: {
-        src: context => callback => {
-          const { selectedStoreConfig } = context;
+        src: ({ selectedStoreConfig }) => callback => {
           if (!selectedStoreConfig) return () => { };
           return new StatusMonitor(callback, selectedStoreConfig.name, "LOCKED").shutdown;
         },
       },
       on: {
         TRY_UNLOCK: {
-          cond: context => typeof context.selectedIdentity === "object",
+          cond: ({ selectedIdentity }) => typeof selectedIdentity === "object",
           target: "try_unlock",
         },
         SELECT_STORE: {
@@ -110,8 +108,7 @@ export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
     },
     try_unlock: {
       invoke: {
-        src: (context, event) => {
-          const { selectedStoreConfig, selectedIdentity } = context;
+        src: ({ selectedStoreConfig, selectedIdentity }, event) => {
           if (!selectedStoreConfig || !selectedIdentity) return Promise.reject("Invalid state");
           if (event.type !== "TRY_UNLOCK") return Promise.reject("Invalid event");
 

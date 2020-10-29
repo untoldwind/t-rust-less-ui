@@ -8,6 +8,10 @@ export interface ActionTranslations {
   cancel: string
   create: string
   ok: string
+  editSecret: string
+  archiveSecret: string
+  unarchiveSecret: string
+  confirm: string
 }
 
 export interface SecretTranslations {
@@ -20,7 +24,7 @@ export interface SecretTranslations {
     cracktime: string
     score: string
   }
-  deleted: string
+  archived: string
   noSecretTitle: string
   noSecretDescription: string
 }

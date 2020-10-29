@@ -43,8 +43,8 @@ export const ListSecretsSidebar: React.FunctionComponent = () => {
       </Menu>
       <FlexItem flexGrow={1} />
       <Menu>
-        <MenuItem text={translate.secret.deleted}
-          icon="trash"
+        <MenuItem text={translate.secret.archived}
+          icon="box"
           active={state.context.secretFilter.deleted}
           onClick={onFilterDeleted} />
       </Menu>

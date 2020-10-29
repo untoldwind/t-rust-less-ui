@@ -1,6 +1,6 @@
 {
     "name": "t-rust-less-ui",
-    "version": "0.0.1",
+    "version": "0.0.5",
     "license": "MIT",
     "private": true,
     "scripts": {

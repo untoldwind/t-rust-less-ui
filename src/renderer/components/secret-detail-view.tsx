@@ -2,7 +2,7 @@ import * as React from "react";
 import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { translations } from "../i18n";
-import { NonIdealState, Spinner, Button } from "@blueprintjs/core";
+import { NonIdealState, Spinner, Button, Tooltip, Tag } from "@blueprintjs/core";
 import { FieldText } from "./field-text";
 import { PasswordStrength } from "../../../native";
 import { FieldNotes } from "./field-notes";
@@ -14,6 +14,7 @@ import { FieldTOTP } from "./field-totp";
 import { SecretCreateMenu } from "./secret-create-menu";
 import { FieldType } from "./field-type";
 import { orderProperties } from "../helpers/types";
+import { ConfirmAction } from "./confirm-action";
 
 export const SecretDetailView: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
@@ -65,9 +66,15 @@ export const SecretDetailView: React.FunctionComponent = () => {
 
   return (
     <Grid rowSpec="min-content 1fr min-content" columns={1} padding={5}>
-      <Grid justifyItems="center" alignItems="center" columnSpec="1fr min-content">
+      <Grid justifyItems="center" alignItems="center" columnSpec="60px 1fr min-content min-content">
+        {state.context.currentSecretVersion.deleted && <Tag>{translate.secret.archived}</Tag>}
+        {!state.context.currentSecretVersion.deleted && <div />}
         <SecretVersionSelect />
-        <Button icon="edit" large minimal onClick={() => send({ type: "NEW_SECRET_VERSION" })} />
+        {!state.context.currentSecret.current.deleted && <ConfirmAction icon="archive" action={translate.action.archiveSecret} onConfirm={() => send({ type: "ARCHIVE_SECRET" })} />}
+        {state.context.currentSecret.current.deleted && <ConfirmAction icon="unarchive" action={translate.action.unarchiveSecret} onConfirm={() => send({ type: "UNARCHIVE_SECRET" })} />}
+        {!state.context.currentSecret.current.deleted && <Tooltip content={translate.action.editSecret}>
+          <Button icon="edit" large minimal onClick={() => send({ type: "NEW_SECRET_VERSION" })} />
+        </Tooltip>}
       </Grid>
       <GridItem overflow="auto">
         <Grid columnSpec="min-content 1fr" gap={5} padding={5}>

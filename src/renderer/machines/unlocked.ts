@@ -1,9 +1,10 @@
 import { MachineConfig, assign, send } from "xstate"
 import { MainEvents, MainContext } from "./main"
-import { SecretListFilter, SecretList, Secret, SecretVersion, SecretType, Identity } from "../../../native"
+import { SecretListFilter, SecretList, Secret, SecretVersion, SecretType, Identity, SecretEntryMatch } from "../../../native"
 import { listSecrets, lock, getSecret, getSecretVersion, addSecretVersion } from "./backend-neon"
 import { DisplaySecretContext, displaySecretState, DisplaySecretEvent } from "./display-secret"
 import { editSecretState, EditSecretContext, EditSecretState, EditSecretEvent } from "./edit-secret"
+import moment from "moment";
 
 export type UnlockedContext = DisplaySecretContext & EditSecretContext & {
   secretFilter: SecretListFilter
@@ -28,6 +29,8 @@ export type UnlockedEvent = DisplaySecretEvent | EditSecretEvent
   | { type: "CREATE_SECRET", secretType: SecretType }
   | { type: "NEW_SECRET_VERSION" }
   | { type: "STORE_SECRET_VERSION" }
+  | { type: "ARCHIVE_SECRET" }
+  | { type: "UNARCHIVE_SECRET" }
   | { type: "LOCK" }
 
 export type UnlockedState = EditSecretState
@@ -83,12 +86,20 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
   states: {
     fetch_secret_list: {
       invoke: {
-        src: context => {
-          const { selectedStoreConfig, secretFilter } = context;
+        src: ({ selectedStoreConfig, secretFilter }) => {
           if (!selectedStoreConfig) return Promise.reject("Invalid state");
           return listSecrets(selectedStoreConfig.name, secretFilter);
         },
-        onDone: {
+        onDone: [{
+          target: "fetch_secret",
+          cond: (context, event) => event.data.entries.some((match: SecretEntryMatch) => match.entry.id === context.selectedSecretId),
+          actions: assign((_, event) => ({
+            secretList: event.data,
+            currentSecret: undefined,
+            currentBlockId: undefined,
+            currentSecretVersion: undefined,
+          })),
+        }, {
           target: "select_secret",
           actions: assign((_, event) => ({
             secretList: event.data,
@@ -97,7 +108,7 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
             currentBlockId: undefined,
             currentSecretVersion: undefined,
           })),
-        },
+        }],
         onError: {
           target: "error",
           actions: assign({ errorMessage: (_, event) => event.data }),
@@ -120,8 +131,7 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     },
     fetch_secret: {
       invoke: {
-        src: context => {
-          const { selectedStoreConfig, selectedSecretId } = context;
+        src: ({ selectedStoreConfig, selectedSecretId }) => {
           if (!selectedStoreConfig || !selectedSecretId) return Promise.reject("Invalid state");
           return getSecret(selectedStoreConfig.name, selectedSecretId);
         },
@@ -141,8 +151,7 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     },
     fetch_secret_version: {
       invoke: {
-        src: (context, event) => {
-          const { selectedStoreConfig, selectedSecretId, currentBlockId } = context;
+        src: ({ selectedStoreConfig, selectedSecretId, currentBlockId }) => {
           if (!selectedStoreConfig || !selectedSecretId || !currentBlockId) return Promise.reject("Invalid state");
 
           return getSecretVersion(selectedStoreConfig.name, currentBlockId);
@@ -172,26 +181,26 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
           })),
         },
         SELECT_NEXT: {
-          cond: context => {
-            const idx = context.secretList?.entries.findIndex(match => match.entry.id === context.selectedSecretId);
+          cond: ({ secretList, selectedSecretId }) => {
+            const idx = secretList?.entries.findIndex(match => match.entry.id === selectedSecretId);
 
-            return typeof idx === "number" && typeof context.secretList === "object" && idx + 1 < context.secretList.entries.length;
+            return typeof idx === "number" && typeof secretList === "object" && idx + 1 < secretList.entries.length;
           },
           target: "fetch_secret",
           actions: assign({
-            selectedSecretId: context => {
-              if (typeof context.secretList !== "object") return context.selectedSecretId;
-              const idx = context.secretList.entries.findIndex(match => match.entry.id === context.selectedSecretId);
+            selectedSecretId: ({ secretList, selectedSecretId }) => {
+              if (typeof secretList !== "object") return selectedSecretId;
+              const idx = secretList.entries.findIndex(match => match.entry.id === selectedSecretId);
 
-              return context.secretList.entries[idx + 1].entry.id;
+              return secretList.entries[idx + 1].entry.id;
             },
           }),
         },
         SELECT_PREVIOUS: {
-          cond: context => {
-            const idx = context.secretList?.entries.findIndex(match => match.entry.id === context.selectedSecretId);
+          cond: ({ secretList, selectedSecretId }) => {
+            const idx = secretList?.entries.findIndex(match => match.entry.id === selectedSecretId);
 
-            return typeof idx === "number" && typeof context.secretList === "object" && idx > 0;
+            return typeof idx === "number" && typeof secretList === "object" && idx > 0;
           },
           target: "fetch_secret",
           actions: assign({
@@ -205,6 +214,8 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
         },
         CREATE_SECRET: "edit_secret_version",
         NEW_SECRET_VERSION: "edit_secret_version",
+        ARCHIVE_SECRET: "archive_secret",
+        UNARCHIVE_SECRET: "unarchive_secret",
       },
     },
     edit_secret_version: {
@@ -226,13 +237,52 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     },
     store_secret_version: {
       invoke: {
-        src: context => {
-          const { selectedStoreConfig, editSecretVersion } = context;
-          if (!selectedStoreConfig || !editSecretVersion) return Promise.resolve("invalid state");
+        src: ({ selectedStoreConfig, editSecretVersion }) => {
+          if (!selectedStoreConfig || !editSecretVersion) return Promise.reject("invalid state");
           return addSecretVersion(selectedStoreConfig.name, editSecretVersion)
         },
         onDone: {
-          target: "fetch_secret",
+          target: "fetch_secret_list",
+          actions: assign({ selectedSecretId: context => context.editSecretVersion?.secret_id }),
+        },
+        onError: {
+          target: "error",
+          actions: assign({ errorMessage: (_, event) => event.data }),
+        },
+      },
+    },
+    archive_secret: {
+      invoke: {
+        src: ({ selectedStoreConfig, currentSecret }) => {
+          if (!selectedStoreConfig || !currentSecret) return Promise.reject("invalid state");
+          return addSecretVersion(selectedStoreConfig.name, {
+            ...currentSecret.current,
+            timestamp: moment().format(),
+            deleted: true,
+          });
+        },
+        onDone: {
+          target: "fetch_secret_list",
+          actions: assign({ selectedSecretId: context => context.editSecretVersion?.secret_id }),
+        },
+        onError: {
+          target: "error",
+          actions: assign({ errorMessage: (_, event) => event.data }),
+        },
+      },
+    },
+    unarchive_secret: {
+      invoke: {
+        src: ({ selectedStoreConfig, currentSecret }) => {
+          if (!selectedStoreConfig || !currentSecret) return Promise.reject("invalid state");
+          return addSecretVersion(selectedStoreConfig.name, {
+            ...currentSecret.current,
+            timestamp: moment().format(),
+            deleted: false,
+          });
+        },
+        onDone: {
+          target: "fetch_secret_list",
           actions: assign({ selectedSecretId: context => context.editSecretVersion?.secret_id }),
         },
         onError: {
@@ -243,8 +293,7 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
     },
     lock_store: {
       invoke: {
-        src: context => {
-          const { selectedStoreConfig } = context;
+        src: ({ selectedStoreConfig }) => {
           if (!selectedStoreConfig) return Promise.reject("Invalid state");
           return lock(selectedStoreConfig.name);
         },
