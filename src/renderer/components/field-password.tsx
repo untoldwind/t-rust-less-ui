@@ -5,6 +5,7 @@ import { Button } from "@blueprintjs/core";
 import { Grid } from "./ui/grid";
 import { PasswordStrength } from "../../../native";
 import { PasswordStrengthView } from "./password-strength-view";
+import { NoWrap } from "./ui/nowrap";
 
 export interface FieldPasswordProps {
   label: string
@@ -22,7 +23,7 @@ export const FieldPassword: React.FunctionComponent<FieldPasswordProps> = ({ lab
 
   return (
     <>
-      <div>{label}</div>
+      <NoWrap>{label}</NoWrap>
       <Flex flexDirection="row" gap={5}>
         <FlexItem flexGrow={1}>
           <Grid columns={1}>

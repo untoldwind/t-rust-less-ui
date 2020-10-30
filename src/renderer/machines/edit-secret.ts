@@ -1,19 +1,21 @@
 import { MachineConfig, assign } from "xstate";
 import { MainContext, MainEvents } from "./main";
-import { SecretVersion } from "../../../native";
+import { SecretList, SecretVersion } from "../../../native";
 import { generateId } from "./backend-neon";
 import moment from "moment";
 import { BASE_PROPERTIES } from "../helpers/types";
 
 export interface EditSecretContext {
   editSecretVersion?: SecretVersion
+  secretList?: SecretList
 }
 
 export type EditSecretState =
   | {
     value: "unlocked.edit_secret_version.editable",
     context: MainContext & {
-      editSecretVersion: SecretVersion,
+      editSecretVersion: SecretVersion
+      secretList: SecretList
     },
   }
 

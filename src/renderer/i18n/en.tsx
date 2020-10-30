@@ -47,6 +47,7 @@ export const EN: Translations = {
     archived: "Archived",
     noSecretTitle: "No secret",
     noSecretDescription: "Select an existing secret of create a new",
+    tags: "Tags",
   },
   storeConfig: {
     stores: "Stores",
