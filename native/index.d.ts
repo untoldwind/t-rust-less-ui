@@ -156,6 +156,7 @@ export declare class Service {
   upsertStoreConfig(config: StoreConfig): void
   deleteStoreConfig(storeName: string): void
   getDefaultStore(): string | null
+  setDefaultStore(storeName: string): void
   openStore(name: string): Store
   secretToClipboard(storeName: string, secretId: string, properties: string[], displayName: string): ClipboardControl
   generateId(): string

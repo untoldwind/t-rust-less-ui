@@ -31,6 +31,10 @@ export function getDefaultStore(): Promise<string | null> {
   return sendNeonCommand({ type: "get-default-store" });
 }
 
+export function setDefaultStore(storeName: string): Promise<void> {
+  return sendNeonCommand({ type: "set-default-store", storeName });
+}
+
 export function listStores(): Promise<StoreConfig[]> {
   return sendNeonCommand({ type: "list-stores" });
 }

@@ -45,6 +45,7 @@ function processCommand(window: BrowserWindow, command: NeonCommand): Promise<an
     case "upsert-store-config": return Promise.resolve(service.upsertStoreConfig(command.storeConfig));
     case "delete-store-config": return Promise.resolve(service.deleteStoreConfig(command.storeName));
     case "get-default-store": return Promise.resolve(service.getDefaultStore());
+    case "set-default-store": return Promise.resolve(service.setDefaultStore(command.storeName));
     case "status": return Promise.resolve(getStore(command.storeName).status());
     case "identities": return Promise.resolve(getStore(command.storeName).identities());
     case "add-identity": return Promise.resolve(getStore(command.storeName).addIdentity(command.identity, command.passphrase));

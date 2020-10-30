@@ -16,6 +16,10 @@ export type NeonCommand =
     type: "get-default-store"
   }
   | {
+    type: "set-default-store"
+    storeName: string
+  }
+  | {
     type: "status"
     storeName: string
   }

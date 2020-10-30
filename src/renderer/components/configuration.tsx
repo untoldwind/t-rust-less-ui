@@ -1,4 +1,4 @@
-import { Button, Card, H2, H4, Toast, Toaster } from "@blueprintjs/core";
+import { Button, Card, H2, H4, Icon, Toast, Toaster } from "@blueprintjs/core";
 import { TEXT_MUTED } from "@blueprintjs/core/lib/esm/common/classes";
 import { useService } from "@xstate/react";
 import * as React from "react";
@@ -24,9 +24,17 @@ export const Configuration: React.FunctionComponent = () => {
         interactive={!selected}
         elevation={selected ? 2 : 0}
         onClick={event => { !selected && send({ type: "SELECT_STORE", storeName: storeConfig.name }) }}>
-        <Grid columnSpec="min-config 1fr" rowGap={5}>
+        <Grid columnSpec="min-content 1fr" rowGap={5} colGap={10}>
           <GridItem colSpan={2}>
-            <H4>{storeConfig.name}</H4>
+            <Grid columnSpec="1fr min-content">
+              <H4>{storeConfig.name}</H4>
+              {storeConfig.name === state.context.defaultStoreName && <Icon icon="star" />}
+              {storeConfig.name !== state.context.defaultStoreName && <Button icon="star-empty" minimal
+                onClick={(event: React.MouseEvent<HTMLElement>) => {
+                  event.stopPropagation();
+                  send({ type: "SET_DEFAULT_STORE", storeName: storeConfig.name });
+                }} />}
+            </Grid>
           </GridItem>
           <NoWrap>{translate.storeConfig.directory}</NoWrap>
           <div className={TEXT_MUTED}>{storeUrl.pathname.substring(2)}</div>

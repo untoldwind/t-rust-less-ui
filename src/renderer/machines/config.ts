@@ -1,12 +1,13 @@
 import { assign, MachineConfig } from "xstate"
 import { Identity, StoreConfig } from "../../../native";
-import { addIdentity, generateId, identities, listStores, upsertStoreConfig } from "./backend-neon";
+import { addIdentity, generateId, getDefaultStore, identities, listStores, setDefaultStore, upsertStoreConfig } from "./backend-neon";
 import { MainContext, MainEvents } from "./main"
 
 export interface ConfigContext {
   storeConfigs: StoreConfig[]
   errorMessage?: string
   selectedStoreConfig?: StoreConfig
+  defaultStoreName?: string
   identities: Identity[]
 }
 
@@ -14,6 +15,7 @@ export type ConfigEvent =
   | { type: "CLOSE_CONFIG" }
   | { type: "SAVE_CONFIG", storeConfig: StoreConfig }
   | { type: "ADD_IDENTITY", identity: Identity, passphrase: string }
+  | { type: "SET_DEFAULT_STORE", storeName: string }
 
 export type ConfigState =
   | {
@@ -55,9 +57,26 @@ export const configState: MachineConfig<MainContext, any, MainEvents> = {
       invoke: {
         src: listStores,
         onDone: {
-          target: "fetch_identities",
+          target: "fetch_default_store",
           actions: assign({ storeConfigs: (_, event) => event.data }),
         },
+        onError: {
+          target: "error",
+          actions: assign({ errorMessage: (_, event) => event.data }),
+        },
+      },
+    },
+    fetch_default_store: {
+      invoke: {
+        src: getDefaultStore,
+        onDone: [{
+          target: "fetch_identities",
+          cond: (_, event) => typeof event.data === "string",
+          actions: assign({ defaultStoreName: (_, event) => event.data }),
+        }, {
+          target: "show_stores",
+          cond: (_, event) => typeof event.data !== "string",
+        }],
         onError: {
           target: "error",
           actions: assign({ errorMessage: (_, event) => event.data }),
@@ -92,6 +111,7 @@ export const configState: MachineConfig<MainContext, any, MainEvents> = {
         },
         SAVE_CONFIG: "save_config",
         ADD_IDENTITY: "add_identity",
+        SET_DEFAULT_STORE: "set_default_store",
       },
     },
     save_config: {
@@ -111,6 +131,19 @@ export const configState: MachineConfig<MainContext, any, MainEvents> = {
       invoke: {
         src: addIdentityAction,
         onDone: "fetch_identities",
+        onError: {
+          target: "error",
+          actions: assign({ errorMessage: (_, event) => event.data }),
+        },
+      },
+    },
+    set_default_store: {
+      invoke: {
+        src: (_, event) => {
+          if (event.type !== "SET_DEFAULT_STORE") return Promise.reject("Invalid event");
+          return setDefaultStore(event.storeName)
+        },
+        onDone: "fetch_default_store",
         onError: {
           target: "error",
           actions: assign({ errorMessage: (_, event) => event.data }),

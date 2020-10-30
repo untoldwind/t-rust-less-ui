@@ -4,7 +4,7 @@ use crate::store::JsStore;
 use neon::prelude::*;
 use std::sync::Arc;
 use t_rust_less_lib::api::PasswordGeneratorParam;
-use t_rust_less_lib::service::{create_service, TrustlessService, StoreConfig};
+use t_rust_less_lib::service::{create_service, StoreConfig, TrustlessService};
 
 pub struct ServiceHandle {
   service: Arc<dyn TrustlessService>,
@@ -53,6 +53,14 @@ declare_types! {
       }).to_js(&mut cx)
     }
 
+    method setDefaultStore(mut cx) {
+      let this = cx.this();
+      let store_name = cx.argument::<JsString>(0)?.value();
+      cx.borrow(&this, |handle| {
+        handle.service.set_default_store(&store_name)
+      }).to_js(&mut cx)
+    }
+
     method openStore(mut cx) {
       let this = cx.this();
       let store_name = cx.argument::<JsString>(0)?.value();
@@ -80,12 +88,12 @@ declare_types! {
       let display_name = cx.argument::<JsString>(3)?.value();
       let clipboard = cx.borrow(&this, |handle| {
           handle.service.secret_to_clipboard(&store_name, &secret_id, &properties_str, &display_name)
-      }).or_throw(&mut cx)?;  
-      
+      }).or_throw(&mut cx)?;
+
       let mut js_clipboard = JsClipboardControl::new::<_, JsClipboardControl, _>(&mut cx, vec![])?;
       cx.borrow_mut(&mut js_clipboard, |mut js_clipboard| {
         js_clipboard.clipboard = Some(clipboard);
-      });  
+      });
 
       Ok(js_clipboard.upcast())
     }
