@@ -11,15 +11,15 @@ export interface FieldTagsProps {
 export const FieldTags: React.FunctionComponent<FieldTagsProps> = ({ tags }) => {
   const translate = React.useMemo(translations, [translations]);
 
-  if(tags.length === 0) return null;
-  
+  if (tags.length === 0) return null;
+
   return (
     <>
       <NoWrap>{translate.secret.tags}</NoWrap>
       <Flex flexDirection="row" gap={5}>
-          {tags.map((tag, idx) => (
-            <Tag key={idx}>{tag}</Tag>
-          ))}
+        {tags.map((tag, idx) => (
+          <Tag key={idx}>{tag}</Tag>
+        ))}
       </Flex>
     </>
   )
