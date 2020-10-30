@@ -1,20 +1,22 @@
 import { NeonCommand, NeonResult } from "../../common/neon-command";
 import { Status, Identity, SecretListFilter, SecretList, Secret, SecretVersion, PasswordGeneratorParam, OTPToken, PasswordStrength, StoreConfig } from "../../../native";
-import { IpcRenderer } from "electron";
 
 declare global {
   interface Window {
-    ipcRenderer: IpcRenderer
+    backend: {
+      sendCommand(command: NeonCommand, callback: (event: Event, args: any) => void): void
+      electronVersion(): string
+      appVersion(): string
+    }
   }
 }
 
-let neonIdCounter = 0;
+export const appVersion = window.backend.appVersion();
+export const electronVersion = window.backend.electronVersion();
 
 function sendNeonCommand<T>(command: NeonCommand): Promise<T> {
-  const replyChannel = `neon-backend-${neonIdCounter++}`;
-
   return new Promise((resolve, reject) => {
-    window.ipcRenderer.once(replyChannel, (_: Event, args: NeonResult<T>) => {
+    window.backend.sendCommand(command, (_: Event, args: NeonResult<T>) => {
       switch (args.result) {
         case "ok":
           resolve(args.value);
@@ -23,7 +25,6 @@ function sendNeonCommand<T>(command: NeonCommand): Promise<T> {
           reject(args.error);
       }
     });
-    window.ipcRenderer.send("neon-backend", { command, replyChannel });
   });
 }
 

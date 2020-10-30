@@ -7,12 +7,14 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let mainWindow: BrowserWindow | null = null;
 
+process.env.appVersion = app.getVersion();
+
 function createWindow(): BrowserWindow {
   const window = new BrowserWindow({
     width: 1024,
     height: 800,
     webPreferences: {
-      contextIsolation: false,
+      contextIsolation: true,
       nodeIntegration: false,
       preload: path.join(__dirname, 'preload.js'),
     },

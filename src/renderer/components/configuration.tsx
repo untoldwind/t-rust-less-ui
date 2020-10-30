@@ -1,14 +1,15 @@
 import { Button, Card, H2, H4, Icon, Toast, Toaster } from "@blueprintjs/core";
-import { TEXT_MUTED } from "@blueprintjs/core/lib/esm/common/classes";
 import { useService } from "@xstate/react";
 import * as React from "react";
 import { StoreConfig } from "../../../native";
 import { translations } from "../i18n";
+import { appVersion, electronVersion } from "../machines/backend-neon";
 import { mainInterpreter } from "../machines/main";
 import { ConfigAddStore } from "./config-add-store";
 import { ConfigIdentitiesList } from "./config-identities-list";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
+import { Muted } from "./ui/muted";
 import { NoWrap } from "./ui/nowrap";
 
 export const Configuration: React.FunctionComponent = () => {
@@ -37,13 +38,13 @@ export const Configuration: React.FunctionComponent = () => {
             </Grid>
           </GridItem>
           <NoWrap>{translate.storeConfig.directory}</NoWrap>
-          <div className={TEXT_MUTED}>{storeUrl.pathname.substring(2)}</div>
+          <Muted>{storeUrl.pathname.substring(2)}</Muted>
           <NoWrap>{translate.storeConfig.autolockTimeout}</NoWrap>
-          <div className={TEXT_MUTED}>{storeConfig.autolock_timeout_secs} {translate.storeConfig.autolockTimeoutUnit}</div>
+          <Muted>{storeConfig.autolock_timeout_secs} {translate.storeConfig.autolockTimeoutUnit}</Muted>
           <NoWrap>{translate.storeConfig.type}</NoWrap>
-          <div className={TEXT_MUTED}>{storeUrl.protocol.substring(0, storeUrl.protocol.length - 1)}</div>
+          <Muted>{storeUrl.protocol.substring(0, storeUrl.protocol.length - 1)}</Muted>
           <NoWrap>{translate.storeConfig.clientId}</NoWrap>
-          <div className={TEXT_MUTED}>{storeConfig.client_id}</div>
+          <Muted>{storeConfig.client_id}</Muted>
           {selected && <GridItem colSpan={2}><ConfigIdentitiesList /></GridItem>}
         </Grid>
       </Card>
@@ -51,23 +52,30 @@ export const Configuration: React.FunctionComponent = () => {
   }
 
   return (
-    <Grid columns={1} padding={10} rowGap={10}>
-      <GridItem justifySelf="end">
-        <Button icon="cross" large minimal onClick={() => send({ type: "CLOSE_CONFIG" })} />
+    <Grid columns={1} rowSpec="min-content 1fr min-content" height={[100, "%"]}>
+          <GridItem justifySelf="end">
+            <Button icon="cross" large minimal onClick={() => send({ type: "CLOSE_CONFIG" })} />
+          </GridItem>
+      <GridItem overflow="auto">
+        <Grid columns={1} padding={10} rowGap={10}>
+          {state.matches("config.error") && <GridItem>
+            <Toaster>
+              <Toast
+                intent="danger"
+                message={state.context.errorMessage}
+                timeout={2000}
+                onDismiss={() => send({ type: "CONFIRM_ERROR" })} />
+            </Toaster>
+          </GridItem>}
+          <H2>Stores</H2>
+          {state.context.storeConfigs.map(renderStoreConfig)}
+          <GridItem justifySelf="center">
+            <ConfigAddStore />
+          </GridItem>
+        </Grid>
       </GridItem>
-      {state.matches("config.error") && <GridItem>
-        <Toaster>
-          <Toast
-            intent="danger"
-            message={state.context.errorMessage}
-            timeout={2000}
-            onDismiss={() => send({ type: "CONFIRM_ERROR" })} />
-        </Toaster>
-      </GridItem>}
-      <H2>Stores</H2>
-      {state.context.storeConfigs.map(renderStoreConfig)}
       <GridItem justifySelf="center">
-        <ConfigAddStore />
+        <Muted>t-rust-less {appVersion} - electron {electronVersion}</Muted>
       </GridItem>
     </Grid>
   );
