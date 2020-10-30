@@ -53,9 +53,9 @@ export const Configuration: React.FunctionComponent = () => {
 
   return (
     <Grid columns={1} rowSpec="min-content 1fr min-content" height={[100, "%"]}>
-          <GridItem justifySelf="end">
-            <Button icon="cross" large minimal onClick={() => send({ type: "CLOSE_CONFIG" })} />
-          </GridItem>
+      <GridItem justifySelf="end">
+        <Button icon="cross" large minimal onClick={() => send({ type: "CLOSE_CONFIG" })} />
+      </GridItem>
       <GridItem overflow="auto">
         <Grid columns={1} padding={10} rowGap={10}>
           {state.matches("config.error") && <GridItem>

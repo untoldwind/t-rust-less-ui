@@ -20,10 +20,24 @@ export const SecretEntryList: React.FunctionComponent = () => {
     )
   }
 
+  function highlight(name_highlights: number[], name: string) {
+    const chunks: React.ReactNode[] = [];
+    let last = 0;
+
+    for (const highlight of name_highlights) {
+      if (highlight > last) chunks.push(<span>{name.substring(last, highlight)}</span>);
+      chunks.push(<b>{name[highlight]}</b>);
+      last = highlight + 1;
+    }
+    if (last < name.length) chunks.push(<span>{name.substring(last)}</span>)
+
+    return chunks;
+  }
+
   function renderListEntry(entryMatch: SecretEntryMatch): React.ReactNode {
     return (
       <MenuItem key={entryMatch.entry.id}
-        text={entryMatch.entry.name}
+        text={highlight(entryMatch.name_highlights, entryMatch.entry.name)}
         active={entryMatch.entry.id === state.context.selectedSecretId}
         onClick={() => send({ type: "SELECT_SECRET", selectedSecretId: entryMatch.entry.id })} />
     )

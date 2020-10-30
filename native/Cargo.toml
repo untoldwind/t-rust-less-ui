@@ -16,5 +16,5 @@ neon =  "=0.4.0"
 neon-serde = "=0.4.0"
 serde = "1"
 serde_derive = "1"
-t-rust-less-lib = "0.1.10"
+t-rust-less-lib = "0.1.11"
 chrono = { version = "0", features = ["serde"] }

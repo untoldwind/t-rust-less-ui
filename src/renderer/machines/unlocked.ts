@@ -311,11 +311,16 @@ export const unlockedState: MachineConfig<MainContext, any, MainEvents> = {
         CONFIRM_ERROR: "fetch_secret_list",
       },
     },
+    refetch_secret_list: {
+      // This ensures that fetch_secret_list is triggered even if a previous fetch_secret_list is still in progress
+      // This might happend is the secret_list_filter is changed very quickly
+      always: "fetch_secret_list",
+    },
   },
   on: {
     LOCK: ".lock_store",
     SET_SECRET_FILTER: {
-      target: ".fetch_secret_list",
+      target: ".refetch_secret_list",
       actions: assign({ secretFilter: (_, event) => event.secretFilter }),
     },
     UPDATE_AUTOLOCK_IN: {
