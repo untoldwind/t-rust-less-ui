@@ -11,6 +11,7 @@ import { orderProperties } from "../helpers/types";
 import { FieldEditNotes } from "./field-edit-notes";
 import { FieldEditPassword } from "./field-edit-password";
 import { FieldEditTags } from "./field-edit-tags";
+import { FieldEditUrls } from "./field-edit-urls";
 
 export const SecretEditView: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
@@ -57,6 +58,8 @@ export const SecretEditView: React.FunctionComponent = () => {
             onChange={type => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { type } })} />
           <FieldEditTags allTags={state.context.secretList.all_tags} tags={state.context.editSecretVersion.tags}
             onChange={tags => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { tags } })} />
+          <FieldEditUrls urls={state.context.editSecretVersion.urls}
+            onChange={urls => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { urls } })} />
           {orderProperties(state.context.editSecretVersion).map(({ name, value }) =>
             renderProperty(name, value)
           )}
