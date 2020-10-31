@@ -74,10 +74,16 @@ export const lockedState: MachineConfig<MainContext, any, MainEvents> = {
         },
         onDone: {
           target: "select_store",
-          actions: assign((_, event) => ({
-            identities: event.data,
-            selectedIdentity: event.data.length > 0 ? event.data[0] : undefined,
-          })),
+          actions: assign(({ selectedStoreConfig }, event) => {
+            const identities: Identity[] = event.data;
+            let selectedIdentity = identities.find(identity => identity.id === selectedStoreConfig?.default_identity_id);
+            if (!selectedIdentity && identities.length > 0) selectedIdentity = identities[0];
+
+            return {
+              identities,
+              selectedIdentity,
+            }
+          }),
         },
         onError: {
           target: "error",

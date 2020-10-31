@@ -10,6 +10,7 @@ export type UnlockedContext = DisplaySecretContext & EditSecretContext & {
   secretFilter: SecretListFilter
   secretList?: SecretList
   selectedSecretId?: string
+  unlockedIdentity?: Identity
   currentSecret?: Secret
   currentBlockId?: string
   currentSecretVersion?: SecretVersion

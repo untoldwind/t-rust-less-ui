@@ -4,6 +4,7 @@ import { UnlockedEvent, UnlockedContext, unlockedState, UnlockedState } from "./
 import { StatusMonitor } from "./status-monitor";
 import { Identity } from "../../../native";
 import { ConfigContext, ConfigEvent, ConfigState, configState } from "./config";
+import { upsertStoreConfig } from "./backend-neon";
 
 export type MainContext = LockedContext & UnlockedContext & ConfigContext & {
 }
@@ -48,13 +49,22 @@ const mainMachine = createMachine<MainContext, MainEvents, MainState>({
       ...lockedState,
     },
     unlocked: {
-      invoke: {
+      invoke: [{
+        src: ({ selectedStoreConfig, unlockedIdentity }) => {
+          if (selectedStoreConfig && unlockedIdentity && selectedStoreConfig.default_identity_id !== unlockedIdentity.id)
+            return upsertStoreConfig({
+              ...selectedStoreConfig,
+              default_identity_id: unlockedIdentity.id,
+            });
+          return Promise.resolve()
+        },
+      }, {
         src: context => callback => {
           const { selectedStoreConfig } = context;
           if (!selectedStoreConfig) return () => { };
           return new StatusMonitor(callback, selectedStoreConfig.name, "UNLOCKED").shutdown;
         },
-      },
+      }],
       ...unlockedState,
     },
     config: {
