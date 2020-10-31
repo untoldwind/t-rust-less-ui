@@ -29,6 +29,7 @@ export interface SecretTranslations {
   noSecretDescription: string
   tags: string
   urls: string
+  recipients: string
 }
 
 export interface PasswordGeneratorTranslations {
@@ -64,10 +65,16 @@ export interface StoreConfigTranslations {
   identityPassphrase: string
 }
 
+export interface UnlockTranslations {
+  noStoresTitle: string
+  noStoresDescription: string
+}
+
 export interface Translations {
   action: ActionTranslations
   secret: SecretTranslations
   storeConfig: StoreConfigTranslations
   passwordGenerator: PasswordGeneratorTranslations
+  unlock: UnlockTranslations
   formatTimestamp: (timestamp: string) => string,
 }

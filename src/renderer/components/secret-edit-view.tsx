@@ -12,6 +12,7 @@ import { FieldEditNotes } from "./field-edit-notes";
 import { FieldEditPassword } from "./field-edit-password";
 import { FieldEditTags } from "./field-edit-tags";
 import { FieldEditUrls } from "./field-edit-urls";
+import { FieldEditRecipients } from "./field-edit-recipients";
 
 export const SecretEditView: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
@@ -43,11 +44,14 @@ export const SecretEditView: React.FunctionComponent = () => {
         </GridItem>
       </Grid>
     )
+
+  const isValid = state.context.editSecretVersion.name.length > 0 && state.context.editSecretVersion.recipients.length > 0;
+
   return (
     <Grid rowSpec="min-content 1fr" columns={1} padding={5}>
       <Grid justifyItems="center" alignItems="center" columnSpec="1fr min-content min-content" gap={5}>
         {translate.formatTimestamp(state.context.editSecretVersion.timestamp)}
-        <Button icon="tick" large minimal onClick={() => send({ type: "STORE_SECRET_VERSION" })} />
+        <Button icon="tick" large minimal disabled={!isValid} onClick={() => send({ type: "STORE_SECRET_VERSION" })} />
         <Button icon="cross" large minimal onClick={() => send({ type: "ABORT_EDIT" })} />
       </Grid>
       <GridItem overflow="auto">
@@ -60,9 +64,13 @@ export const SecretEditView: React.FunctionComponent = () => {
             onChange={tags => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { tags } })} />
           <FieldEditUrls urls={state.context.editSecretVersion.urls}
             onChange={urls => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { urls } })} />
+          <GridItem colSpan={2} padding={[5, 0]} />
           {orderProperties(state.context.editSecretVersion).map(({ name, value }) =>
             renderProperty(name, value)
           )}
+          <GridItem colSpan={2} padding={[10, 0]} />
+          <FieldEditRecipients identities={state.context.identities} recipients={state.context.editSecretVersion.recipients}
+            onChange={recipients => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { recipients } })} />
         </Grid>
       </GridItem>
     </Grid>

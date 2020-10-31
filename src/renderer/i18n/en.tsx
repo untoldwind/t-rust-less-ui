@@ -49,6 +49,7 @@ export const EN: Translations = {
     noSecretDescription: "Select an existing secret of create a new",
     tags: "Tags",
     urls: "URLs",
+    recipients: "Recipients",
   },
   storeConfig: {
     stores: "Stores",
@@ -80,6 +81,10 @@ export const EN: Translations = {
     words: "Words",
     numWords: "Words",
     delim: "Delim",
+  },
+  unlock: {
+    noStoresTitle: "No configured stores",
+    noStoresDescription: "Add existing stores or create a new one.",
   },
   formatTimestamp: (timestamp: string) => moment(timestamp).format("YYYY-MM-DD HH:mm:ss Z"),
 }

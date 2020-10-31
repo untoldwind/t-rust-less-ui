@@ -16,13 +16,15 @@ const notesClass = css({
   whiteSpace: "pre",
 });
 
-export const FieldNotes: React.FunctionComponent<FieldNotesProps> = props => {
+export const FieldNotes: React.FunctionComponent<FieldNotesProps> = ({ label, value, onCopy }) => {
+  if (value.length === 0) return null;
+
   return (
     <>
-      <NoWrap>{props.label}</NoWrap>
+      <NoWrap>{label}</NoWrap>
       <Flex flexDirection="row" gap={5}>
-        <div className={notesClass}>{props.value}</div>
-        {props.onCopy && <FlexItem flexGrow={0}><Button icon="clipboard" minimal onClick={props.onCopy} /></FlexItem>}
+        <div className={notesClass}>{value}</div>
+        {onCopy && <FlexItem flexGrow={0}><Button icon="clipboard" minimal onClick={onCopy} /></FlexItem>}
       </Flex>
     </>
   )

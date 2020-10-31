@@ -17,6 +17,7 @@ import { orderProperties } from "../helpers/types";
 import { ConfirmAction } from "./confirm-action";
 import { FieldTags } from "./field-tags";
 import { FieldUrls } from "./field-urls";
+import { FieldRecipients } from "./field-recipients";
 
 export const SecretDetailView: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
@@ -84,9 +85,12 @@ export const SecretDetailView: React.FunctionComponent = () => {
           <FieldType value={state.context.currentSecretVersion.type} />
           <FieldTags tags={state.context.currentSecretVersion.tags} />
           <FieldUrls urls={state.context.currentSecretVersion.urls} />
+          <GridItem colSpan={2} padding={[5, 0]} />
           {orderProperties(state.context.currentSecretVersion).map(({ name, value }) =>
             renderProperty(name, value, state.context.currentSecret.password_strengths[name])
           )}
+          <GridItem colSpan={2} padding={[10, 0]} />
+          <FieldRecipients identities={state.context.identities} recipients={state.context.currentSecretVersion.recipients} />
         </Grid>
       </GridItem>
       <SecretCreateMenu />

@@ -25,11 +25,11 @@ export const SecretEntryList: React.FunctionComponent = () => {
     let last = 0;
 
     for (const highlight of name_highlights) {
-      if (highlight > last) chunks.push(<span>{name.substring(last, highlight)}</span>);
-      chunks.push(<b>{name[highlight]}</b>);
+      if (highlight > last) chunks.push(<span key={chunks.length}>{name.substring(last, highlight)}</span>);
+      chunks.push(<b key={chunks.length}>{name[highlight]}</b>);
       last = highlight + 1;
     }
-    if (last < name.length) chunks.push(<span>{name.substring(last)}</span>)
+    if (last < name.length) chunks.push(<span key={chunks.length}>{name.substring(last)}</span>)
 
     return chunks;
   }

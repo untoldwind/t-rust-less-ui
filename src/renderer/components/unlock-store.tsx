@@ -4,7 +4,7 @@ import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
-import { HTMLSelect, InputGroup, Button, Toaster, Toast, Tabs, Tab, Callout } from "@blueprintjs/core";
+import { HTMLSelect, InputGroup, Button, Toaster, Toast, Tabs, Tab, Callout, NonIdealState } from "@blueprintjs/core";
 
 export const UnlockStore: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations])
@@ -25,6 +25,18 @@ export const UnlockStore: React.FunctionComponent = () => {
 
     setOwnState({ passphrase: "" });
     isValid && send({ type: "TRY_UNLOCK", passphrase: ownState.passphrase });
+  }
+
+  if (state.context.storeConfigs.length === 0) {
+    return (
+      <NonIdealState
+        title={translate.unlock.noStoresTitle}
+        description={translate.unlock.noStoresDescription}
+        action={<Button icon="cog" minimal onClick={() => send({ type: "OPEN_CONFIG" })}>
+          {translate.action.config}
+        </Button>}
+      />
+    )
   }
 
   return (
