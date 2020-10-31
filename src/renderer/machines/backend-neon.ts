@@ -7,12 +7,17 @@ declare global {
       sendCommand(command: NeonCommand, callback: (event: Event, args: any) => void): void
       electronVersion(): string
       appVersion(): string
+      openExternal(url: string): void
     }
   }
 }
 
 export const appVersion = window.backend.appVersion();
 export const electronVersion = window.backend.electronVersion();
+
+export function openExternal(url: string) {
+  window.backend.openExternal(url);
+}
 
 function sendNeonCommand<T>(command: NeonCommand): Promise<T> {
   return new Promise((resolve, reject) => {

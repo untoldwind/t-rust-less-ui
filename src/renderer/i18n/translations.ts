@@ -28,6 +28,7 @@ export interface SecretTranslations {
   noSecretTitle: string
   noSecretDescription: string
   tags: string
+  urls: string
 }
 
 export interface PasswordGeneratorTranslations {

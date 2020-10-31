@@ -1,4 +1,4 @@
-const { ipcRenderer, contextBridge } = require("electron");
+const { ipcRenderer, contextBridge, shell } = require("electron");
 
 let idCounter = 0;
 
@@ -10,4 +10,5 @@ contextBridge.exposeInMainWorld('backend', {
   },
   electronVersion: () => process.versions.electron,
   appVersion: () => process.env.appVersion,
+  openExternal: (url) => shell.openExternal(url),
 });

@@ -16,6 +16,7 @@ import { FieldType } from "./field-type";
 import { orderProperties } from "../helpers/types";
 import { ConfirmAction } from "./confirm-action";
 import { FieldTags } from "./field-tags";
+import { FieldUrls } from "./field-urls";
 
 export const SecretDetailView: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
@@ -82,6 +83,7 @@ export const SecretDetailView: React.FunctionComponent = () => {
           <FieldText label={translate.secret.name} value={state.context.currentSecretVersion.name} />
           <FieldType value={state.context.currentSecretVersion.type} />
           <FieldTags tags={state.context.currentSecretVersion.tags} />
+          <FieldUrls urls={state.context.currentSecretVersion.urls} />
           {orderProperties(state.context.currentSecretVersion).map(({ name, value }) =>
             renderProperty(name, value, state.context.currentSecret.password_strengths[name])
           )}
