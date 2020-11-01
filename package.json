@@ -62,7 +62,8 @@
         "win": {
             "icon": "resources/t-rust-less.png",
             "asar": true,
-            "asarUnpack": ["*.node", "*.dll"]
+            "asarUnpack": ["*.node", "*.dll"],
+            "publisherName": "t-rust-less"
         },
         "linux": {
         },

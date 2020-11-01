@@ -25,6 +25,9 @@ jobs:
       run: yarn install
     - name: Build dist
       run: yarn dist
+      env:
+        CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+        CSC_PASSWORD: ${{ secrets.WIN_CSC_PASSWORD }}
     - uses: actions/upload-artifact@v2
       with:
         name: t-rust-less-ui-setup.exe
