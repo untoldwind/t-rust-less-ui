@@ -1,6 +1,7 @@
 import { ipcMain, IpcMainEvent, clipboard, BrowserWindow, dialog } from "electron";
 import { NeonCommand } from "../common/neon-command";
 import { Service, Store, calculateOtpToken, estimatePassword } from "../../native";
+import * as url from "url";
 
 const service = new Service();
 const stores = new Map<string, Store>();
@@ -36,7 +37,7 @@ async function selectStoreLocation(window: BrowserWindow, defaultPath?: string):
     properties: ["openDirectory", "createDirectory"],
   });
 
-  return (result.canceled || result.filePaths.length === 0) ? null : result.filePaths[0];
+  return (result.canceled || result.filePaths.length === 0) ? null : decodeURI(url.pathToFileURL(result.filePaths[0]).pathname.substring(1));
 }
 
 function processCommand(window: BrowserWindow, command: NeonCommand): Promise<any> {
