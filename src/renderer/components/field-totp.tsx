@@ -17,7 +17,7 @@ export interface FieldTOPTProps {
 export const FieldTOTP: React.FunctionComponent<FieldTOPTProps> = ({ otpToken, otpUrl, label, onCopy }) => {
   const [reveal, setReveal] = React.useState(false);
 
-  if (typeof otpToken === "object") {
+  if (typeof otpToken === "object" && otpUrl.startsWith("otpauth")) {
     const otp = new URLSearchParams(new URL(otpUrl).search);
     const popoverContent = (
       <Grid columns={1} padding={15} justifyItems="center">
