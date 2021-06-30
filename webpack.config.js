@@ -1,8 +1,8 @@
 const path = require("path");
-const WriteFilePlugin = require("write-file-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { platform } = require("os");
+const webpack = require("webpack");
 
 const commonConfig = {
     devtool: 'inline-source-map',
@@ -75,7 +75,10 @@ module.exports = [
         {
             target: "electron-main",
             entry: { main: "./src/main/index.ts" },
-            plugins: [new WriteFilePlugin(), new CopyWebpackPlugin({
+            devServer: {
+                writeToDisk: true,
+            },
+            plugins: [new CopyWebpackPlugin({
                 patterns: [
                     { from: "./src/main/app-package.json", to: path.join(__dirname, "app", "package.json") }
                 ]
@@ -106,7 +109,9 @@ module.exports = [
             devServer: {
                 port: 8123,
             },
-            plugins: [new WriteFilePlugin(), new CopyWebpackPlugin({
+            plugins: [new webpack.ProvidePlugin({
+                process: 'process/browser',
+              }), new CopyWebpackPlugin({
                 patterns: process.platform === "win32" ? [
                     { from: "./src/renderer/index.html", to: path.join(__dirname, "app", "index.html") },
                     { from: "./src/renderer/preload.js", to: path.join(__dirname, "app", "preload.js") },                    
