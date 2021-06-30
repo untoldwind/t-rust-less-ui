@@ -7,7 +7,7 @@ use t_rust_less_lib::otp::{OTPAuthUrl, OTPType};
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum OTPToken {
-  TOTP {
+  Totp {
     token: String,
     valid_until: DateTime<Utc>,
     valid_for: i64,
@@ -24,7 +24,7 @@ fn calculate_otp_token(otp_url: &str) -> OTPToken {
       let valid_until = Utc.timestamp(valid_until_secs as i64, 0);
       let valid_for = (valid_until - Utc::now()).num_seconds();
       match otpauth.otp_type {
-        OTPType::TOTP { period } => OTPToken::TOTP {
+        OTPType::Totp { period } => OTPToken::Totp {
           token,
           valid_until,
           valid_for,
