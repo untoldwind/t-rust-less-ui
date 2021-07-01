@@ -38,7 +38,7 @@ fn calculate_otp_token(otp_url: &str) -> OTPToken {
 }
 
 pub fn js_calculate_otp_token(mut cx: FunctionContext) -> JsResult<JsValue> {
-  let otp_url = cx.argument::<JsString>(0)?.value();
+  let otp_url = cx.argument::<JsString>(0)?.value(&mut cx);
   let token = calculate_otp_token(&otp_url);
 
   Ok(neon_serde::to_value(&mut cx, &token)?)

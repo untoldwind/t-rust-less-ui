@@ -4,38 +4,28 @@ use std::sync::Arc;
 use t_rust_less_lib::service::ClipboardControl;
 
 pub struct ClipboardHandle {
-  pub clipboard: Option<Arc<dyn ClipboardControl>>,
+  pub clipboard: Arc<dyn ClipboardControl>,
 }
 
-declare_types! {
-  pub class JsClipboardControl for ClipboardHandle {
-    init(_) {
-        Ok(
-            ClipboardHandle {
-                clipboard: None,
-            }
-        )
-    }
+unsafe  impl Send for ClipboardHandle {}
+unsafe  impl Sync for ClipboardHandle {}
 
-    method isDone(mut cx) {
-        let this = cx.this();
-        cx.borrow(&this, |handle| {
-            handle.clipboard.as_ref().map(|clipboard| clipboard.is_done())
-        }).to_js(&mut cx)
-    }
+impl Finalize for ClipboardHandle {}
 
-    method currentlyProviding(mut cx) {
-        let this = cx.this();
-        cx.borrow(&this, |handle| {
-            handle.clipboard.as_ref().map(|clipboard| clipboard.currently_providing())
-        }).to_js(&mut cx)
-    }
+pub fn clipboard_is_done(mut cx: FunctionContext) -> JsResult<JsValue> {
+    let handle = cx.argument::<JsBox<ClipboardHandle>>(0)?;
 
-    method destroy(mut cx) {
-        let this = cx.this();
-        cx.borrow(&this, |handle| {
-            handle.clipboard.as_ref().map(|clipboard| clipboard.destroy())
-        }).to_js(&mut cx)
-    }
-  }
+    handle.clipboard.is_done().to_js(&mut cx)
+}
+
+pub fn clipboard_currently_providing(mut cx: FunctionContext) -> JsResult<JsValue> {
+    let handle = cx.argument::<JsBox<ClipboardHandle>>(0)?;
+
+    handle.clipboard.currently_providing().to_js(&mut cx)
+}
+
+pub fn clipboard_destroy(mut cx: FunctionContext) -> JsResult<JsValue> {
+    let handle = cx.argument::<JsBox<ClipboardHandle>>(0)?;
+
+    handle.clipboard.destroy().to_js(&mut cx)
 }

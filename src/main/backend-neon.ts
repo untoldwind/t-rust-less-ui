@@ -1,7 +1,130 @@
 import { ipcMain, IpcMainEvent, clipboard, BrowserWindow, dialog } from "electron";
 import { NeonCommand } from "../common/neon-command";
-import { Service, Store, calculateOtpToken, estimatePassword } from "../../native";
+import native from "../../native";
 import * as url from "url";
+
+export class ClipboardControl {
+  private clipboardHandle: native.ClipboardHandle;
+
+  constructor(clipboardHandle: native.ClipboardHandle) {
+    this.clipboardHandle = clipboardHandle;
+  }
+
+  isDone(): boolean {
+    return native.clipboard_is_done(this.clipboardHandle);
+  }
+
+  currentlyProviding(): string | undefined {
+    return native.clipboard_currently_providing(this.clipboardHandle);
+  }
+
+  destroy(): void {
+    native.clipboard_destroy(this.clipboardHandle);
+  }
+}
+
+
+export class Store {
+  private storeHandle: native.StoreHandle;
+
+  constructor(storeHandle: native.StoreHandle) {
+    this.storeHandle = storeHandle;
+  }
+
+  status(): native.Status {
+    return native.store_status(this.storeHandle);
+  }
+
+  lock(): void {
+    native.store_lock(this.storeHandle);
+  }
+
+  unlock(identityId: string, passphrase: string): void {
+    native.store_unlock(this.storeHandle, identityId, passphrase);
+  }
+
+  identities(): native.Identity[] {
+    return native.store_identities(this.storeHandle);
+  }
+
+  addIdentity(identity: native.Identity, passphrase: string): void {
+    native.store_add_identity(this.storeHandle, identity, passphrase);
+  }
+
+  changePassphrase(passphrase: string): void {
+    native.store_change_passphrase(this.storeHandle, passphrase);
+  }
+
+  list(filter: native.SecretListFilter): native.SecretList {
+    return native.store_list(this.storeHandle, filter);
+  }
+
+  updateIndex(): void {
+    native.store_update_index(this.storeHandle);
+  }
+
+  add(secretVersion: native.SecretVersion): string {
+    return native.store_add(this.storeHandle, secretVersion);
+  }
+
+  get(secretId: string): native.Secret {
+    return native.store_get(this.storeHandle, secretId);
+  }
+
+  getVersion(blockId: string): native.SecretVersion {
+    return native.store_get_version(this.storeHandle, blockId);
+  }
+}
+
+export class Service {
+  private serviceHandle: native.ServiceHandle;
+
+  constructor() {
+    this.serviceHandle = native.service_create();
+  }
+
+  listStores(): native.StoreConfig[] {
+    return native.service_list_stores(this.serviceHandle);
+  }
+
+  upsertStoreConfig(config: native.StoreConfig): void {
+    native.service_upsert_store_config(this.serviceHandle, config);
+  }
+
+  deleteStoreConfig(storeName: string): void {
+    native.service_delete_store_config(this.serviceHandle, storeName);
+  }
+
+  getDefaultStore(): string | null {
+    return native.service_get_default_store(this.serviceHandle);
+  }
+
+  setDefaultStore(storeName: string): void {
+    native.service_set_default_store(this.serviceHandle, storeName);
+  }
+
+  openStore(name: string): Store {
+    return new Store(native.service_open_store(this.serviceHandle, name));
+  }
+
+  secretToClipboard(storeName: string, secretId: string, properties: string[], displayName: string): ClipboardControl {
+    return new ClipboardControl(native.service_secret_to_clipboard(this.serviceHandle, storeName, secretId, properties, displayName));
+  }
+
+  generateId(): string {
+    return native.service_generate_id(this.serviceHandle);
+  }
+
+  generatePassword(param: native.PasswordGeneratorParam): string {
+    return native.service_generate_password(this.serviceHandle, param);
+  }
+
+  checkAutolock(): void {
+    native.service_check_autolock(this.serviceHandle);
+  }
+}
+
+
 
 const service = new Service();
 const stores = new Map<string, Store>();
@@ -71,8 +194,8 @@ function processCommand(window: BrowserWindow, command: NeonCommand): Promise<an
     }
     case "generate-id": return Promise.resolve(service.generateId());
     case "generate-password": return Promise.resolve(service.generatePassword(command.param));
-    case "calculate-otp-token": return Promise.resolve(calculateOtpToken(command.otpUrl));
-    case "estimate-password": return Promise.resolve(estimatePassword(command.password));
+    case "calculate-otp-token": return Promise.resolve(native.calculateOtpToken(command.otpUrl));
+    case "estimate-password": return Promise.resolve(native.estimatePassword(command.password));
     case "select-store-location": return selectStoreLocation(window, command.defaultPath);
   }
 }

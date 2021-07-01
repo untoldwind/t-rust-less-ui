@@ -122,58 +122,61 @@ export type PasswordGeneratorParam =
   | {
     words: PasswordGeneratorWordsParam
   }
-
-export declare class Store {
-  status(): Status
-  lock(): void
-  unlock(identityId: string, passphrase: string): void
-  identities(): Identity[]
-  addIdentity(identity: Identity, passphrase: string): void
-  changePassphrase(passphrase: string): void
-  list(filter: SecretListFilter): SecretList
-  updateIndex(): void
-  add(secretVersion: SecretVersion): string
-  get(secretId: string): Secret
-  getVersion(blockId: string): SecretVersion
-}
-
-export declare class ClipboardControl {
-  isDone(): boolean
-  currentlyProviding(): string | undefined
-  destroy(): void
-}
-
-export declare interface StoreConfig {
-  name: string
-  store_url: string
-  client_id: string
-  autolock_timeout_secs: number
-  default_identity_id?: string
-}
-
-export declare class Service {
-  listStores(): StoreConfig[]
-  upsertStoreConfig(config: StoreConfig): void
-  deleteStoreConfig(storeName: string): void
-  getDefaultStore(): string | null
-  setDefaultStore(storeName: string): void
-  openStore(name: string): Store
-  secretToClipboard(storeName: string, secretId: string, properties: string[], displayName: string): ClipboardControl
-  generateId(): string
-  generatePassword(param: PasswordGeneratorParam): string
-  checkAutolock(): void
-}
-
-export type OTPToken = 
-  | "Invalid"
-  | {
-    "totp": {
-      token: string
-      period: number
-      valid_until: string
-      valid_for: number
-    }
+  export interface StoreConfig {
+    name: string
+    store_url: string
+    client_id: string
+    autolock_timeout_secs: number
+    default_identity_id?: string
   }
+  
+  export type OTPToken = 
+    | "Invalid"
+    | {
+      "totp": {
+        token: string
+        period: number
+        valid_until: string
+        valid_for: number
+      }
+    }
+  
+type StoreHandle = "store-handle-placeholder";
+
+declare function store_status(handle: StoreHandle): Status;
+declare function store_lock(handle: StoreHandle): void;
+declare function store_unlock(handle: StoreHandle, identityId: string, passphrase: string): void;
+declare function store_identities(handle: StoreHandle): Identity[]
+declare function store_add_identity(handle: StoreHandle, identity: Identity, passphrase: string): void
+declare function store_change_passphrase(handle: StoreHandle, passphrase: string): void
+declare function store_list(handle: StoreHandle, filter: SecretListFilter): SecretList
+declare function store_update_index(handle: StoreHandle): void;
+declare function store_add(handle: StoreHandle, secretVersion: SecretVersion): string;
+declare function store_get(handle: StoreHandle, secretId: string): Secret;
+declare function store_get_version(handle: StoreHandle, blockId: string): SecretVersion;
+
+
+
+type ClipboardHandle = "clipboard-handle-placeholder";
+
+declare function clipboard_is_done(handle: ClipboardHandle): boolean;
+declare function clipboard_currently_providing(handle: ClipboardHandle): string | undefined;
+declare function clipboard_destroy(handle: ClipboardHandle): void;
+
+type ServiceHandle = "service-handle-placeholder";
+
+declare function service_create() : ServiceHandle;
+declare function service_list_stores(handle: ServiceHandle) : StoreConfig[];
+declare function service_upsert_store_config(handle: ServiceHandle, config: StoreConfig) : void;
+declare function service_delete_store_config(handle: ServiceHandle, storeName: string) : void;
+declare function service_get_default_store(handle: ServiceHandle) : string | null;
+declare function service_set_default_store(handle: ServiceHandle, storeName: string) : StoreHandle;
+declare function service_open_store(handle: ServiceHandle, name: String) : StoreHandle;
+declare function service_secret_to_clipboard(handle: ServiceHandle, storeName: string, secretId: string, properties: string[], displayName: string) : ClipboardHandle;
+declare function service_generate_id(handle: ServiceHandle) : string;
+declare function service_generate_password(handle: ServiceHandle, param: PasswordGeneratorParam) : string;
+declare function service_check_autolock(handle: ServiceHandle) : void;
+
 
 export declare function calculateOtpToken(otpUrl: string) : OTPToken;
 

@@ -6,127 +6,101 @@ use t_rust_less_lib::memguard::SecretBytes;
 use t_rust_less_lib::secrets_store::SecretsStore;
 
 pub struct StoreHandle {
-  pub store: Option<Arc<dyn SecretsStore>>,
+  pub store: Arc<dyn SecretsStore>,
 }
 
-declare_types! {
-  pub class JsStore for StoreHandle {
-    init(_) {
-      Ok(
-        StoreHandle {
-          store: None,
-        }
-      )
-    }
+impl Finalize for StoreHandle {}
 
-    method status(mut cx) {
-      let this = cx.this();
-      cx.borrow(&this, |handle| {
-        handle.store.as_ref().map(|store| store.status())
-      }).to_js(&mut cx)
-    }
+unsafe  impl Send for StoreHandle {}
+unsafe  impl Sync for StoreHandle {}
 
-    method lock(mut cx) {
-      let this = cx.this();
-      cx.borrow(&this, |handle| {
-          handle.store.as_ref().map(|store| store.lock())
-      }).to_js(&mut cx)
-    }
+pub fn store_status(mut cx: FunctionContext) -> JsResult<JsValue> {
+  let handle = cx.argument::<JsBox<StoreHandle>>(0)?;
 
-    method unlock(mut cx) {
-      let this = cx.this();
-      let identity_id = cx.argument::<JsString>(0)?.value();
-      let passphrase = {
-        let mut str = cx.argument::<JsString>(1)?.value();
-        unsafe { SecretBytes::from(str.as_bytes_mut()) }
-      };
+  handle.store.status().to_js(&mut cx)
+}
 
-      cx.borrow(&this, |handle| {
-        handle.store.as_ref().map(|store| store.unlock(&identity_id, passphrase))
-      }).to_js(&mut cx)
-    }
+pub fn store_lock(mut cx: FunctionContext) -> JsResult<JsValue> {
+  let handle = cx.argument::<JsBox<StoreHandle>>(0)?;
 
-    method identities(mut cx) {
-      let this = cx.this();
-      cx.borrow(&this, |handle| {
-        handle.store.as_ref().map(|store| store.identities())
-      }).to_js(&mut cx)
-    }
+  handle.store.lock().to_js(&mut cx)
+}
 
-    method addIdentity(mut cx) {
-      let this = cx.this();
-      let identity : Identity = {
-        let arg = cx.argument::<JsValue>(0)?;
-        neon_serde::from_value(&mut cx, arg)?
-      };
-      let passphrase = {
-        let mut str = cx.argument::<JsString>(1)?.value();
-        unsafe { SecretBytes::from(str.as_bytes_mut()) }
-      };
+pub fn store_unlock(mut cx: FunctionContext) -> JsResult<JsValue> {
+  let handle = cx.argument::<JsBox<StoreHandle>>(0)?;
+  let identity_id = cx.argument::<JsString>(1)?.value(&mut cx);
+  let passphrase = {
+    let mut str = cx.argument::<JsString>(2)?.value(&mut cx);
+    unsafe { SecretBytes::from(str.as_bytes_mut()) }
+  };
 
-      cx.borrow(&this, |handle| {
-        handle.store.as_ref().map(|store| store.add_identity(identity, passphrase))
-      }).to_js(&mut cx)
-    }
+  handle.store.unlock(&identity_id, passphrase).to_js(&mut cx)
+}
 
-    method changePassphrase(mut cx) {
-      let this = cx.this();
-      let passphrase = {
-        let mut str = cx.argument::<JsString>(0)?.value();
-        unsafe { SecretBytes::from(str.as_bytes_mut()) }
-      };
+pub fn store_identities(mut cx: FunctionContext) -> JsResult<JsValue> {
+  let handle = cx.argument::<JsBox<StoreHandle>>(0)?;
 
-      cx.borrow(&this, |handle| {
-          handle.store.as_ref().map(|store| store.change_passphrase(passphrase))
-      }).to_js(&mut cx)
-    }
+  handle.store.identities().to_js(&mut cx)
+}
 
-    method list(mut cx) {
-      let this = cx.this();
-      let arg0 = cx.argument::<JsValue>(0)?;
-      let filter : SecretListFilter = neon_serde::from_value(&mut cx, arg0)?;
+pub fn store_add_identity(mut cx: FunctionContext) -> JsResult<JsValue> {
+  let handle = cx.argument::<JsBox<StoreHandle>>(0)?;
+  let identity : Identity = {
+    let arg = cx.argument::<JsValue>(1)?;
+    neon_serde::from_value(&mut cx, arg)?
+  };
+  let passphrase = {
+    let mut str = cx.argument::<JsString>(2)?.value(&mut cx);
+    unsafe { SecretBytes::from(str.as_bytes_mut()) }
+  };
 
-      cx.borrow(&this, |handle| {
-        handle.store.as_ref().map(|store| store.list(&filter))
-      }).to_js(&mut cx)
-    }
+  handle.store.add_identity(identity, passphrase).to_js(&mut cx)
+}
 
-    method updateIndex(mut cx) {
-      let this = cx.this();
+pub fn store_change_passphrase(mut cx: FunctionContext) -> JsResult<JsValue> {
+  let handle = cx.argument::<JsBox<StoreHandle>>(0)?;
+  let passphrase = {
+    let mut str = cx.argument::<JsString>(1)?.value(&mut cx);
+    unsafe { SecretBytes::from(str.as_bytes_mut()) }
+  };
 
-      cx.borrow(&this, |handle| {
-        handle.store.as_ref().map(|store| store.update_index())
-      }).to_js(&mut cx)
-    }
+  handle.store.change_passphrase(passphrase).to_js(&mut cx)
+}
 
-    method add(mut cx) {
-      let this = cx.this();
-      let secret_version : SecretVersion = {
-        let arg = cx.argument::<JsValue>(0)?;
-        neon_serde::from_value(&mut cx, arg)?
-      };
+pub fn store_list(mut cx: FunctionContext) -> JsResult<JsValue> {
+  let handle = cx.argument::<JsBox<StoreHandle>>(0)?;
+  let arg0 = cx.argument::<JsValue>(1)?;
+  let filter : SecretListFilter = neon_serde::from_value(&mut cx, arg0)?;
 
-      cx.borrow(&this, |handle| {
-        handle.store.as_ref().map(|store| store.add(secret_version))
-      }).to_js(&mut cx)
-    }
+  handle.store.list(&filter).to_js(&mut cx)
+}
 
-    method get(mut cx) {
-      let this = cx.this();
-      let secret_id = cx.argument::<JsString>(0)?.value();
+pub fn store_update_index(mut cx: FunctionContext) -> JsResult<JsValue> {
+  let handle = cx.argument::<JsBox<StoreHandle>>(0)?;
 
-      cx.borrow(&this, |handle| {
-        handle.store.as_ref().map(|store| store.get(&secret_id))
-      }).to_js(&mut cx)
-    }
+  handle.store.update_index().to_js(&mut cx)
+}
 
-    method getVersion(mut cx) {
-      let this = cx.this();
-      let block_id = cx.argument::<JsString>(0)?.value();
+pub fn store_add(mut cx: FunctionContext) -> JsResult<JsValue> {
+  let handle = cx.argument::<JsBox<StoreHandle>>(0)?;
+  let secret_version : SecretVersion = {
+    let arg = cx.argument::<JsValue>(1)?;
+    neon_serde::from_value(&mut cx, arg)?
+  };
 
-      cx.borrow(&this, |handle| {
-        handle.store.as_ref().map(|store| store.get_version(&block_id))
-      }).to_js(&mut cx)
-    }
-  }
+  handle.store.add(secret_version).to_js(&mut cx)
+}
+
+pub fn store_get(mut cx: FunctionContext) -> JsResult<JsValue> {
+  let handle = cx.argument::<JsBox<StoreHandle>>(0)?;
+  let secret_id = cx.argument::<JsString>(1)?.value(&mut cx);
+
+  handle.store.get(&secret_id).to_js(&mut cx)
+}
+
+pub fn store_get_version(mut cx: FunctionContext) -> JsResult<JsValue> {
+  let handle = cx.argument::<JsBox<StoreHandle>>(0)?;
+  let block_id = cx.argument::<JsString>(1)?.value(&mut cx);
+
+  handle.store.get_version(&block_id).to_js(&mut cx)
 }
