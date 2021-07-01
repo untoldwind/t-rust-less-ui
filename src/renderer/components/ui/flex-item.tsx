@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ObjectInterpolation, css, cx } from "emotion";
+import { CSSInterpolation, css, cx } from "@emotion/css";
 import { AlignSpec, OffsetSpec, offsetSpecToPadding, SizeSpec } from "./constraints";
 
 export interface FlexItemProps {
@@ -14,7 +14,7 @@ export interface FlexItemProps {
 export const FlexItem: React.FunctionComponent<FlexItemProps> = props => {
   const classes: string[] = [];
   const { padding, overflow, alignSelf, flexGrow, flexShrink, flexBasis } = props;
-  const emotionStyles: ObjectInterpolation<undefined>[] = [];
+  const emotionStyles: CSSInterpolation[] = [];
 
   flexGrow !== undefined && emotionStyles.push({ flexGrow });
   flexShrink !== undefined && emotionStyles.push({ flexShrink });

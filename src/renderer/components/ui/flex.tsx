@@ -1,5 +1,5 @@
 import * as React from "react";
-import { css, cx, ObjectInterpolation } from "emotion";
+import { css, cx, CSSInterpolation } from "@emotion/css";
 import { SizeSpec, AlignSpec, OffsetSpec, offsetSpecToPadding, Size } from "./constraints";
 
 export type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
@@ -23,7 +23,7 @@ export interface FlexProps {
 export const Flex: React.FunctionComponent<FlexProps> = props => {
   const classes = [flexClass];
   const { flexDirection, alignItems, flexGrow, flexShrink, width, height, gap, padding, backgroundColor } = props;
-  const emotionStyles: ObjectInterpolation<undefined>[] = []
+  const emotionStyles: CSSInterpolation[] = []
 
   emotionStyles.push({ flexDirection });
   alignItems !== undefined && emotionStyles.push({ alignItems });

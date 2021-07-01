@@ -77,6 +77,8 @@ module.exports = [
             entry: { main: "./src/main/index.ts" },
             devServer: {
                 writeToDisk: true,
+                hot: false,
+                inline: false,
             },
             plugins: [new CopyWebpackPlugin({
                 patterns: [
@@ -108,6 +110,8 @@ module.exports = [
             },
             devServer: {
                 port: 8123,
+                hot: true,
+                inline: true,
             },
             plugins: [new webpack.ProvidePlugin({
                 process: 'process/browser',

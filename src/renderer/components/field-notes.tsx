@@ -2,7 +2,7 @@ import * as React from "react";
 import { Flex } from "./ui/flex";
 import { Button } from "@blueprintjs/core";
 import { FlexItem } from "./ui/flex-item";
-import { css } from "emotion";
+import { css } from "@emotion/css";
 import { NoWrap } from "./ui/nowrap";
 
 export interface FieldNotesProps {

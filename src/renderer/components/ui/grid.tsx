@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Size, SizeSpec, OffsetSpec, offsetSpecToPadding, JustifySpec, AlignSpec } from "./constraints";
-import { css, cx, ObjectInterpolation } from "emotion";
+import { css, cx, CSSInterpolation } from "@emotion/css";
 
 const gridClass = css({
   display: "grid",
@@ -25,7 +25,7 @@ export const Grid: React.FunctionComponent<GridProps> = props => {
   const classes = [gridClass];
 
   const { gap, rowGap, colGap, padding, columnSpec, rowSpec, height, width, alignItems, justifyItems, backgroundColor } = props;
-  const emotionStyles: ObjectInterpolation<undefined>[] = []
+  const emotionStyles: CSSInterpolation[] = []
 
   padding !== undefined && emotionStyles.push(offsetSpecToPadding(padding))
   gap !== undefined && emotionStyles.push({ gridGap: `${gap}px` });

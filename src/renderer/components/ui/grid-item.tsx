@@ -1,6 +1,6 @@
 import * as React from "react";
 import { AlignSpec, OffsetSpec, offsetSpecToPadding, JustifySpec } from "./constraints";
-import { ObjectInterpolation, css, cx } from "emotion";
+import { CSSInterpolation, css, cx } from "@emotion/css";
 
 export interface GridItemProps {
   colStart?: number
@@ -48,7 +48,7 @@ function rawGridSpecToGridProp(start: number | undefined, span: number | undefin
 export const GridItem: React.FunctionComponent<GridItemProps> = props => {
   const classes: string[] = [];
   const { padding, overflow, alignSelf, justifySelf } = props;
-  const emotionStyles: ObjectInterpolation<undefined>[] = [];
+  const emotionStyles: CSSInterpolation[] = [];
 
   const colProps = rawGridSpecToGridProp(props.colStart, props.colSpan, props.colEnd);
   const rowProps = rawGridSpecToGridProp(props.rowStart, props.rowSpan, props.rowEnd);
