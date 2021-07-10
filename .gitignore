@@ -7,4 +7,9 @@ app/
 native/*.node
 native/target
 native/artifacts.json
+<<<<<<< HEAD
 .idea/
+=======
+*.iml
+.idea/
+>>>>>>> e12f41e (Replace electron with tauri)
