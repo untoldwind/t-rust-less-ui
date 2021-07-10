@@ -12,7 +12,7 @@ neon =  { version = "0.8", features = [ "napi-6" ], default-features = false }
 neon-serde = "0.8"
 serde = "1"
 serde_derive = "1"
-t-rust-less-lib = "0.1.13"
+t-rust-less-lib = "0.1.14"
 chrono = { version = "0", features = ["serde"] }
 
 [patch.crates-io]
