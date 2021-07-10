@@ -5,6 +5,8 @@ import { mainInterpreter } from "../machines/main";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
 import { HTMLSelect, InputGroup, Button, Toaster, Toast, Tabs, Tab, Callout, NonIdealState } from "@blueprintjs/core";
+import { Muted } from "./ui/muted";
+import { appVersion, electronVersion } from "../machines/backend-neon";
 
 export const UnlockStore: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations])
@@ -43,7 +45,7 @@ export const UnlockStore: React.FunctionComponent = () => {
     <Grid
       height={[100, '%']}
       columnSpec={[[1, 'fr'], [2, 'fr'], [1, 'fr']]}
-      rowSpec="1fr min-content min-content 1fr"
+      rowSpec="1fr min-content min-content 1fr min-content"
       rowGap={40}>
       <GridItem colSpan={3}>
         {state.matches("locked.error") && <Toaster>
@@ -96,6 +98,12 @@ export const UnlockStore: React.FunctionComponent = () => {
           {translate.action.config}
         </Button>
       </GridItem>
+      <div />
+      <GridItem colSpan={3} />
+      <GridItem colSpan={3} justifySelf="center">
+        <Muted>t-rust-less {appVersion} - electron {electronVersion}</Muted>
+      </GridItem>
+
     </Grid>
   )
 };
