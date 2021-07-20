@@ -10,7 +10,7 @@ export interface FieldEditTagsProps {
   onChange: (tags: string[]) => void
 }
 
-const TagMultiSelect = MultiSelect.ofType<String>();
+const TagMultiSelect = MultiSelect.ofType<string>();
 
 export const FieldEditTags: React.FunctionComponent<FieldEditTagsProps> = ({ allTags, tags, onChange }) => {
   const translate = React.useMemo(translations, [translations]);
