@@ -40,9 +40,9 @@
         "entitlements": null
       },
       "windows": {
-        "certificateThumbprint": null,
+        "certificateThumbprint": "438a68db3bb3fc6dccd8b484f85b0f659db3eed1",
         "digestAlgorithm": "sha256",
-        "timestampUrl": ""
+        "timestampUrl": "http://timestamp.digicert.com"
       }
     },
     "updater": {
