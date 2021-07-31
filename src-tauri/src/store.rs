@@ -111,9 +111,10 @@ pub fn store_add(
   secret_version: SecretVersion,
   state: tauri::State<State>,
 ) -> Result<String, String> {
-  state
-    .inner()
-    .get_store(store_name)?
-    .add(secret_version)
-    .map_err(|err| format!("{}", err))
+  let store = state.inner().get_store(store_name)?;
+  let secret_version_id = store.add(secret_version).map_err(|err| format!("{}", err))?;
+
+  store.update_index().map_err(|err| format!("{}", err))?;
+
+  Ok(secret_version_id)
 }
