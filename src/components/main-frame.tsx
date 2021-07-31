@@ -1,12 +1,12 @@
 import * as React from "react";
 import { UnlockStore } from "./unlock-store";
-import { useService } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { ListSecretsHotkeys } from "./list-secrets-hotkeys";
 import { Configuration } from "./configuration";
 
 export const MainFrame: React.FunctionComponent = () => {
-  const [state] = useService(mainInterpreter);
+  const [state] = useActor(mainInterpreter);
 
   switch (true) {
     case state.matches("locked"):

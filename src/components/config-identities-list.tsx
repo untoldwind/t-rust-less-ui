@@ -1,5 +1,5 @@
 import { Callout, H5, HTMLTable } from "@blueprintjs/core";
-import { useService } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import * as React from "react";
 import { translations } from "../i18n";
 import { mainInterpreter } from "../machines/main";
@@ -8,7 +8,7 @@ import { Grid } from "./ui/grid";
 
 export const ConfigIdentitiesList: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
-  const [state] = useService(mainInterpreter);
+  const [state] = useActor(mainInterpreter);
 
   if (!state.matches("config.show_stores")) return null;
 

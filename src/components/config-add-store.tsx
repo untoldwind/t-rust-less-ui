@@ -1,5 +1,6 @@
-import { Button, Dialog, InputGroup, NumericInput, Tag, Tooltip } from "@blueprintjs/core";
-import { useService } from "@xstate/react";
+import { Button, Dialog, InputGroup, NumericInput, Tag } from "@blueprintjs/core";
+import { Tooltip2 } from "@blueprintjs/popover2";
+import { useActor } from "@xstate/react";
 import * as React from "react";
 import { translations } from "../i18n";
 import { selectStoreLocation, StoreConfig } from "../machines/backend-tauri";
@@ -12,7 +13,7 @@ import { NoWrap } from "./ui/nowrap";
 
 export const ConfigAddStore: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
-  const [, send] = useService(mainInterpreter);
+  const [, send] = useActor(mainInterpreter);
   const [isOpen, setIsOpen] = React.useState(false);
   const [storeName, setStoreName] = React.useState("");
   const [directory, setDirectory] = React.useState("");
@@ -58,9 +59,9 @@ export const ConfigAddStore: React.FunctionComponent = () => {
 
   return (
     <>
-      <Tooltip content={translate.storeConfig.addStore}>
+      <Tooltip2 content={translate.storeConfig.addStore}>
         <Button icon="add" large minimal onClick={() => setIsOpen(true)} />
-      </Tooltip>
+      </Tooltip2>
       <Dialog autoFocus lazy title={translate.storeConfig.addStore} isOpen={isOpen} onClose={onClose}>
         <Grid columnSpec="min-content 1fr" padding={[20, 10, 0, 10]} gap={5} alignItems="center">
           <NoWrap>{translate.storeConfig.storeName}</NoWrap>

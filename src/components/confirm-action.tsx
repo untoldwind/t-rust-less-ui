@@ -1,5 +1,6 @@
-import { Button, IconName, MaybeElement, Popover } from '@blueprintjs/core';
 import * as React from 'react';
+import { Button, IconName, MaybeElement } from '@blueprintjs/core';
+import { Popover2 } from "@blueprintjs/popover2";
 import { translations } from '../i18n';
 import { Grid } from './ui/grid';
 import { NoWrap } from './ui/nowrap';
@@ -19,8 +20,8 @@ export const ConfirmAction: React.FunctionComponent<ConfirmActionProps> = ({ act
     </Grid>
   );
   return (
-    <Popover content={popoverContent}>
+    <Popover2 content={popoverContent}>
       <Button icon={icon} minimal large />
-    </Popover>
+    </Popover2>
   )
 }

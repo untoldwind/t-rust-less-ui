@@ -6,12 +6,12 @@ import { SecretDetailView } from "./secret-detail-view";
 import { ListSecretsHeader } from "./list-secrets-header";
 import { ListSecretsSidebar } from "./list-secrets-sidebar";
 import { Toaster, Toast } from "@blueprintjs/core";
-import { useService } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { SecretEditView } from "./secret-edit-view";
 
 export const ListSecrets: React.FunctionComponent = () => {
-  const [state, send] = useService(mainInterpreter);
+  const [state, send] = useActor(mainInterpreter);
 
   return (
     <Grid

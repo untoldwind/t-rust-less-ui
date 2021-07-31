@@ -1,12 +1,13 @@
 import * as React from "react";
-import { Button, ButtonGroup, Menu, MenuItem, Popover } from "@blueprintjs/core";
-import { useService } from "@xstate/react";
+import { Button, ButtonGroup, Menu, MenuItem } from "@blueprintjs/core";
+import { Popover2 } from "@blueprintjs/popover2";
+import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { translations } from "../i18n";
 
 export const SecretVersionSelect: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
-  const [state, send] = useService(mainInterpreter);
+  const [state, send] = useActor(mainInterpreter);
 
   if (!state.matches("unlocked.display_secret")) return null;
 
@@ -35,9 +36,9 @@ export const SecretVersionSelect: React.FunctionComponent = () => {
         onClick={() => {
           idx < state.context.currentSecret.versions.length - 1 && send({ type: "SELECT_SECRET_VERSION", blockId: state.context.currentSecret.versions[idx + 1].block_id })
         }} />
-      <Popover content={renderMenu()}>
+      <Popover2 content={renderMenu()}>
         <Button text={translate.formatTimestamp(state.context.currentSecret.current.timestamp)} rightIcon="caret-down" />
-      </Popover>
+      </Popover2>
       <Button
         icon="chevron-right"
         disabled={idx <= 0}

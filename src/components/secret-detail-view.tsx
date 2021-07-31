@@ -1,8 +1,9 @@
 import * as React from "react";
-import { useService } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { translations } from "../i18n";
-import { NonIdealState, Spinner, Button, Tooltip, Tag } from "@blueprintjs/core";
+import { NonIdealState, Spinner, Button, Tag } from "@blueprintjs/core";
+import { Tooltip2 } from "@blueprintjs/popover2";
 import { FieldText } from "./field-text";
 import { FieldNotes } from "./field-notes";
 import { FieldPassword } from "./field-password";
@@ -21,7 +22,7 @@ import { PasswordStrength } from "../machines/backend-tauri";
 
 export const SecretDetailView: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
-  const [state, send] = useService(mainInterpreter);
+  const [state, send] = useActor(mainInterpreter);
 
   function onCopyProperty(propertyName: string): () => void {
     return () => send({ type: "COPY_SECRET_PROPERTY", propertyName })
@@ -75,9 +76,9 @@ export const SecretDetailView: React.FunctionComponent = () => {
         <SecretVersionSelect />
         {!state.context.currentSecret.current.deleted && <ConfirmAction icon="archive" action={translate.action.archiveSecret} onConfirm={() => send({ type: "ARCHIVE_SECRET" })} />}
         {state.context.currentSecret.current.deleted && <ConfirmAction icon="unarchive" action={translate.action.unarchiveSecret} onConfirm={() => send({ type: "UNARCHIVE_SECRET" })} />}
-        {!state.context.currentSecret.current.deleted && <Tooltip content={translate.action.editSecret}>
+        {!state.context.currentSecret.current.deleted && <Tooltip2 content={translate.action.editSecret}>
           <Button icon="edit" large minimal onClick={() => send({ type: "NEW_SECRET_VERSION" })} />
-        </Tooltip>}
+        </Tooltip2>}
       </Grid>
       <GridItem overflow="auto">
         <Grid columnSpec="min-content 1fr" gap={5} padding={5}>
@@ -93,7 +94,9 @@ export const SecretDetailView: React.FunctionComponent = () => {
           <FieldRecipients identities={state.context.identities} recipients={state.context.currentSecretVersion.recipients} />
         </Grid>
       </GridItem>
-      <SecretCreateMenu />
+      <GridItem justifySelf="start">
+        <SecretCreateMenu />
+      </GridItem>
     </Grid>
   )
 }

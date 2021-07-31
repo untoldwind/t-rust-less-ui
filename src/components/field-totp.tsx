@@ -2,7 +2,8 @@ import * as React from "react";
 import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";
 import { Grid } from "./ui/grid";
-import { ProgressBar, Button, Popover, PopoverInteractionKind } from "@blueprintjs/core";
+import { ProgressBar, Button, PopoverInteractionKind } from "@blueprintjs/core";
+import { Popover2 } from "@blueprintjs/popover2";
 import QRCode from "qrcode.react";
 import { NoWrap } from "./ui/nowrap";
 import { OTPToken } from "../machines/backend-tauri";
@@ -30,7 +31,7 @@ export const FieldTOTP: React.FunctionComponent<FieldTOPTProps> = ({ otpToken, o
     return (
       <>
         <NoWrap>{label}</NoWrap>
-        <Popover fill
+        <Popover2 fill
           content={popoverContent}
           isOpen={reveal}
           interactionKind={PopoverInteractionKind.CLICK_TARGET_ONLY}>
@@ -48,7 +49,7 @@ export const FieldTOTP: React.FunctionComponent<FieldTOPTProps> = ({ otpToken, o
               </Flex>
             </FlexItem>
           </Flex>
-        </Popover>
+        </Popover2>
       </>
     )
   }

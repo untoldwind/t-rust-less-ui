@@ -1,6 +1,6 @@
 import * as React from "react";
 import { translations } from "../i18n";
-import { useService } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
@@ -12,7 +12,7 @@ export const UnlockStore: React.FunctionComponent = () => {
   const [ownState, setOwnState] = React.useState({
     passphrase: "",
   });
-  const [state, send] = useService(mainInterpreter);
+  const [state, send] = useActor(mainInterpreter);
   const isValid = ownState.passphrase.length > 0 && typeof state.context.selectedIdentity === "object";
   const passphraseRef = React.useRef<HTMLInputElement>(null);
 

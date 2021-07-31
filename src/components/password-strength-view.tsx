@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Intent, ProgressBar, Tooltip } from "@blueprintjs/core";
+import { Intent, ProgressBar } from "@blueprintjs/core";
+import { Tooltip2 } from "@blueprintjs/popover2";
 import { PasswordStrengthDetails } from "./password-strength-details";
 import { PasswordStrength } from "../machines/backend-tauri";
 
@@ -16,8 +17,8 @@ export const PasswordStrengthView: React.FunctionComponent<PasswordStrengthProps
   else if (passwordStrength && passwordStrength.score > 1) intent = "warning";
 
   return (
-    <Tooltip position="bottom" targetTagName="div" content={passwordStrength && <PasswordStrengthDetails strength={passwordStrength} />}>
+    <Tooltip2 position="bottom" targetTagName="div" content={passwordStrength && <PasswordStrengthDetails strength={passwordStrength} />}>
       <ProgressBar intent={intent} stripes={false} animate={false} value={passwordStrength ? passwordStrength.entropy / 55.0 : 1.0} />
-    </Tooltip>
+    </Tooltip2>
   )
 }

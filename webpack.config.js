@@ -73,6 +73,9 @@ module.exports = {
         "blueprint-select": [
             "@blueprintjs/select/lib/css/blueprint-select.css",
         ],
+        "blueprint-popover2": [
+            "@blueprintjs/popover2/lib/css/blueprint-popover2.css",
+        ],
     },
     devServer: {
         port: 8123,

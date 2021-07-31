@@ -1,13 +1,14 @@
 import * as React from "react";
-import { Navbar, InputGroup, Button, ProgressBar, Tooltip } from "@blueprintjs/core";
+import { Navbar, InputGroup, Button, ProgressBar } from "@blueprintjs/core";
+import { Tooltip2 } from "@blueprintjs/popover2";
 import { Grid } from "./ui/grid";
-import { useService } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { translations } from "../i18n";
 
 export const ListSecretsHeader: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
-  const [state, send] = useService(mainInterpreter);
+  const [state, send] = useActor(mainInterpreter);
 
   function onChangeNameFilter(event: React.FormEvent<HTMLInputElement>) {
     const value = event.currentTarget.value;
@@ -43,15 +44,15 @@ export const ListSecretsHeader: React.FunctionComponent = () => {
           onKeyDown={onKeyDown} />
       </Navbar.Group>
       <Navbar.Group align="right">
-        <Tooltip content={translate.action.config}>
+        <Tooltip2 content={translate.action.config}>
           <Button icon="cog" large minimal onClick={() => send({ type: "OPEN_CONFIG" })} />
-        </Tooltip>
+        </Tooltip2>
         <Grid columns={1}>
-          <Tooltip content={translate.action.autolockIn(state.context.autolockIn)}>
+          <Tooltip2 content={translate.action.autolockIn(state.context.autolockIn)}>
             <Button icon="lock" onClick={() => { send({ type: "LOCK" }) }}>
               {translate.action.lock}
             </Button>
-          </Tooltip>
+          </Tooltip2>
           <ProgressBar stripes={false} animate={false} value={state.context.autolockIn / state.context.autolockTimeout} />
         </Grid>
       </Navbar.Group>

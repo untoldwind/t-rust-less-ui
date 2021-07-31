@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Menu, Spinner, MenuItem } from "@blueprintjs/core";
-import { useService } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { Grid } from "./ui/grid";
 import { SecretEntryMatch } from "../machines/backend-tauri";
 
 export const SecretEntryList: React.FunctionComponent = () => {
-  const [state, send] = useService(mainInterpreter);
+  const [state, send] = useActor(mainInterpreter);
 
   if (!state.matches("unlocked.select_secret") &&
     !state.matches("unlocked.fetch_secret") &&

@@ -1,5 +1,5 @@
 import { Button, Card, H2, H4, Icon, Toast, Toaster } from "@blueprintjs/core";
-import { useService } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import * as React from "react";
 import { StoreConfig } from "../machines/backend-tauri";
 import { translations } from "../i18n";
@@ -13,7 +13,7 @@ import { NoWrap } from "./ui/nowrap";
 
 export const Configuration: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
-  const [state, send] = useService(mainInterpreter);
+  const [state, send] = useActor(mainInterpreter);
 
   function renderStoreConfig(storeConfig: StoreConfig, idx: number) {
     const selected = storeConfig.name == state.context.selectedStoreConfig?.name;

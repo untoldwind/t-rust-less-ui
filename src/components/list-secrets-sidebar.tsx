@@ -2,13 +2,13 @@ import * as React from "react";
 import { FlexItem } from "./ui/flex-item";
 import { Menu, MenuItem, H5 } from "@blueprintjs/core";
 import { translations } from "../i18n";
-import { useService } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { SecretType, SECRET_TYPES } from "../machines/backend-tauri";
 
 export const ListSecretsSidebar: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations])
-  const [state, send] = useService(mainInterpreter);
+  const [state, send] = useActor(mainInterpreter);
 
   function onFilterType(type: SecretType): () => void {
     return () => {

@@ -1,5 +1,5 @@
 import { Button, Dialog, InputGroup } from "@blueprintjs/core";
-import { useService } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import * as React from "react";
 import { Identity } from "../machines/backend-tauri";
 import { translations } from "../i18n";
@@ -13,7 +13,7 @@ import { NoWrap } from "./ui/nowrap";
 
 export const ConfigAddIdentity: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
-  const [, send] = useService(mainInterpreter);
+  const [, send] = useActor(mainInterpreter);
   const [isOpen, setIsOpen] = React.useState(false);
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");

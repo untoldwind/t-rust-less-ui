@@ -1,5 +1,6 @@
-import { Button, InputGroup, Popover } from "@blueprintjs/core";
 import * as React from "react";
+import { Button, InputGroup } from "@blueprintjs/core";
+import { Popover2 } from "@blueprintjs/popover2";
 import { estimatePassword, PasswordStrength } from "../machines/backend-tauri";
 import { PasswordGenerator } from "./password-generator";
 import { PasswordStrengthView } from "./password-strength-view";
@@ -40,9 +41,9 @@ export const PasswordInput: React.FunctionComponent<PasswordInputProps> = ({ pas
         onChange={(event: React.FormEvent<HTMLInputElement>) => onChange(event.currentTarget.value)}
         rightElement={<Flex flexDirection="row" gap={5}>
           <Button minimal icon={reveal ? "eye-on" : "eye-off"} onClick={() => setReveal(!reveal)} />
-          <Popover fill position="bottom-right" content={<PasswordGenerator onPasswordGenerated={onChange} />}>
+          <Popover2 fill position="bottom-right" content={<PasswordGenerator onPasswordGenerated={onChange} />}>
             <Button minimal icon="cog" />
-          </Popover>
+          </Popover2>
         </Flex>}
       />
       <PasswordStrengthView passwordStrength={passwordStrength} />

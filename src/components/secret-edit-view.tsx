@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useService } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
@@ -16,7 +16,7 @@ import { FieldEditRecipients } from "./field-edit-recipients";
 
 export const SecretEditView: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations]);
-  const [state, send] = useService(mainInterpreter);
+  const [state, send] = useActor(mainInterpreter);
 
   function renderProperty(name: string, value: string): React.ReactNode {
     const onChange = (value: string) => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { properties: { [name]: value } } });
