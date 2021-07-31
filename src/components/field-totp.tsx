@@ -15,7 +15,7 @@ export interface FieldTOPTProps {
   onCopy: () => void
 }
 
-export const FieldTOTP: React.FunctionComponent<FieldTOPTProps> = ({ otpToken, otpUrl, label, onCopy }) => {
+export const FieldTOTP: React.FC<FieldTOPTProps> = ({ otpToken, otpUrl, label, onCopy }) => {
   const [reveal, setReveal] = React.useState(false);
 
   if (typeof otpToken === "object" && otpUrl.startsWith("otpauth")) {

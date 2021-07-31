@@ -9,7 +9,7 @@ export interface FieldEditUrlsProps {
   onChange: (urls: string[]) => void
 }
 
-export const FieldEditUrls: React.FunctionComponent<FieldEditUrlsProps> = ({ urls, onChange }) => {
+export const FieldEditUrls: React.FC<FieldEditUrlsProps> = ({ urls, onChange }) => {
   const translate = React.useMemo(translations, [translations]);
 
   const activeUrls = urls.length === 0 || urls[urls.length - 1].length > 0 ? [...urls, ""] : [...urls];

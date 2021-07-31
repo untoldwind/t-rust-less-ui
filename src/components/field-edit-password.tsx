@@ -8,12 +8,11 @@ export interface FieldEditPasswordProps {
   onChange: (newValue: string) => void
 }
 
-export const FieldEditPassword: React.FunctionComponent<FieldEditPasswordProps> = ({ label, value, onChange }) => {
+export const FieldEditPassword: React.FC<FieldEditPasswordProps> = React.memo(({ label, value, onChange }) => {
   return (
     <>
       <NoWrap>{label}</NoWrap>
       <PasswordInput password={value} onChange={onChange} />
     </>
   )
-};
-
+});

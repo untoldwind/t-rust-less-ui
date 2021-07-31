@@ -11,7 +11,7 @@ export interface ConfirmActionProps {
   onConfirm: () => void
 };
 
-export const ConfirmAction: React.FunctionComponent<ConfirmActionProps> = ({ action, icon, onConfirm }) => {
+export const ConfirmAction: React.FC<ConfirmActionProps> = ({ action, icon, onConfirm }) => {
   const translate = React.useMemo(translations, [translations]);
   const popoverContent = (
     <Grid columns={1} gap={10} padding={10}>

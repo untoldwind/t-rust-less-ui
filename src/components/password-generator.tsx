@@ -28,7 +28,7 @@ const DEFAULT_WORDS_PARAM: PasswordGeneratorWordsParam = {
 
 export type Generator = "chars" | "words";
 
-export const PasswordGenerator: React.FunctionComponent<PasswordGeneratorProps> = props => {
+export const PasswordGenerator: React.FC<PasswordGeneratorProps> = props => {
   const translate = React.useMemo(translations, [translations]);
   const [generator, setGenerator] = React.useState<Generator>("chars");
   const [charsParam, setCharsParam] = React.useState(DEFAULT_CHARS_PARAM);

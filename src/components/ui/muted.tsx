@@ -6,6 +6,6 @@ const noWrapClass = css({
   whiteSpace: "nowrap",
 });
 
-export const Muted: React.FunctionComponent = ({ children }) => (
+export const Muted: React.FC = ({ children }) => (
   <div className={cx(TEXT_MUTED, noWrapClass)}>{children}</div>
 );

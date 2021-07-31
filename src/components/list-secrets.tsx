@@ -10,7 +10,7 @@ import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { SecretEditView } from "./secret-edit-view";
 
-export const ListSecrets: React.FunctionComponent = () => {
+export const ListSecrets: React.FC = () => {
   const [state, send] = useActor(mainInterpreter);
 
   return (

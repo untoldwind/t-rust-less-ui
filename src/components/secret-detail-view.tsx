@@ -20,7 +20,7 @@ import { FieldUrls } from "./field-urls";
 import { FieldRecipients } from "./field-recipients";
 import { PasswordStrength } from "../machines/backend-tauri";
 
-export const SecretDetailView: React.FunctionComponent = () => {
+export const SecretDetailView: React.FC = () => {
   const translate = React.useMemo(translations, [translations]);
   const [state, send] = useActor(mainInterpreter);
 

@@ -13,7 +13,7 @@ export interface FieldEditRecipientsProps {
 
 const RecipientMultiSelect = MultiSelect.ofType<Identity>();
 
-export const FieldEditRecipients: React.FunctionComponent<FieldEditRecipientsProps> = ({ identities, recipients, onChange }) => {
+export const FieldEditRecipients: React.FC<FieldEditRecipientsProps> = ({ identities, recipients, onChange }) => {
   const translate = React.useMemo(translations, [translations]);
   const selectedIdentites: Identity[] = [];
 

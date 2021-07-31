@@ -21,7 +21,7 @@ export interface GridProps {
   backgroundColor?: string
 }
 
-export const Grid: React.FunctionComponent<GridProps> = props => {
+export const Grid: React.FC<GridProps> = props => {
   const classes = [gridClass];
 
   const { gap, rowGap, colGap, padding, columnSpec, rowSpec, height, width, alignItems, justifyItems, backgroundColor } = props;

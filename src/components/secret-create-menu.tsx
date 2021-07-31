@@ -7,7 +7,7 @@ import { useActor } from "@xstate/react";
 import { SecretType, SECRET_TYPES } from "../machines/backend-tauri";
 
 
-export const SecretCreateMenu: React.FunctionComponent = () => {
+export const SecretCreateMenu: React.FC = () => {
   const translate = React.useMemo(translations, [translations])
   const send = useActor(mainInterpreter)[1];
 

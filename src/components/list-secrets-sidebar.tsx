@@ -6,7 +6,7 @@ import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { SecretType, SECRET_TYPES } from "../machines/backend-tauri";
 
-export const ListSecretsSidebar: React.FunctionComponent = () => {
+export const ListSecretsSidebar: React.FC = () => {
   const translate = React.useMemo(translations, [translations])
   const [state, send] = useActor(mainInterpreter);
 

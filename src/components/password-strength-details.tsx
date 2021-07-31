@@ -7,7 +7,7 @@ export interface PasswordStrengthDetailsProps {
   strength?: PasswordStrength
 }
 
-export const PasswordStrengthDetails: React.FunctionComponent<PasswordStrengthDetailsProps> = ({ strength }) => {
+export const PasswordStrengthDetails: React.FC<PasswordStrengthDetailsProps> = ({ strength }) => {
   const translate = React.useMemo(translations, [translations]);
 
   if (!strength) return null;

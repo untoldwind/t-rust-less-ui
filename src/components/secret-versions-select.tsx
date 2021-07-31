@@ -5,7 +5,7 @@ import { useActor } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
 import { translations } from "../i18n";
 
-export const SecretVersionSelect: React.FunctionComponent = () => {
+export const SecretVersionSelect: React.FC = () => {
   const translate = React.useMemo(translations, [translations]);
   const [state, send] = useActor(mainInterpreter);
 

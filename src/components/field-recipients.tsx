@@ -10,7 +10,7 @@ export interface FieldRecipientsProps {
   recipients: string[]
 }
 
-export const FieldRecipients: React.FunctionComponent<FieldRecipientsProps> = ({ recipients, identities }) => {
+export const FieldRecipients: React.FC<FieldRecipientsProps> = ({ recipients, identities }) => {
   const translate = React.useMemo(translations, [translations]);
 
   return (

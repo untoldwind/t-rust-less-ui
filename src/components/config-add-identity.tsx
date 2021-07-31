@@ -11,7 +11,7 @@ import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
 import { NoWrap } from "./ui/nowrap";
 
-export const ConfigAddIdentity: React.FunctionComponent = () => {
+export const ConfigAddIdentity: React.FC = () => {
   const translate = React.useMemo(translations, [translations]);
   const [, send] = useActor(mainInterpreter);
   const [isOpen, setIsOpen] = React.useState(false);

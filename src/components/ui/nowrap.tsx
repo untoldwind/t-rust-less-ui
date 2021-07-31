@@ -5,4 +5,4 @@ const noWrapClass = css({
   whiteSpace: "nowrap",
 });
 
-export const NoWrap: React.FunctionComponent = ({ children }) => (<div className={noWrapClass}>{children}</div>);
+export const NoWrap: React.FC = ({ children }) => (<div className={noWrapClass}>{children}</div>);

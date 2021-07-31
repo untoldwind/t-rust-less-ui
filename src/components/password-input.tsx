@@ -12,7 +12,7 @@ export interface PasswordInputProps {
   onChange: (password: string) => void
 }
 
-export const PasswordInput: React.FunctionComponent<PasswordInputProps> = ({ password, onChange }) => {
+export const PasswordInput: React.FC<PasswordInputProps> = ({ password, onChange }) => {
   const [timer, setTimer] = React.useState<number | null>(null);
   const [reveal, setReveal] = React.useState(false);
   const [passwordStrength, setPasswordStrength] = React.useState<PasswordStrength | undefined>(undefined);

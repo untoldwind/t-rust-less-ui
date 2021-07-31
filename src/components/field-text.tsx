@@ -10,7 +10,7 @@ export interface FieldTextProps {
   onCopy?: () => void
 }
 
-export const FieldText: React.FunctionComponent<FieldTextProps> = ({ label, value, onCopy }) => {
+export const FieldText: React.FC<FieldTextProps> = React.memo(({ label, value, onCopy }) => {
   return (
     <>
       <NoWrap>{label}</NoWrap>
@@ -20,4 +20,4 @@ export const FieldText: React.FunctionComponent<FieldTextProps> = ({ label, valu
       </Flex>
     </>
   );
-};
+});

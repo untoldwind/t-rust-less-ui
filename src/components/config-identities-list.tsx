@@ -6,7 +6,7 @@ import { mainInterpreter } from "../machines/main";
 import { ConfigAddIdentity } from "./config-add-identity";
 import { Grid } from "./ui/grid";
 
-export const ConfigIdentitiesList: React.FunctionComponent = () => {
+export const ConfigIdentitiesList: React.FC = () => {
   const translate = React.useMemo(translations, [translations]);
   const [state] = useActor(mainInterpreter);
 

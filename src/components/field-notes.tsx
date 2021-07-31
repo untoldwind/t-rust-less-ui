@@ -16,7 +16,7 @@ const notesClass = css({
   whiteSpace: "pre",
 });
 
-export const FieldNotes: React.FunctionComponent<FieldNotesProps> = ({ label, value, onCopy }) => {
+export const FieldNotes: React.FC<FieldNotesProps> = React.memo(({ label, value, onCopy }) => {
   if (value.length === 0) return null;
 
   return (
@@ -28,4 +28,4 @@ export const FieldNotes: React.FunctionComponent<FieldNotesProps> = ({ label, va
       </Flex>
     </>
   )
-}
+});

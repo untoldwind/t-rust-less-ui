@@ -45,7 +45,7 @@ function rawGridSpecToGridProp(start: number | undefined, span: number | undefin
   }
 }
 
-export const GridItem: React.FunctionComponent<GridItemProps> = props => {
+export const GridItem: React.FC<GridItemProps> = props => {
   const classes: string[] = [];
   const { padding, overflow, alignSelf, justifySelf } = props;
   const emotionStyles: CSSInterpolation[] = [];

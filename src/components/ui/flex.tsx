@@ -20,7 +20,7 @@ export interface FlexProps {
   backgroundColor?: string
 }
 
-export const Flex: React.FunctionComponent<FlexProps> = props => {
+export const Flex: React.FC<FlexProps> = props => {
   const classes = [flexClass];
   const { flexDirection, alignItems, flexGrow, flexShrink, width, height, gap, padding, backgroundColor } = props;
   const emotionStyles: CSSInterpolation[] = []

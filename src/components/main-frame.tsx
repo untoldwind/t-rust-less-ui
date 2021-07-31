@@ -5,7 +5,7 @@ import { mainInterpreter } from "../machines/main";
 import { ListSecretsHotkeys } from "./list-secrets-hotkeys";
 import { Configuration } from "./configuration";
 
-export const MainFrame: React.FunctionComponent = () => {
+export const MainFrame: React.FC = () => {
   const [state] = useActor(mainInterpreter);
 
   switch (true) {

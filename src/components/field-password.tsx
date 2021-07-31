@@ -18,7 +18,7 @@ export interface FieldPasswordState {
   reveal: boolean
 }
 
-export const FieldPassword: React.FunctionComponent<FieldPasswordProps> = ({ label, value, strength, onCopy }) => {
+export const FieldPassword: React.FC<FieldPasswordProps> = ({ label, value, strength, onCopy }) => {
   const [reveal, setReveal] = React.useState(false);
 
   return (

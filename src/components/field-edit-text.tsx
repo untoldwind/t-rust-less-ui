@@ -8,7 +8,7 @@ export interface FieldEditTextProps {
   onChange: (newValue: string) => void
 }
 
-export const FieldEditText: React.FunctionComponent<FieldEditTextProps> = ({ label, value, onChange }) => {
+export const FieldEditText: React.FC<FieldEditTextProps> = React.memo(({ label, value, onChange }) => {
   return (
     <>
       <NoWrap>{label}</NoWrap>
@@ -16,5 +16,5 @@ export const FieldEditText: React.FunctionComponent<FieldEditTextProps> = ({ lab
         onChange={(event: React.FormEvent<HTMLInputElement>) => onChange(event.currentTarget.value)} />
     </>
   )
-}
+});
 

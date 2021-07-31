@@ -7,7 +7,7 @@ import { GridItem } from "./ui/grid-item";
 import { HTMLSelect, InputGroup, Button, Toaster, Toast, Tabs, Tab, Callout, NonIdealState } from "@blueprintjs/core";
 import { Muted } from "./ui/muted";
 
-export const UnlockStore: React.FunctionComponent = () => {
+export const UnlockStore: React.FC = () => {
   const translate = React.useMemo(translations, [translations])
   const [ownState, setOwnState] = React.useState({
     passphrase: "",

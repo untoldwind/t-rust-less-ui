@@ -11,7 +11,7 @@ import { GridItem } from "./ui/grid-item";
 import { Muted } from "./ui/muted";
 import { NoWrap } from "./ui/nowrap";
 
-export const Configuration: React.FunctionComponent = () => {
+export const Configuration: React.FC = () => {
   const translate = React.useMemo(translations, [translations]);
   const [state, send] = useActor(mainInterpreter);
 

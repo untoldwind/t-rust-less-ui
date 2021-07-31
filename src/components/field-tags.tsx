@@ -8,7 +8,7 @@ export interface FieldTagsProps {
   tags: string[]
 }
 
-export const FieldTags: React.FunctionComponent<FieldTagsProps> = ({ tags }) => {
+export const FieldTags: React.FC<FieldTagsProps> = ({ tags }) => {
   const translate = React.useMemo(translations, [translations]);
 
   if (tags.length === 0) return null;

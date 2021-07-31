@@ -8,7 +8,7 @@ export interface FieldUrlsProps {
   urls: string[]
 }
 
-export const FieldUrls: React.FunctionComponent<FieldUrlsProps> = ({ urls }) => {
+export const FieldUrls: React.FC<FieldUrlsProps> = ({ urls }) => {
   const translate = React.useMemo(translations, [translations]);
 
   if (urls.length === 0) return null;

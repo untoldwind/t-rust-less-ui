@@ -14,7 +14,7 @@ import { FieldEditTags } from "./field-edit-tags";
 import { FieldEditUrls } from "./field-edit-urls";
 import { FieldEditRecipients } from "./field-edit-recipients";
 
-export const SecretEditView: React.FunctionComponent = () => {
+export const SecretEditView: React.FC = () => {
   const translate = React.useMemo(translations, [translations]);
   const [state, send] = useActor(mainInterpreter);
 

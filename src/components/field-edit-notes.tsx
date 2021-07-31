@@ -8,7 +8,7 @@ export interface FieldEditNotesProps {
   onChange: (newValue: string) => void
 }
 
-export const FieldEditNotes: React.FunctionComponent<FieldEditNotesProps> = ({ label, value, onChange }) => {
+export const FieldEditNotes: React.FC<FieldEditNotesProps> = React.memo(({ label, value, onChange }) => {
   return (
     <>
       <NoWrap>{label}</NoWrap>
@@ -16,4 +16,4 @@ export const FieldEditNotes: React.FunctionComponent<FieldEditNotesProps> = ({ l
         onChange={event => onChange(event.currentTarget.value)} />
     </>
   )
-}
+});

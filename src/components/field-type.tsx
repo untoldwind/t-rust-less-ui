@@ -7,7 +7,7 @@ export interface FieldTypeProps {
   value: SecretType
 }
 
-export const FieldType: React.FunctionComponent<FieldTypeProps> = props => {
+export const FieldType: React.FC<FieldTypeProps> = props => {
   const translate = React.useMemo(translations, [translations]);
   const { value } = props;
 

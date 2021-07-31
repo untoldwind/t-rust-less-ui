@@ -8,8 +8,7 @@ export interface PasswordStrengthProps {
   passwordStrength?: PasswordStrength
 }
 
-export const PasswordStrengthView: React.FunctionComponent<PasswordStrengthProps> = ({ passwordStrength }) => {
-
+export const PasswordStrengthView: React.FC<PasswordStrengthProps> = React.memo(({ passwordStrength }) => {
   let intent: Intent = "danger";
 
   if (passwordStrength && passwordStrength.score > 3) intent = "success";
@@ -21,4 +20,4 @@ export const PasswordStrengthView: React.FunctionComponent<PasswordStrengthProps
       <ProgressBar intent={intent} stripes={false} animate={false} value={passwordStrength ? passwordStrength.entropy / 55.0 : 1.0} />
     </Tooltip2>
   )
-}
+});

@@ -5,7 +5,7 @@ import { mainInterpreter } from "../machines/main";
 import { Grid } from "./ui/grid";
 import { SecretEntryMatch } from "../machines/backend-tauri";
 
-export const SecretEntryList: React.FunctionComponent = () => {
+export const SecretEntryList: React.FC = () => {
   const [state, send] = useActor(mainInterpreter);
 
   if (!state.matches("unlocked.select_secret") &&

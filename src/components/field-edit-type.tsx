@@ -9,7 +9,7 @@ export interface FieldEditTypeProps {
   onChange: (newType: SecretType) => void
 }
 
-export const FieldEditType: React.FunctionComponent<FieldEditTypeProps> = ({ value, onChange }) => {
+export const FieldEditType: React.FC<FieldEditTypeProps> = ({ value, onChange }) => {
   const translate = React.useMemo(translations, [translations]);
 
   return (
