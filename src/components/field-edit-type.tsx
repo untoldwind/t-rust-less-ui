@@ -1,8 +1,7 @@
 import * as React from "react";
-import { SecretType } from "../machines/backend-tauri";
+import { SecretType, SECRET_TYPES } from "../machines/backend-tauri";
 import { translations } from "../i18n";
 import { HTMLSelect } from "@blueprintjs/core";
-import { SECRET_TYPES } from "../helpers/types";
 import { NoWrap } from "./ui/nowrap";
 
 export interface FieldEditTypeProps {

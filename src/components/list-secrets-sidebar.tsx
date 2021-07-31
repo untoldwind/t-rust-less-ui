@@ -4,8 +4,7 @@ import { Menu, MenuItem, H5 } from "@blueprintjs/core";
 import { translations } from "../i18n";
 import { useService } from "@xstate/react";
 import { mainInterpreter } from "../machines/main";
-import { SECRET_TYPES } from "../helpers/types";
-import { SecretType } from "../machines/backend-tauri";
+import { SecretType, SECRET_TYPES } from "../machines/backend-tauri";
 
 export const ListSecretsSidebar: React.FunctionComponent = () => {
   const translate = React.useMemo(translations, [translations])

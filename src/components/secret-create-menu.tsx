@@ -1,10 +1,9 @@
 import * as React from "react";
 import { Button, Menu, MenuItem, Popover, PopoverPosition } from "@blueprintjs/core";
 import { translations } from "../i18n";
-import { SECRET_TYPES } from "../helpers/types";
 import { mainInterpreter } from "../machines/main";
 import { useService } from "@xstate/react";
-import { SecretType } from "../machines/backend-tauri";
+import { SecretType, SECRET_TYPES } from "../machines/backend-tauri";
 
 
 export const SecretCreateMenu: React.FunctionComponent = () => {

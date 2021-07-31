@@ -27,13 +27,9 @@ export type Status =
     version: string
   }
 
-export type SecretType =
-  | "login"
-  | "note"
-  | "licence"
-  | "wlan"
-  | "password"
-  | "other";
+export const SECRET_TYPES = ["login", "note", "licence", "wlan", "password", "other"] as const;
+
+export type SecretType = typeof SECRET_TYPES[number];
 
 export interface SecretEntry {
   id: string

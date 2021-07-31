@@ -2,7 +2,7 @@ import { Button, Dialog, InputGroup, NumericInput, Tag, Tooltip } from "@bluepri
 import { useService } from "@xstate/react";
 import * as React from "react";
 import { translations } from "../i18n";
-import { selectStoreLocation,StoreConfig } from "../machines/backend-tauri";
+import { selectStoreLocation, StoreConfig } from "../machines/backend-tauri";
 import { mainInterpreter } from "../machines/main";
 import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";

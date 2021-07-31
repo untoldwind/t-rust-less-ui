@@ -1,7 +1,5 @@
 import { SecretType, SecretVersion } from "../machines/backend-tauri";
 
-export const SECRET_TYPES: SecretType[] = ["login", "note", "licence", "wlan", "password", "other"];
-
 export const BASE_PROPERTIES: { [name in SecretType]: string[] } = {
   login: ["username", "password", "totpUrl", "notes"],
   note: ["notes"],
@@ -16,11 +14,10 @@ export function orderProperties(secretVersion: SecretVersion): { name: string, v
   const baseProperties = BASE_PROPERTIES[secretVersion.type];
 
   for (const name of baseProperties) {
-    if (name in secretVersion.properties)
-      result.push({
-        name,
-        value: secretVersion.properties[name],
-      });
+    result.push({
+      name,
+      value: name in secretVersion.properties ? secretVersion.properties[name] : "",
+    });
   }
   for (const name in secretVersion.properties) {
     if (!baseProperties.includes(name))

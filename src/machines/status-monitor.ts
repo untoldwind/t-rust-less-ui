@@ -36,7 +36,7 @@ export class StatusMonitor {
 
     try {
       await checkAutolock();
-      
+
       const storeStatus = await status(this.storeName);
       if (storeStatus.locked && this.state === "UNLOCKED") {
         this.sender({ type: "STORE_LOCKED", storeName: this.storeName });
