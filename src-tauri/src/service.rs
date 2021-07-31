@@ -64,3 +64,9 @@ pub fn service_generate_password(param: PasswordGeneratorParam, state: tauri::St
     .generate_password(param)
     .map_err(|err| format!("{}", err))
 }
+
+#[tauri::command]
+pub fn service_check_autolock(state: tauri::State<State>) -> Result<(), String> {
+  state.inner().get_service()?.check_autolock();
+  Ok(())
+}

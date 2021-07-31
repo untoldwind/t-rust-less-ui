@@ -1,6 +1,6 @@
 import { Sender } from "xstate";
 import { MainEvents } from "./main";
-import { status, Status } from "./backend-tauri";
+import { checkAutolock, status, Status } from "./backend-tauri";
 import { bind } from "decko";
 import moment from "moment";
 
@@ -35,6 +35,8 @@ export class StatusMonitor {
     if (this.canceled) return;
 
     try {
+      await checkAutolock();
+      
       const storeStatus = await status(this.storeName);
       if (storeStatus.locked && this.state === "UNLOCKED") {
         this.sender({ type: "STORE_LOCKED", storeName: this.storeName });

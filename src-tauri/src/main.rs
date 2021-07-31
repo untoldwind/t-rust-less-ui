@@ -17,6 +17,7 @@ fn main() {
       service::service_delete_store_config,
       service::service_generate_id,
       service::service_generate_password,
+      service::service_check_autolock,
       store::store_status,
       store::store_identities,
       store::store_lock,

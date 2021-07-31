@@ -195,6 +195,10 @@ export function status(storeName: string): Promise<Status> {
   });
 }
 
+export function checkAutolock(): Promise<void> {
+  return invoke("service_check_autolock")
+}
+
 export function identities(storeName: string): Promise<Identity[]> {
   return invoke("store_identities", {
     storeName,
@@ -290,3 +294,4 @@ export function addIdentity(storeName: string, identity: Identity, passphrase: s
     passphrase,
   });
 }
+
