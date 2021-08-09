@@ -8,9 +8,6 @@ pub struct State {
   stores: Mutex<HashMap<String, Arc<dyn SecretsStore>>>,
 }
 
-unsafe impl Send for State {}
-unsafe impl Sync for State {}
-
 impl State {
   pub fn new() -> State {
     State {

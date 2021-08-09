@@ -1,6 +1,5 @@
 use crate::state::State;
-use t_rust_less_lib::api::PasswordGeneratorParam;
-use t_rust_less_lib::service::StoreConfig;
+use t_rust_less_lib::api::{PasswordGeneratorParam, StoreConfig};
 
 #[tauri::command]
 pub fn service_list_stores(state: tauri::State<State>) -> Result<Vec<StoreConfig>, String> {
