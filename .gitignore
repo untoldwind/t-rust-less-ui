@@ -7,3 +7,4 @@ app/
 native/*.node
 native/target
 native/artifacts.json
+.idea/

@@ -1,6 +1,6 @@
 [package]
 name = "t-rust-less-binding"
-version = "0.1.3"
+version = "0.2.0"
 edition = "2018"
 
 [lib]
@@ -12,7 +12,7 @@ neon =  { version = "0.8", features = [ "napi-6" ], default-features = false }
 neon-serde = "0.8"
 serde = "1"
 serde_derive = "1"
-t-rust-less-lib = "0.1.15"
+t-rust-less-lib = "0.2.0"
 chrono = { version = "0", features = ["serde"] }
 
 [patch.crates-io]

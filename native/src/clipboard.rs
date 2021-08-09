@@ -7,25 +7,22 @@ pub struct ClipboardHandle {
   pub clipboard: Arc<dyn ClipboardControl>,
 }
 
-unsafe  impl Send for ClipboardHandle {}
-unsafe  impl Sync for ClipboardHandle {}
-
 impl Finalize for ClipboardHandle {}
 
 pub fn clipboard_is_done(mut cx: FunctionContext) -> JsResult<JsValue> {
-    let handle = cx.argument::<JsBox<ClipboardHandle>>(0)?;
+  let handle = cx.argument::<JsBox<ClipboardHandle>>(0)?;
 
-    handle.clipboard.is_done().to_js(&mut cx)
+  handle.clipboard.is_done().to_js(&mut cx)
 }
 
 pub fn clipboard_currently_providing(mut cx: FunctionContext) -> JsResult<JsValue> {
-    let handle = cx.argument::<JsBox<ClipboardHandle>>(0)?;
+  let handle = cx.argument::<JsBox<ClipboardHandle>>(0)?;
 
-    handle.clipboard.currently_providing().to_js(&mut cx)
+  handle.clipboard.currently_providing().to_js(&mut cx)
 }
 
 pub fn clipboard_destroy(mut cx: FunctionContext) -> JsResult<JsValue> {
-    let handle = cx.argument::<JsBox<ClipboardHandle>>(0)?;
+  let handle = cx.argument::<JsBox<ClipboardHandle>>(0)?;
 
-    handle.clipboard.destroy().to_js(&mut cx)
+  handle.clipboard.destroy().to_js(&mut cx)
 }

@@ -13,7 +13,10 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
   cx.export_function("estimatePassword", estimate::js_estimate_password_strength)?;
 
   cx.export_function("clipboard_is_done", clipboard::clipboard_is_done)?;
-  cx.export_function("clipboard_currently_providing", clipboard::clipboard_currently_providing)?;
+  cx.export_function(
+    "clipboard_currently_providing",
+    clipboard::clipboard_currently_providing,
+  )?;
   cx.export_function("clipboard_destroy", clipboard::clipboard_destroy)?;
 
   cx.export_function("service_create", service::service_create)?;
@@ -27,7 +30,7 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
   cx.export_function("service_generate_id", service::service_generate_id)?;
   cx.export_function("service_generate_password", service::service_generate_password)?;
   cx.export_function("service_check_autolock", service::service_check_autolock)?;
-  
+
   cx.export_function("store_status", store::store_status)?;
   cx.export_function("store_lock", store::store_lock)?;
   cx.export_function("store_unlock", store::store_unlock)?;
