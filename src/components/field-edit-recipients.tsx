@@ -54,7 +54,7 @@ export const FieldEditRecipients: React.FC<FieldEditRecipientsProps> = ({ identi
 
   return (
     <>
-      <NoWrap>{translate.secret.tags}</NoWrap>
+      <NoWrap>{translate.secret.recipients}</NoWrap>
       <RecipientMultiSelect
         fill
         resetOnSelect

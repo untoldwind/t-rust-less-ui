@@ -6,7 +6,7 @@
     "scripts": {
         "build:app": "webpack --config webpack.config.js --mode production",
         "build:app-dev": "webpack --config webpack.config.js --mode development",
-        "dev": "tauri dev",
+        "dev": "tauri dev --release",
         "dev:app": "webpack serve --config webpack.config.js --mode development",
         "format": "tsfmt -r && scssfmt --recursive sass/**/*.scss && tslint -c tslint.json --project .",
         "clean": "rimraf dist app",
@@ -14,7 +14,7 @@
     },
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^5.13.1",
-        "@tauri-apps/cli": "^1.0.0-beta.5",
+        "@tauri-apps/cli": "^1.0.0-beta.6",
         "@types/electron-devtools-installer": "^2.2.0",
         "@types/mousetrap": "^1.6.3",
         "@types/qrcode.react": "^1.0.2",
