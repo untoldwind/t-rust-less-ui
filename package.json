@@ -71,5 +71,10 @@
         "appImage": {
             "artifactName": "t-rust-less-ui.AppImage"
         }
+    },
+    "resolutions": {
+        "**/trim-newlines": "4.0.2",
+        "**/glob-parent": "6.0.1",
+        "**/url-parse": "1.5.3"
     }
 }
