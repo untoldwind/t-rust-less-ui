@@ -9,7 +9,7 @@
         "dev": "tauri dev --release",
         "dev:app": "webpack serve --config webpack.config.js --mode development",
         "format": "tsfmt -r && scssfmt --recursive sass/**/*.scss && tslint -c tslint.json --project .",
-        "clean": "rimraf dist app",
+        "clean": "rimraf dist app src-tauri/target",
         "dist": "tauri build"
     },
     "devDependencies": {
