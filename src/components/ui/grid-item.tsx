@@ -45,13 +45,12 @@ function rawGridSpecToGridProp(start: number | undefined, span: number | undefin
   }
 }
 
-export const GridItem: React.FC<GridItemProps> = props => {
+export const GridItem: React.FC<GridItemProps> = ({ padding, overflow, alignSelf, justifySelf, colStart, colSpan, colEnd, rowStart, rowSpan, rowEnd, children }) => {
   const classes: string[] = [];
-  const { padding, overflow, alignSelf, justifySelf } = props;
   const emotionStyles: CSSInterpolation[] = [];
 
-  const colProps = rawGridSpecToGridProp(props.colStart, props.colSpan, props.colEnd);
-  const rowProps = rawGridSpecToGridProp(props.rowStart, props.rowSpan, props.rowEnd);
+  const colProps = rawGridSpecToGridProp(colStart, colSpan, colEnd);
+  const rowProps = rawGridSpecToGridProp(rowStart, rowSpan, rowEnd);
 
   colProps !== undefined && emotionStyles.push({ gridColumn: computeGridAttribute(colProps.span, colProps.start, colProps.end) });
   rowProps !== undefined && emotionStyles.push({ gridRow: computeGridAttribute(rowProps.span, rowProps.start, rowProps.end) });
@@ -65,7 +64,7 @@ export const GridItem: React.FC<GridItemProps> = props => {
 
   return (
     <div className={cx(classes)}>
-      {props.children}
+      {children}
     </div>
   )
 };

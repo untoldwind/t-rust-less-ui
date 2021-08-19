@@ -11,9 +11,8 @@ export interface FlexItemProps {
   padding?: OffsetSpec
 }
 
-export const FlexItem: React.FC<FlexItemProps> = props => {
+export const FlexItem: React.FC<FlexItemProps> = ({ padding, overflow, alignSelf, flexGrow, flexShrink, flexBasis, children }) => {
   const classes: string[] = [];
-  const { padding, overflow, alignSelf, flexGrow, flexShrink, flexBasis } = props;
   const emotionStyles: CSSInterpolation[] = [];
 
   flexGrow !== undefined && emotionStyles.push({ flexGrow });
@@ -28,7 +27,7 @@ export const FlexItem: React.FC<FlexItemProps> = props => {
 
   return (
     <div className={cx(classes)}>
-      {props.children}
+      {children}
     </div>
   )
 };

@@ -262,7 +262,7 @@ export function generatePassword(param: PasswordGeneratorParam): Promise<string>
 }
 
 export function calculateOtpToken(otpUrl: string): Promise<OTPToken> {
-  return invoke("alculate_otp_token", {
+  return invoke("calculate_otp_token", {
     otpUrl,
   });
 }
@@ -274,7 +274,6 @@ export function estimatePassword(password: string): Promise<PasswordStrength> {
 }
 
 export async function selectStoreLocation(defaultPath?: string): Promise<string | null> {
-  console.log(">>> in");
   const result = await dialog.open({
     multiple: false,
     directory: true,

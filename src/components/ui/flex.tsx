@@ -20,9 +20,8 @@ export interface FlexProps {
   backgroundColor?: string
 }
 
-export const Flex: React.FC<FlexProps> = props => {
+export const Flex: React.FC<FlexProps> = ({ flexDirection, alignItems, flexGrow, flexShrink, width, height, gap, padding, backgroundColor, children }) => {
   const classes = [flexClass];
-  const { flexDirection, alignItems, flexGrow, flexShrink, width, height, gap, padding, backgroundColor } = props;
   const emotionStyles: CSSInterpolation[] = []
 
   emotionStyles.push({ flexDirection });
@@ -47,7 +46,7 @@ export const Flex: React.FC<FlexProps> = props => {
 
   return (
     <div className={cx(classes)}>
-      {props.children}
+      {children}
     </div>
   )
 };

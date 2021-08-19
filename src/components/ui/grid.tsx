@@ -21,10 +21,9 @@ export interface GridProps {
   backgroundColor?: string
 }
 
-export const Grid: React.FC<GridProps> = props => {
+export const Grid: React.FC<GridProps> = ({ gap, rowGap, colGap, padding, columns, columnSpec, rowSpec, height, width, alignItems, justifyItems, backgroundColor, children }) => {
   const classes = [gridClass];
 
-  const { gap, rowGap, colGap, padding, columnSpec, rowSpec, height, width, alignItems, justifyItems, backgroundColor } = props;
   const emotionStyles: CSSInterpolation[] = []
 
   padding !== undefined && emotionStyles.push(offsetSpecToPadding(padding))
@@ -40,7 +39,7 @@ export const Grid: React.FC<GridProps> = props => {
   classes.push(css(emotionStyles))
 
   classes.push(css({
-    gridTemplateColumns: columnSpec ? (typeof columnSpec === "string" ? columnSpec : columnSpec.map(elem => elem.join("")).join(" ")) : `repeat(${props.columns || 12}, 1fr)`,
+    gridTemplateColumns: columnSpec ? (typeof columnSpec === "string" ? columnSpec : columnSpec.map(elem => elem.join("")).join(" ")) : `repeat(${columns || 12}, 1fr)`,
   }));
 
   rowSpec && classes.push(css({
@@ -49,7 +48,7 @@ export const Grid: React.FC<GridProps> = props => {
 
   return (
     <div className={cx(classes)}>
-      {props.children}
+      {children}
     </div>
   )
 };
