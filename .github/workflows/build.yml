@@ -21,6 +21,7 @@ jobs:
       with:
         name: t-rust-less-ui.deb
         path: ./src-tauri/target/release/bundle/deb/t-rust-less-ui_*.deb
+
   build_windows:
     runs-on: windows-2019
     steps:
