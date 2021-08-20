@@ -1,9 +1,9 @@
+import React from "react";
 import { Button, MenuItem } from "@blueprintjs/core";
 import { ItemPredicate, ItemRenderer, MultiSelect } from "@blueprintjs/select";
-import * as React from "react";
 import { Identity } from "../machines/backend-tauri";
-import { translations } from "../i18n";
 import { NoWrap } from "./ui/nowrap";
+import { useTranslate } from "../machines/state";
 
 export interface FieldEditRecipientsProps {
   identities: Identity[]
@@ -14,7 +14,7 @@ export interface FieldEditRecipientsProps {
 const RecipientMultiSelect = MultiSelect.ofType<Identity>();
 
 export const FieldEditRecipients: React.FC<FieldEditRecipientsProps> = ({ identities, recipients, onChange }) => {
-  const translate = React.useMemo(translations, [translations]);
+  const translate = useTranslate()
   const selectedIdentites: Identity[] = [];
 
   for (const recipient of recipients) {

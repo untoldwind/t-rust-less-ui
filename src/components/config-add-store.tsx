@@ -1,10 +1,9 @@
+import React from "react";
 import { Button, Dialog, InputGroup, NumericInput, Tag } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
-import { useActor } from "@xstate/react";
-import * as React from "react";
-import { translations } from "../i18n";
+import { useUpsertStoreConfig } from "../machines/actions";
 import { selectStoreLocation, StoreConfig } from "../machines/backend-tauri";
-import { mainInterpreter } from "../machines/main";
+import { useTranslate } from "../machines/state";
 import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";
 import { Grid } from "./ui/grid";
@@ -12,13 +11,13 @@ import { GridItem } from "./ui/grid-item";
 import { NoWrap } from "./ui/nowrap";
 
 export const ConfigAddStore: React.FC = () => {
-  const translate = React.useMemo(translations, [translations]);
-  const [, send] = useActor(mainInterpreter);
+  const translate = useTranslate()
   const [isOpen, setIsOpen] = React.useState(false);
   const [storeName, setStoreName] = React.useState("");
   const [directory, setDirectory] = React.useState("");
   const [autolockTimeout, setAutolockTimeout] = React.useState(300);
   const [isDirectorySelectOpen, setIsDirectorSelectOpen] = React.useState(false);
+  const upsertStoreConfig = useUpsertStoreConfig();
 
   function selectDirectory() {
     if (isDirectorySelectOpen) return;
@@ -51,7 +50,7 @@ export const ConfigAddStore: React.FC = () => {
       autolock_timeout_secs: autolockTimeout,
     };
 
-    send({ type: "SAVE_CONFIG", storeConfig });
+    upsertStoreConfig(storeConfig);
     onClose();
   }
 
@@ -65,12 +64,11 @@ export const ConfigAddStore: React.FC = () => {
       <Dialog autoFocus lazy title={translate.storeConfig.addStore} isOpen={isOpen} onClose={onClose}>
         <Grid columnSpec="min-content 1fr" padding={[20, 10, 0, 10]} gap={5} alignItems="center">
           <NoWrap>{translate.storeConfig.storeName}</NoWrap>
-          <InputGroup value={storeName} fill
-            onChange={(event: React.FormEvent<HTMLInputElement>) => setStoreName(event.currentTarget.value)} />
+          <InputGroup value={storeName} fill onChange={event => setStoreName(event.currentTarget.value)} />
           <NoWrap>{translate.storeConfig.directory}</NoWrap>
           <InputGroup value={directory} fill
             rightElement={<Button icon="folder-open" minimal disabled={isDirectorySelectOpen} onClick={selectDirectory} />}
-            onChange={(event: React.FormEvent<HTMLInputElement>) => setDirectory(event.currentTarget.value)} />
+            onChange={event => setDirectory(event.currentTarget.value)} />
           <NoWrap>{translate.storeConfig.autolockTimeout}</NoWrap>
           <NumericInput defaultValue={autolockTimeout} min={0} stepSize={10} fill
             rightElement={<Tag minimal>{translate.storeConfig.autolockTimeoutUnit}</Tag>}

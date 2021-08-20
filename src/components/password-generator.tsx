@@ -1,9 +1,9 @@
-import * as React from "react";
+import React from "react";
 import { Grid } from "./ui/grid";
 import { Tab, Tabs, NumericInput, Switch, InputGroup, Button } from "@blueprintjs/core";
-import { translations } from "../i18n";
 import { GridItem } from "./ui/grid-item";
 import { generatePassword, PasswordGeneratorCharsParam, PasswordGeneratorWordsParam } from "../machines/backend-tauri";
+import { useTranslate } from "../machines/state";
 
 export interface PasswordGeneratorProps {
   onPasswordGenerated: (password: string) => void
@@ -28,8 +28,8 @@ const DEFAULT_WORDS_PARAM: PasswordGeneratorWordsParam = {
 
 export type Generator = "chars" | "words";
 
-export const PasswordGenerator: React.FC<PasswordGeneratorProps> = props => {
-  const translate = React.useMemo(translations, [translations]);
+export const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({ onPasswordGenerated }) => {
+  const translate = useTranslate();
   const [generator, setGenerator] = React.useState<Generator>("chars");
   const [charsParam, setCharsParam] = React.useState(DEFAULT_CHARS_PARAM);
   const [wordsParam, setWordsParam] = React.useState(DEFAULT_WORDS_PARAM);
@@ -110,10 +110,10 @@ export const PasswordGenerator: React.FC<PasswordGeneratorProps> = props => {
   function onGenerate() {
     switch (generator) {
       case "chars":
-        generatePassword({ chars: charsParam }).then(props.onPasswordGenerated, () => { })
+        generatePassword({ chars: charsParam }).then(onPasswordGenerated, () => { })
         break;
       case "words":
-        generatePassword({ words: wordsParam }).then(props.onPasswordGenerated, () => { })
+        generatePassword({ words: wordsParam }).then(onPasswordGenerated, () => { })
         break;
     }
   }

@@ -86,5 +86,10 @@ export const EN: Translations = {
     noStoresTitle: "No configured stores",
     noStoresDescription: "Add existing stores or create a new one.",
   },
+  clipboard: {
+    controlTitle: "Clipboard providing",
+    secretName: "Secret",
+    property: "Property",
+  },
   formatTimestamp: (timestamp: string) => moment(timestamp).format("YYYY-MM-DD HH:mm:ss Z"),
 }

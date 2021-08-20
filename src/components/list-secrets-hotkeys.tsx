@@ -1,25 +1,50 @@
-import * as React from "react";
-import { Hotkeys, HotkeysTarget, Hotkey } from "@blueprintjs/core";
+import React from "react";
+import { useHotkeys } from "@blueprintjs/core";
 import { ListSecrets } from "./list-secrets";
-import { mainInterpreter } from "../machines/main";
+import { useCopySecretProperties, useSecretNavigate } from "../machines/actions";
+import { ClipboardControl } from "./clipboard-control";
 
-@HotkeysTarget
-export class ListSecretsHotkeys extends React.Component<{}, {}> {
-  public render() {
-    return (
-      <ListSecrets />
-    )
-  }
+export const ListSecretsHotkeys: React.FC = ({ children }) => {
+  const { secretUp, secretDown } = useSecretNavigate();
+  const copySecretProperties = useCopySecretProperties();
 
-  public renderHotkeys() {
-    return (
-      <Hotkeys>
-        <Hotkey global combo="up" label="Previous entry" onKeyDown={() => mainInterpreter.send({ type: "SELECT_PREVIOUS" })} />
-        <Hotkey global combo="down" label="Previous entry" onKeyDown={() => mainInterpreter.send({ type: "SELECT_NEXT" })} />
-        <Hotkey global combo="ctrl + u" label="Copy username" onKeyDown={() => mainInterpreter.send({ type: "COPY_SECRET_PROPERTY", propertyName: "username" })} />
-        <Hotkey global combo="ctrl + p" label="Copy password" onKeyDown={() => mainInterpreter.send({ type: "COPY_SECRET_PROPERTY", propertyName: "password" })} />
-        <Hotkey global combo="ctrl + o" label="Copy OTP" onKeyDown={() => mainInterpreter.send({ type: "COPY_SECRET_PROPERTY", propertyName: "toptUrl" })} />
-      </Hotkeys>
-    )
-  }
-}
+  const hotkeys = React.useMemo(() => [{
+    combo: "up",
+    global: true,
+    label: "Previous entry",
+    onKeyDown: secretUp,
+  }, {
+    combo: "down",
+    global: true,
+    label: "Next entry",
+    onKeyDown: secretDown,
+  }, {
+    combo: "ctrl + a",
+    global: true,
+    label: "Copy username/password/totp",
+    onKeyDown: () => copySecretProperties(["username", "password", "totpUrl"]),
+  }, {
+    combo: "ctrl + u",
+    global: true,
+    label: "Copy username",
+    onKeyDown: () => copySecretProperties(["username"]),
+  }, {
+    combo: "ctrl + p",
+    global: true,
+    label: "Copy username",
+    onKeyDown: () => copySecretProperties(["password"]),
+  }, {
+    combo: "ctrl + o",
+    global: true,
+    label: "Copy totp",
+    onKeyDown: () => copySecretProperties(["totpUrl"]),
+  }], [secretUp, secretDown, copySecretProperties]);
+  const { handleKeyDown, handleKeyUp } = useHotkeys(hotkeys);
+
+  return (
+    <>
+      <ListSecrets onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
+      <ClipboardControl />
+    </>
+  )
+};

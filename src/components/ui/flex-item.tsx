@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { CSSInterpolation, css, cx } from "@emotion/css";
 import { AlignSpec, OffsetSpec, offsetSpecToPadding, SizeSpec } from "./constraints";
 
@@ -11,7 +11,7 @@ export interface FlexItemProps {
   padding?: OffsetSpec
 }
 
-export const FlexItem: React.FC<FlexItemProps> = ({ padding, overflow, alignSelf, flexGrow, flexShrink, flexBasis, children }) => {
+export const FlexItem: React.FC<FlexItemProps> = React.memo(({ padding, overflow, alignSelf, flexGrow, flexShrink, flexBasis, children }) => {
   const classes: string[] = [];
   const emotionStyles: CSSInterpolation[] = [];
 
@@ -30,4 +30,4 @@ export const FlexItem: React.FC<FlexItemProps> = ({ padding, overflow, alignSelf
       {children}
     </div>
   )
-};
+});

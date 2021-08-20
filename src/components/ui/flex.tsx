@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { css, cx, CSSInterpolation } from "@emotion/css";
 import { SizeSpec, AlignSpec, OffsetSpec, offsetSpecToPadding, Size } from "./constraints";
 
@@ -14,13 +14,14 @@ export interface FlexProps {
   flexGrow?: number
   flexShrink?: number
   width?: SizeSpec
+  maxWidth?: SizeSpec
   height?: SizeSpec
   padding?: OffsetSpec
   gap?: Size
   backgroundColor?: string
 }
 
-export const Flex: React.FC<FlexProps> = ({ flexDirection, alignItems, flexGrow, flexShrink, width, height, gap, padding, backgroundColor, children }) => {
+export const Flex: React.FC<FlexProps> = React.memo(({ flexDirection, alignItems, flexGrow, flexShrink, width, height, maxWidth, gap, padding, backgroundColor, children }) => {
   const classes = [flexClass];
   const emotionStyles: CSSInterpolation[] = []
 
@@ -30,6 +31,7 @@ export const Flex: React.FC<FlexProps> = ({ flexDirection, alignItems, flexGrow,
   flexShrink !== undefined && emotionStyles.push({ flexShrink });
   height !== undefined && emotionStyles.push({ height: height.join("") });
   width !== undefined && emotionStyles.push({ width: width.join(""), });
+  maxWidth !== undefined && emotionStyles.push({ maxWidth: maxWidth.join(""), });
   padding !== undefined && emotionStyles.push(offsetSpecToPadding(padding))
   backgroundColor !== undefined && emotionStyles.push({ backgroundColor });
 
@@ -49,4 +51,4 @@ export const Flex: React.FC<FlexProps> = ({ flexDirection, alignItems, flexGrow,
       {children}
     </div>
   )
-};
+});

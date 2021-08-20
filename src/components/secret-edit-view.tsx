@@ -1,10 +1,7 @@
-import * as React from "react";
-import { useActor } from "@xstate/react";
-import { mainInterpreter } from "../machines/main";
+import React from "react";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
-import { Spinner, Button } from "@blueprintjs/core";
-import { translations } from "../i18n";
+import { Button } from "@blueprintjs/core";
 import { FieldEditText } from "./field-edit-text";
 import { FieldEditType } from "./field-edit-type";
 import { orderProperties } from "../helpers/types";
@@ -13,13 +10,21 @@ import { FieldEditPassword } from "./field-edit-password";
 import { FieldEditTags } from "./field-edit-tags";
 import { FieldEditUrls } from "./field-edit-urls";
 import { FieldEditRecipients } from "./field-edit-recipients";
+import { editSecretVersionState, identitiesState, secretListState, useTranslate } from "../machines/state";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { useStoreSecretVersion } from "../machines/actions";
 
 export const SecretEditView: React.FC = () => {
-  const translate = React.useMemo(translations, [translations]);
-  const [state, send] = useActor(mainInterpreter);
+  const translate = useTranslate();
+  const [editSecretVersion, setEditSecretVersion] = useRecoilState(editSecretVersionState);
+  const storeSecretVersion = useStoreSecretVersion();
+  const identities = useRecoilValue(identitiesState);
+  const secretList = useRecoilValue(secretListState);
+
+  if (!editSecretVersion) return null;
 
   function renderProperty(name: string, value: string): React.ReactNode {
-    const onChange = (value: string) => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { properties: { [name]: value } } });
+    const onChange = (value: string) => editSecretVersion && setEditSecretVersion({ ...editSecretVersion, properties: { ...editSecretVersion.properties, [name]: value } });
     switch (name) {
       case "notes":
         return (
@@ -36,41 +41,32 @@ export const SecretEditView: React.FC = () => {
     }
   }
 
-  if (!state.matches("unlocked.edit_secret_version.editable"))
-    return (
-      <Grid height={[100, '%']}>
-        <GridItem alignSelf="center" justifySelf="center">
-          <Spinner />
-        </GridItem>
-      </Grid>
-    )
-
-  const isValid = state.context.editSecretVersion.name.length > 0 && state.context.editSecretVersion.recipients.length > 0;
+  const isValid = editSecretVersion.name.length > 0 && editSecretVersion.recipients.length > 0;
 
   return (
     <Grid rowSpec="min-content 1fr" columns={1} padding={5}>
       <Grid justifyItems="center" alignItems="center" columnSpec="1fr min-content min-content" gap={5}>
-        {translate.formatTimestamp(state.context.editSecretVersion.timestamp)}
-        <Button icon="tick" large minimal disabled={!isValid} onClick={() => send({ type: "STORE_SECRET_VERSION" })} />
-        <Button icon="cross" large minimal onClick={() => send({ type: "ABORT_EDIT" })} />
+        {translate.formatTimestamp(editSecretVersion.timestamp)}
+        <Button icon="tick" large minimal disabled={!isValid} onClick={storeSecretVersion} />
+        <Button icon="cross" large minimal onClick={() => setEditSecretVersion(undefined)} />
       </Grid>
       <GridItem overflow="auto">
         <Grid columnSpec="min-content 1fr" gap={5} padding={5} alignItems="center">
-          <FieldEditText label={translate.secret.name} value={state.context.editSecretVersion.name}
-            onChange={name => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { name } })} />
-          <FieldEditType value={state.context.editSecretVersion.type}
-            onChange={type => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { type } })} />
-          <FieldEditTags allTags={state.context.secretList.all_tags} tags={state.context.editSecretVersion.tags}
-            onChange={tags => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { tags } })} />
-          <FieldEditUrls urls={state.context.editSecretVersion.urls}
-            onChange={urls => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { urls } })} />
+          <FieldEditText label={translate.secret.name} value={editSecretVersion.name}
+            onChange={name => setEditSecretVersion({ ...editSecretVersion, name })} />
+          <FieldEditType value={editSecretVersion.type}
+            onChange={type => setEditSecretVersion({ ...editSecretVersion, type })} />
+          <FieldEditTags allTags={secretList.all_tags} tags={editSecretVersion.tags}
+            onChange={tags => setEditSecretVersion({ ...editSecretVersion, tags })} />
+          <FieldEditUrls urls={editSecretVersion.urls}
+            onChange={urls => setEditSecretVersion({ ...editSecretVersion, urls })} />
           <GridItem colSpan={2} padding={[5, 0]} />
-          {orderProperties(state.context.editSecretVersion).map(({ name, value }) =>
+          {orderProperties(editSecretVersion).map(({ name, value }) =>
             renderProperty(name, value)
           )}
           <GridItem colSpan={2} padding={[10, 0]} />
-          <FieldEditRecipients identities={state.context.identities} recipients={state.context.editSecretVersion.recipients}
-            onChange={recipients => send({ type: "CHANGE_EDIT_SECRET_VERSION", change: { recipients } })} />
+          <FieldEditRecipients identities={identities} recipients={editSecretVersion.recipients}
+            onChange={recipients => setEditSecretVersion({ ...editSecretVersion, recipients })} />
         </Grid>
       </GridItem>
     </Grid>

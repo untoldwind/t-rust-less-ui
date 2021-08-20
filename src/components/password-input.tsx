@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Button, InputGroup } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import { estimatePassword, PasswordStrength } from "../machines/backend-tauri";
@@ -38,7 +38,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({ password, onChange
     <Grid columns={1}>
       <InputGroup value={password} fill
         type={reveal ? "text" : "password"}
-        onChange={(event: React.FormEvent<HTMLInputElement>) => onChange(event.currentTarget.value)}
+        onChange={event => onChange(event.currentTarget.value)}
         rightElement={<Flex flexDirection="row" gap={5}>
           <Button minimal icon={reveal ? "eye-on" : "eye-off"} onClick={() => setReveal(!reveal)} />
           <Popover2 fill position="bottom-right" content={<PasswordGenerator onPasswordGenerated={onChange} />}>

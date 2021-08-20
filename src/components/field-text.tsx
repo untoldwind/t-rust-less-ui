@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";
 import { Button } from "@blueprintjs/core";

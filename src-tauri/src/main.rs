@@ -1,5 +1,7 @@
 #![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
 
+mod clipboard;
+mod clipboard_fallback;
 mod estimate;
 mod otp;
 mod service;
@@ -18,6 +20,7 @@ fn main() {
       service::service_generate_id,
       service::service_generate_password,
       service::service_check_autolock,
+      service::service_secret_to_clipboard,
       store::store_status,
       store::store_identities,
       store::store_lock,
@@ -28,6 +31,9 @@ fn main() {
       store::store_get,
       store::store_get_version,
       store::store_add,
+      clipboard::clipboard_currently_providing,
+      clipboard::clipboard_provide_next,
+      clipboard::clipboard_destroy,
       estimate::estimate_password_strength,
       otp::calculate_otp_token,
     ])

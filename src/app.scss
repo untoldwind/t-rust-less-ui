@@ -1,5 +1,3 @@
-@import "~sass-bem/bem";
-@import "styles/spacing";
 @import "~@blueprintjs/core/lib/scss/variables";
 
 html {
@@ -16,7 +14,7 @@ body {
     width: 100vw;
 }
 
-@include block("sidebar") {
+.browser-sidebar {
   background-color: $dark-gray4;
   display: flex;
   flex-direction: column;

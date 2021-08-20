@@ -1,9 +1,9 @@
+import React from "react";
 import { Tag } from "@blueprintjs/core";
-import * as React from "react";
 import { Identity } from "../machines/backend-tauri";
-import { translations } from "../i18n";
 import { Flex } from "./ui/flex";
 import { NoWrap } from "./ui/nowrap";
+import { useTranslate } from "../machines/state";
 
 export interface FieldRecipientsProps {
   identities: Identity[]
@@ -11,7 +11,7 @@ export interface FieldRecipientsProps {
 }
 
 export const FieldRecipients: React.FC<FieldRecipientsProps> = ({ recipients, identities }) => {
-  const translate = React.useMemo(translations, [translations]);
+  const translate = useTranslate()
 
   return (
     <>

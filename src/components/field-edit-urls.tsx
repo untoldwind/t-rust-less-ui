@@ -1,6 +1,6 @@
+import React from "react";
 import { Button, InputGroup } from "@blueprintjs/core";
-import * as React from "react";
-import { translations } from "../i18n";
+import { useTranslate } from "../machines/state";
 import { Grid } from "./ui/grid";
 import { NoWrap } from "./ui/nowrap";
 
@@ -10,7 +10,7 @@ export interface FieldEditUrlsProps {
 }
 
 export const FieldEditUrls: React.FC<FieldEditUrlsProps> = ({ urls, onChange }) => {
-  const translate = React.useMemo(translations, [translations]);
+  const translate = useTranslate()
 
   const activeUrls = urls.length === 0 || urls[urls.length - 1].length > 0 ? [...urls, ""] : [...urls];
 
@@ -35,7 +35,7 @@ export const FieldEditUrls: React.FC<FieldEditUrlsProps> = ({ urls, onChange }) 
         {activeUrls.map((url, idx) => (
           <InputGroup key={idx} value={url} fill
             onBlur={() => handleCleanup(idx)}
-            onChange={(event: React.FormEvent<HTMLInputElement>) => handleChange(idx, event.currentTarget.value)}
+            onChange={event => handleChange(idx, event.currentTarget.value)}
             rightElement={idx < activeUrls.length - 1 ? <Button intent="danger" minimal icon="remove" onClick={() => handleDelete(idx)} /> : undefined} />
         ))}
       </Grid>

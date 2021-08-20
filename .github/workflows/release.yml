@@ -61,6 +61,8 @@ jobs:
       run: mv t-rust-less-ui_*.msi t-rust-less-ui.msi
     - name: Display structure of downloaded files
       run: ls -R
+    - name: Display structure of downloaded files
+      run: ls -R        
     - name: Create sha256sum appimage
       run: sha256sum t-rust-less-ui.AppImage > t-rust-less-ui.AppImage.sha256sum
     - name: Create sha256sum deb

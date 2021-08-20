@@ -1,27 +1,31 @@
-import * as React from "react";
+import React from "react";
 import { UnlockStore } from "./unlock-store";
-import { useActor } from "@xstate/react";
-import { mainInterpreter } from "../machines/main";
 import { ListSecretsHotkeys } from "./list-secrets-hotkeys";
 import { Configuration } from "./configuration";
+import { mainPanelState } from "../machines/state";
+import { useRecoilValue } from "recoil";
+import { useStatusRefresh } from "../machines/actions";
+import { Loading } from "./loading";
 
 export const MainFrame: React.FC = () => {
-  const [state] = useActor(mainInterpreter);
+  const mainPanel = useRecoilValue(mainPanelState);
 
-  switch (true) {
-    case state.matches("locked"):
+  useStatusRefresh();
+
+  switch (mainPanel) {
+    case "unlock":
       return (
-        <UnlockStore />
+        <React.Suspense fallback={<Loading />}>
+          <UnlockStore />
+        </React.Suspense>
       );
-    case state.matches("unlocked"):
+    case "browse":
+      return (<ListSecretsHotkeys />);
+    case "config":
       return (
-        <ListSecretsHotkeys />
-      );
-    case state.matches("config"):
-      return (
-        <Configuration />
+        <React.Suspense fallback={<Loading />}>
+          <Configuration />
+        </React.Suspense>
       )
-    default:
-      return null;
   }
 }

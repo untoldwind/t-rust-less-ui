@@ -1,8 +1,8 @@
-import * as React from "react";
+import React from "react";
 import { SecretType, SECRET_TYPES } from "../machines/backend-tauri";
-import { translations } from "../i18n";
 import { HTMLSelect } from "@blueprintjs/core";
 import { NoWrap } from "./ui/nowrap";
+import { useTranslate } from "../machines/state";
 
 export interface FieldEditTypeProps {
   value: SecretType,
@@ -10,7 +10,7 @@ export interface FieldEditTypeProps {
 }
 
 export const FieldEditType: React.FC<FieldEditTypeProps> = ({ value, onChange }) => {
-  const translate = React.useMemo(translations, [translations]);
+  const translate = useTranslate()
 
   return (
     <>

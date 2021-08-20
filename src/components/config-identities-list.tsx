@@ -1,18 +1,15 @@
+import React from "react";
 import { Callout, H5, HTMLTable } from "@blueprintjs/core";
-import { useActor } from "@xstate/react";
-import * as React from "react";
-import { translations } from "../i18n";
-import { mainInterpreter } from "../machines/main";
+import { useRecoilValue } from "recoil";
+import { identitiesState, useTranslate } from "../machines/state";
 import { ConfigAddIdentity } from "./config-add-identity";
 import { Grid } from "./ui/grid";
 
 export const ConfigIdentitiesList: React.FC = () => {
-  const translate = React.useMemo(translations, [translations]);
-  const [state] = useActor(mainInterpreter);
+  const translate = useTranslate();
+  const identities = useRecoilValue(identitiesState);
 
-  if (!state.matches("config.show_stores")) return null;
-
-  if (state.context.identities.length === 0) {
+  if (identities.length === 0) {
     return (
       <Grid columns={1}>
         <H5>{translate.storeConfig.identities}</H5>
@@ -33,7 +30,7 @@ export const ConfigIdentitiesList: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {state.context.identities.map((identity, idx) => (
+          {identities.map((identity, idx) => (
             <tr key={idx}>
               <td style={{ whiteSpace: "nowrap" }}>{identity.name}</td>
               <td>{identity.email}</td>

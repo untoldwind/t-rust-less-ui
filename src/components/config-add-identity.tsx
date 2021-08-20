@@ -1,23 +1,22 @@
+import React from "react";
 import { Button, Dialog, InputGroup } from "@blueprintjs/core";
-import { useActor } from "@xstate/react";
-import * as React from "react";
 import { Identity } from "../machines/backend-tauri";
-import { translations } from "../i18n";
-import { mainInterpreter } from "../machines/main";
+import { useTranslate } from "../machines/state";
 import { PasswordInput } from "./password-input";
 import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
 import { NoWrap } from "./ui/nowrap";
+import { useAddIdentity } from "../machines/actions";
 
 export const ConfigAddIdentity: React.FC = () => {
-  const translate = React.useMemo(translations, [translations]);
-  const [, send] = useActor(mainInterpreter);
+  const translate = useTranslate();
   const [isOpen, setIsOpen] = React.useState(false);
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [passphrase, setPassphrase] = React.useState("");
+  const addIdentity = useAddIdentity();
 
   function onClose() {
     setName("");
@@ -34,7 +33,7 @@ export const ConfigAddIdentity: React.FC = () => {
       hidden: false,
     };
 
-    send({ type: "ADD_IDENTITY", identity, passphrase });
+    addIdentity(identity, passphrase);
     onClose();
   }
 
@@ -46,11 +45,9 @@ export const ConfigAddIdentity: React.FC = () => {
       <Dialog autoFocus lazy title={translate.storeConfig.addIdentity} isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Grid columnSpec="min-content 1fr" padding={[20, 10, 0, 10]} gap={5} alignItems="center">
           <NoWrap>{translate.storeConfig.identityName}</NoWrap>
-          <InputGroup value={name} fill
-            onChange={(event: React.FormEvent<HTMLInputElement>) => setName(event.currentTarget.value)} />
+          <InputGroup value={name} fill onChange={event => setName(event.currentTarget.value)} />
           <NoWrap>{translate.storeConfig.identityEmail}</NoWrap>
-          <InputGroup value={email} fill
-            onChange={(event: React.FormEvent<HTMLInputElement>) => setEmail(event.currentTarget.value)} />
+          <InputGroup value={email} fill onChange={event => setEmail(event.currentTarget.value)} />
           <NoWrap>{translate.storeConfig.identityPassphrase}</NoWrap>
           <PasswordInput password={passphrase} onChange={setPassphrase} />
           <GridItem colSpan={2}>

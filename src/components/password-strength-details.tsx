@@ -1,14 +1,14 @@
-import * as React from "react";
+import React from "react";
 import { Grid } from "./ui/grid";
-import { translations } from "../i18n";
 import { PasswordStrength } from "../machines/backend-tauri";
+import { useTranslate } from "../machines/state";
 
 export interface PasswordStrengthDetailsProps {
   strength?: PasswordStrength
 }
 
 export const PasswordStrengthDetails: React.FC<PasswordStrengthDetailsProps> = ({ strength }) => {
-  const translate = React.useMemo(translations, [translations]);
+  const translate = useTranslate()
 
   if (!strength) return null;
 

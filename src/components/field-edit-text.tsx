@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { InputGroup } from "@blueprintjs/core";
 import { NoWrap } from "./ui/nowrap";
 
@@ -12,8 +12,7 @@ export const FieldEditText: React.FC<FieldEditTextProps> = React.memo(({ label, 
   return (
     <>
       <NoWrap>{label}</NoWrap>
-      <InputGroup value={value} fill
-        onChange={(event: React.FormEvent<HTMLInputElement>) => onChange(event.currentTarget.value)} />
+      <InputGroup value={value} fill onChange={event => onChange(event.currentTarget.value)} />
     </>
   )
 });

@@ -1,39 +1,50 @@
-import * as React from "react";
-import { translations } from "../i18n";
-import { useActor } from "@xstate/react";
-import { mainInterpreter } from "../machines/main";
+import React from "react";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
 import { HTMLSelect, InputGroup, Button, Toaster, Toast, Tabs, Tab, Callout, NonIdealState } from "@blueprintjs/core";
 import { Muted } from "./ui/muted";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { appVersionState, errorState, identitiesState, mainPanelState, selectedStoreState, storeConfigsState, useTranslate } from "../machines/state";
+import { useTryUnlock } from "../machines/actions";
 
 export const UnlockStore: React.FC = () => {
-  const translate = React.useMemo(translations, [translations])
-  const [ownState, setOwnState] = React.useState({
-    passphrase: "",
-  });
-  const [state, send] = useActor(mainInterpreter);
-  const isValid = ownState.passphrase.length > 0 && typeof state.context.selectedIdentity === "object";
+  const translate = useTranslate();
+  const appVersion = useRecoilValue(appVersionState);
+  const storeConfigs = useRecoilValue(storeConfigsState);
+  const setMainPanel = useSetRecoilState(mainPanelState);
+  const [selectedStore, setSelectedStore] = useRecoilState(selectedStoreState);
+  const identities = useRecoilValue(identitiesState);
+  const [error, setError] = useRecoilState(errorState);
+  const [tryUnlock, unlocking] = useTryUnlock();
+  const [selectedIdentityId, setSelectedIdentityId] = React.useState(identities.length > 0 ? identities[0].id : undefined);
+  const [passphrase, setPassphrase] = React.useState("");
+  const isValid = passphrase.length > 0 && selectedIdentityId !== undefined;
+  const loading = unlocking || error !== undefined;
   const passphraseRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
+    setSelectedIdentityId(identities.length > 0 ? identities[0].id : undefined);
+  }, [identities]);
+  React.useEffect(() => {
     passphraseRef.current?.focus();
-  }, [state, passphraseRef.current?.disabled]);
+  }, [selectedStore, passphraseRef.current?.disabled]);
 
   function onUnlock(event: React.FormEvent<HTMLElement>) {
     event.preventDefault();
     event.stopPropagation();
 
-    setOwnState({ passphrase: "" });
-    isValid && send({ type: "TRY_UNLOCK", passphrase: ownState.passphrase });
+    if (!selectedIdentityId) return;
+
+    tryUnlock(selectedIdentityId, passphrase);
+    setPassphrase("");
   }
 
-  if (state.context.storeConfigs.length === 0) {
+  if (storeConfigs.length === 0) {
     return (
       <NonIdealState
         title={translate.unlock.noStoresTitle}
         description={translate.unlock.noStoresDescription}
-        action={<Button icon="cog" minimal onClick={() => send({ type: "OPEN_CONFIG" })}>
+        action={<Button icon="cog" minimal onClick={() => setMainPanel("config")}>
           {translate.action.config}
         </Button>}
       />
@@ -47,44 +58,31 @@ export const UnlockStore: React.FC = () => {
       rowSpec="1fr min-content min-content 1fr min-content"
       rowGap={40}>
       <GridItem colSpan={3}>
-        {state.matches("locked.error") && <Toaster>
-          <Toast
-            intent="danger"
-            message={state.context.errorMessage}
-            timeout={2000}
-            onDismiss={() => send({ type: "CONFIRM_ERROR" })} />
+        {error && <Toaster>
+          <Toast intent="danger" message={error} timeout={2000} onDismiss={() => setError(undefined)} />
         </Toaster>}
       </GridItem>
       <GridItem colStart={2}>
         <Grid columns={1}>
-          <Tabs large selectedTabId={state.context.selectedStoreConfig?.name}
-            onChange={storeName => send({ type: "SELECT_STORE", storeName: storeName.toString() })}>
-            {state.context.storeConfigs.map(storeConfig => (
+          <Tabs large selectedTabId={selectedStore || ""} onChange={storeName => setSelectedStore(storeName.toString())}>
+            {storeConfigs.map(storeConfig => (
               <Tab id={storeConfig.name} key={storeConfig.name} title={storeConfig.name} />
             ))}
           </Tabs>
           <Callout>
             <form onSubmit={onUnlock}>
               <Grid columns={1} gap={5}>
-                <HTMLSelect value={state.context.selectedIdentity?.id} large
-                  disabled={!state.matches("locked.select_store")}
-                  onChange={event => send({ type: "SELECT_IDENTITY", identityId: event.currentTarget.value })}>
-                  {(state.context.identities || []).map(identity => (
+                <HTMLSelect value={selectedIdentityId} large disabled={loading}
+                  onChange={event => setSelectedIdentityId(event.currentTarget.value)}>
+                  {identities.map(identity => (
                     <option key={identity.id} value={identity.id}>
                       {identity.name} {`<${identity.email}>`}
                     </option>
                   ))}
                 </HTMLSelect>
-                <InputGroup
-                  type="password" leftIcon="key" large autoFocus
-                  value={ownState.passphrase}
-                  disabled={!state.matches("locked.select_store")}
-                  inputRef={passphraseRef}
-                  onChange={(event: React.FormEvent<HTMLInputElement>) => setOwnState({ passphrase: event.currentTarget.value })} />
-                <Button
-                  type="submit" icon="unlock" intent="success" large
-                  loading={state.matches("locked.try_unlock")}
-                  disabled={!isValid}>
+                <InputGroup type="password" leftIcon="key" large autoFocus value={passphrase} disabled={loading} inputRef={passphraseRef}
+                  onChange={event => setPassphrase(event.currentTarget.value)} />
+                <Button type="submit" icon="unlock" intent="success" large loading={loading} disabled={!isValid}>
                   {translate.action.unlock}
                 </Button>
               </Grid>
@@ -93,14 +91,14 @@ export const UnlockStore: React.FC = () => {
         </Grid>
       </GridItem>
       <GridItem colStart={2} justifySelf="end">
-        <Button icon="cog" minimal onClick={() => send({ type: "OPEN_CONFIG" })}>
+        <Button icon="cog" minimal onClick={() => setMainPanel("config")}>
           {translate.action.config}
         </Button>
       </GridItem>
       <div />
       <GridItem colSpan={3} />
       <GridItem colSpan={3} justifySelf="center">
-        <Muted>t-rust-less {state.context.appVersion.version} - tauri {state.context.appVersion.tauriVersion}</Muted>
+        <Muted>t-rust-less {appVersion.version} - tauri {appVersion.tauriVersion}</Muted>
       </GridItem>
 
     </Grid>

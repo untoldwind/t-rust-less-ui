@@ -1,15 +1,14 @@
-import * as React from "react";
-import { translations } from "../i18n";
+import React from "react";
 import { SecretType } from "../machines/backend-tauri";
+import { useTranslate } from "../machines/state";
 import { NoWrap } from "./ui/nowrap";
 
 export interface FieldTypeProps {
   value: SecretType
 }
 
-export const FieldType: React.FC<FieldTypeProps> = props => {
-  const translate = React.useMemo(translations, [translations]);
-  const { value } = props;
+export const FieldType: React.FC<FieldTypeProps> = ({ value }) => {
+  const translate = useTranslate();
 
   return (
     <>

@@ -70,11 +70,18 @@ export interface UnlockTranslations {
   noStoresDescription: string
 }
 
+export interface ClipboardTranslations {
+  controlTitle: string
+  secretName: string
+  property: string
+}
+
 export interface Translations {
   action: ActionTranslations
   secret: SecretTranslations
   storeConfig: StoreConfigTranslations
   passwordGenerator: PasswordGeneratorTranslations
   unlock: UnlockTranslations
+  clipboard: ClipboardTranslations
   formatTimestamp: (timestamp: string) => string,
 }

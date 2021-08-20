@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { AlignSpec, OffsetSpec, offsetSpecToPadding, JustifySpec } from "./constraints";
 import { CSSInterpolation, css, cx } from "@emotion/css";
 
@@ -45,7 +45,7 @@ function rawGridSpecToGridProp(start: number | undefined, span: number | undefin
   }
 }
 
-export const GridItem: React.FC<GridItemProps> = ({ padding, overflow, alignSelf, justifySelf, colStart, colSpan, colEnd, rowStart, rowSpan, rowEnd, children }) => {
+export const GridItem: React.FC<GridItemProps> = React.memo(({ padding, overflow, alignSelf, justifySelf, colStart, colSpan, colEnd, rowStart, rowSpan, rowEnd, children }) => {
   const classes: string[] = [];
   const emotionStyles: CSSInterpolation[] = [];
 
@@ -67,4 +67,4 @@ export const GridItem: React.FC<GridItemProps> = ({ padding, overflow, alignSelf
       {children}
     </div>
   )
-};
+});

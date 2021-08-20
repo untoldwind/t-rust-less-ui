@@ -50,12 +50,7 @@ module.exports = {
             },
             {
                 test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-                use: [{
-                    loader: 'file-loader',
-                    options: {
-                        name: '[name].[ext]',
-                    }
-                }]
+                type: "asset",
             }
         ]
     },
@@ -63,6 +58,9 @@ module.exports = {
         renderer: [
             "./src/index.tsx",
             "./src/app.scss",
+        ],
+        "hack-font": [
+            "hack-font/build/web/hack.css",
         ],
         "blueprint-core": [
             "@blueprintjs/core/lib/css/blueprint.css",

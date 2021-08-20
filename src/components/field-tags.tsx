@@ -1,6 +1,6 @@
+import React from "react";
 import { Tag } from "@blueprintjs/core";
-import * as React from "react";
-import { translations } from "../i18n";
+import { useTranslate } from "../machines/state";
 import { Flex } from "./ui/flex";
 import { NoWrap } from "./ui/nowrap";
 
@@ -9,7 +9,7 @@ export interface FieldTagsProps {
 }
 
 export const FieldTags: React.FC<FieldTagsProps> = ({ tags }) => {
-  const translate = React.useMemo(translations, [translations]);
+  const translate = useTranslate()
 
   if (tags.length === 0) return null;
 

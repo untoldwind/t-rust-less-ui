@@ -1,7 +1,7 @@
+import React from "react";
 import { Button, MenuItem } from "@blueprintjs/core";
 import { ItemPredicate, ItemRenderer, MultiSelect } from "@blueprintjs/select";
-import * as React from "react";
-import { translations } from "../i18n";
+import { useTranslate } from "../machines/state";
 import { NoWrap } from "./ui/nowrap";
 
 export interface FieldEditTagsProps {
@@ -13,7 +13,7 @@ export interface FieldEditTagsProps {
 const TagMultiSelect = MultiSelect.ofType<string>();
 
 export const FieldEditTags: React.FC<FieldEditTagsProps> = ({ allTags, tags, onChange }) => {
-  const translate = React.useMemo(translations, [translations]);
+  const translate = useTranslate()
 
   const itemRenderer: ItemRenderer<string> = (tag, { modifiers, handleClick }) => {
     if (!modifiers.matchesPredicate || tags.indexOf(tag) >= 0) {

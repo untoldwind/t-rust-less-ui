@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Intent, ProgressBar } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
 import { PasswordStrengthDetails } from "./password-strength-details";

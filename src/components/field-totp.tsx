@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";
 import { Grid } from "./ui/grid";
@@ -6,17 +6,26 @@ import { ProgressBar, Button, PopoverInteractionKind } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import QRCode from "qrcode.react";
 import { NoWrap } from "./ui/nowrap";
-import { OTPToken } from "../machines/backend-tauri";
+import { calculateOtpToken, OTPToken } from "../machines/backend-tauri";
 
 export interface FieldTOPTProps {
   label: string
   otpUrl: string
-  otpToken?: OTPToken
   onCopy: () => void
 }
 
-export const FieldTOTP: React.FC<FieldTOPTProps> = ({ otpToken, otpUrl, label, onCopy }) => {
+export const FieldTOTP: React.FC<FieldTOPTProps> = ({ otpUrl, label, onCopy }) => {
   const [reveal, setReveal] = React.useState(false);
+  const [otpToken, setOtpToken] = React.useState<OTPToken | undefined>(undefined);
+
+  React.useEffect(() => {
+    const update = async () => {
+      setOtpToken(await calculateOtpToken(otpUrl));
+    };
+    update();
+    const timerId = setInterval(update, 1000);
+    return () => clearInterval(timerId);
+  }, [otpUrl]);
 
   if (typeof otpToken === "object" && otpUrl.startsWith("otpauth")) {
     const otp = new URLSearchParams(new URL(otpUrl).search);

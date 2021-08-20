@@ -1,74 +1,42 @@
-import * as React from "react";
+import React from "react";
 import { FlexItem } from "./ui/flex-item";
 import { Menu, MenuItem, H5 } from "@blueprintjs/core";
-import { translations } from "../i18n";
-import { useActor } from "@xstate/react";
-import { mainInterpreter } from "../machines/main";
-import { SecretType, SECRET_TYPES } from "../machines/backend-tauri";
+import { SECRET_TYPES } from "../machines/backend-tauri";
+import { secretListFilterDeletedState, secretListFilterTagState, secretListFilterTypeState, secretListState, useTranslate } from "../machines/state";
+import { useRecoilState, useRecoilValueLoadable } from "recoil";
 
 export const ListSecretsSidebar: React.FC = () => {
-  const translate = React.useMemo(translations, [translations])
-  const [state, send] = useActor(mainInterpreter);
+  const translate = useTranslate();
+  const [secretListFilterType, setSecretListFilterType] = useRecoilState(secretListFilterTypeState);
+  const [secretListFilterTag, setSecretListFilterTag] = useRecoilState(secretListFilterTagState);
+  const [secretListFilterDeleted, setSecretListFilterDeleted] = useRecoilState(secretListFilterDeletedState);
+  const secretList = useRecoilValueLoadable(secretListState);
+  const [tags, setTags] = React.useState<string[]>([]);
 
-  function onFilterType(type: SecretType): () => void {
-    return () => {
-      send({
-        type: "SET_SECRET_FILTER", secretFilter: {
-          name: state.context.secretFilter.name,
-          type,
-        },
-      });
-    }
-  }
-
-  function onFilterTag(tag: string): () => void {
-    return () => {
-      send({
-        type: "SET_SECRET_FILTER", secretFilter: {
-          name: state.context.secretFilter.name,
-          tag,
-        },
-      })
-    }
-  }
-
-  function onFilterDeleted() {
-    send({
-      type: "SET_SECRET_FILTER", secretFilter: {
-        name: state.context.secretFilter.name,
-        deleted: true,
-      },
-    });
-  }
+  React.useEffect(() => {
+    if (secretList.state == "hasValue")
+      setTags(secretList.contents.all_tags);
+  }, [secretList]);
 
   return (
-    <div className="bp3-dark sidebar">
+    <div className="bp3-dark browser-sidebar">
       <Menu>
         {SECRET_TYPES.map((secretType, idx) => (
-          <MenuItem key={idx}
-            text={translate.secret.typeName[secretType]}
-            active={state.context.secretFilter.type === secretType}
-            onClick={onFilterType(secretType)} />
+          <MenuItem key={idx} text={translate.secret.typeName[secretType]} active={secretListFilterType === secretType} onClick={() => setSecretListFilterType(secretType)} />
         ))}
       </Menu>
 
-      {state.context.secretList && state.context.secretList.all_tags && <FlexItem padding={[10, 0, 0, 0]}>
+      <FlexItem padding={[10, 0, 0, 0]}>
         <H5>{translate.secret.tags}</H5>
         <Menu>
-          {state.context.secretList.all_tags.map((tag, idx) => (
-            <MenuItem key={idx}
-              text={tag}
-              active={state.context.secretFilter.tag === tag}
-              onClick={onFilterTag(tag)} />
+          {tags.map((tag, idx) => (
+            <MenuItem key={idx} text={tag} active={secretListFilterTag === tag} onClick={() => setSecretListFilterTag(tag)} />
           ))}
         </Menu>
-      </FlexItem>}
+      </FlexItem>
       <FlexItem flexGrow={1} />
       <Menu>
-        <MenuItem text={translate.secret.archived}
-          icon="box"
-          active={state.context.secretFilter.deleted}
-          onClick={onFilterDeleted} />
+        <MenuItem text={translate.secret.archived} icon="box" active={secretListFilterDeleted} onClick={() => setSecretListFilterDeleted(true)} />
       </Menu>
     </div>
   );

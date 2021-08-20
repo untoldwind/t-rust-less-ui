@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
 import { SecretEntryList } from "./secret-entry-list";
@@ -6,12 +6,19 @@ import { SecretDetailView } from "./secret-detail-view";
 import { ListSecretsHeader } from "./list-secrets-header";
 import { ListSecretsSidebar } from "./list-secrets-sidebar";
 import { Toaster, Toast } from "@blueprintjs/core";
-import { useActor } from "@xstate/react";
-import { mainInterpreter } from "../machines/main";
 import { SecretEditView } from "./secret-edit-view";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { editSecretVersionState, errorState } from "../machines/state";
+import { Loading } from "./loading";
 
-export const ListSecrets: React.FC = () => {
-  const [state, send] = useActor(mainInterpreter);
+export interface ListSecretsProps {
+  onKeyDown: React.KeyboardEventHandler<HTMLElement>
+  onKeyUp: React.KeyboardEventHandler<HTMLElement>
+}
+
+export const ListSecrets: React.FC<ListSecretsProps> = ({ onKeyUp, onKeyDown }) => {
+  const [error, setError] = useRecoilState(errorState);
+  const editSecretVersion = useRecoilValue(editSecretVersionState);
 
   return (
     <Grid
@@ -23,19 +30,17 @@ export const ListSecrets: React.FC = () => {
       </GridItem>
       <GridItem colSpan={3}>
         <Toaster>
-          {state.matches("unlocked.error") &&
-            <Toast
-              intent="danger"
-              message={state.context.errorMessage}
-              timeout={2000}
-              onDismiss={() => send({ type: "CONFIRM_ERROR" })} />
-          }
+          {error && <Toast intent="danger" message={error} timeout={2000} onDismiss={() => setError(undefined)} />}
         </Toaster>
       </GridItem>
       <ListSecretsSidebar />
-      <SecretEntryList />
-      {!state.matches("unlocked.edit_secret_version") && <SecretDetailView />}
-      {state.matches("unlocked.edit_secret_version") && <SecretEditView />}
+      <React.Suspense fallback={<Loading />}>
+        <SecretEntryList />
+      </React.Suspense>
+      <React.Suspense fallback={<Loading />}>
+        {!editSecretVersion && <SecretDetailView />}
+        {editSecretVersion && <SecretEditView />}
+      </React.Suspense>
     </Grid>
   )
 };

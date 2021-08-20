@@ -1,5 +1,4 @@
 import { app, shell, dialog, invoke } from "@tauri-apps/api";
-import { writeText } from "@tauri-apps/api/clipboard";
 
 export interface AppVersion {
   version: string
@@ -145,6 +144,13 @@ export type OTPToken =
     }
   }
 
+export interface ClipboardProviding {
+  store_name: string
+  block_id: string
+  secret_name: string
+  property: string
+}
+
 export async function getAppVersion(): Promise<AppVersion> {
   const version = await app.getVersion();
   const tauriVersion = await app.getTauriVersion();
@@ -243,12 +249,20 @@ export function addSecretVersion(storeName: string, secretVersion: SecretVersion
   });
 }
 
-export function textToClipboard(content: string): Promise<void> {
-  return writeText(content);
+export function secretToClipboard(storeName: string, blockId: string, properties: string[]): Promise<void> {
+  return invoke("service_secret_to_clipboard", {
+    storeName,
+    blockId,
+    properties,
+  });
 }
 
-export function clearClipboard(): Promise<void> {
-  return writeText("");
+export function clipboardCurrentlyProviding(): Promise<ClipboardProviding | null> {
+  return invoke("clipboard_currently_providing");
+}
+
+export function clipboardDestroy(): Promise<void> {
+  return invoke("clipboard_destroy");
 }
 
 export function generateId(): Promise<string> {
@@ -289,4 +303,3 @@ export function addIdentity(storeName: string, identity: Identity, passphrase: s
     passphrase,
   });
 }
-

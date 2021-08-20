@@ -1,5 +1,9 @@
-use crate::state::State;
-use t_rust_less_lib::api::{PasswordGeneratorParam, StoreConfig};
+use crate::{clipboard_fallback::ClipboardFallback, state::State};
+use std::{env, sync::Arc};
+use t_rust_less_lib::{
+  api::{PasswordGeneratorParam, StoreConfig},
+  service::{secrets_provider::SecretsProvider, ServiceError},
+};
 
 #[tauri::command]
 pub fn service_list_stores(state: tauri::State<State>) -> Result<Vec<StoreConfig>, String> {
@@ -67,5 +71,37 @@ pub fn service_generate_password(param: PasswordGeneratorParam, state: tauri::St
 #[tauri::command]
 pub fn service_check_autolock(state: tauri::State<State>) -> Result<(), String> {
   state.inner().get_service()?.check_autolock();
+  Ok(())
+}
+
+#[tauri::command]
+pub fn service_secret_to_clipboard(
+  store_name: String,
+  block_id: String,
+  properties: Vec<String>,
+  state: tauri::State<State>,
+  app: tauri::AppHandle,
+) -> Result<(), String> {
+  let display_name = env::var("DISPLAY").unwrap_or_else(|_| ":0".to_string());
+
+  state.inner().clear_clipboard()?;
+
+  let properties_ref = properties.iter().map(AsRef::as_ref).collect::<Vec<&str>>();
+  match state
+    .inner()
+    .get_service()?
+    .secret_to_clipboard(&store_name, &block_id, &properties_ref, &display_name)
+  {
+    Ok(clipboard_control) => state.inner().set_clipboard(clipboard_control)?,
+    Err(ServiceError::NotAvailable) => {
+      let store = state.inner().get_store(store_name.clone())?;
+      let secret_version = store.get_version(&block_id).map_err(|err| format!("{}", err))?;
+      let secret_provider = SecretsProvider::new(store_name, block_id, secret_version, &properties_ref);
+      let fallback = ClipboardFallback::new(app, secret_provider).map_err(|err| format!("{}", err))?;
+      state.inner().set_clipboard(Arc::new(fallback))?
+    }
+    Err(err) => return Err(format!("{}", err)),
+  }
+
   Ok(())
 }

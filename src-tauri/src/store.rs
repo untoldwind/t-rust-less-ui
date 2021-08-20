@@ -26,7 +26,8 @@ pub fn store_lock(store_name: String, state: tauri::State<State>) -> Result<(), 
     .inner()
     .get_store(store_name)?
     .lock()
-    .map_err(|err| format!("{}", err))
+    .map_err(|err| format!("{}", err))?;
+  state.inner().clear_clipboard()
 }
 
 #[tauri::command]
