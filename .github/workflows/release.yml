@@ -47,12 +47,20 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: t-rust-less-ui.AppImage
+    - name: Simplify name
+      run: mv t-rust-less-ui_*.AppImage t-rust-less-ui.AppImage
     - uses: actions/download-artifact@v2
       with:
         name:  t-rust-less-ui.deb
+    - name: Simplify name
+      run: mv t-rust-less-ui_*.deb t-rust-less-ui.deb
     - uses: actions/download-artifact@v2
       with:
         name:  t-rust-less-ui.msi
+    - name: Simplify name
+      run: mv t-rust-less-ui_*.msi t-rust-less-ui.msi
+    - name: Display structure of downloaded files
+      run: ls -R
     - name: Create sha256sum appimage
       run: sha256sum t-rust-less-ui.AppImage > t-rust-less-ui.AppImage.sha256sum
     - name: Create sha256sum deb
