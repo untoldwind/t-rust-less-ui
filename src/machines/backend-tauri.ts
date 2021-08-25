@@ -110,7 +110,7 @@ export interface PasswordGeneratorCharsParam {
   require_upper: boolean
   require_number: boolean
   require_symbol: boolean
-  exlcude_similar: boolean
+  exclude_similar: boolean
   exclude_ambiguous: boolean
 }
 

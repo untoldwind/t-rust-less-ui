@@ -17,7 +17,7 @@ const DEFAULT_CHARS_PARAM: PasswordGeneratorCharsParam = {
   require_upper: true,
   require_number: true,
   require_symbol: true,
-  exlcude_similar: false,
+  exclude_similar: false,
   exclude_ambiguous: false,
 };
 
@@ -78,9 +78,9 @@ export const PasswordGenerator: React.FC<PasswordGeneratorProps> = props => {
         })} />
       </GridItem>
       <GridItem colSpan={2}>
-        <Switch label={translate.passwordGenerator.excludeSimilar} checked={charsParam.exlcude_similar} onChange={event => setCharsParam({
+        <Switch label={translate.passwordGenerator.excludeSimilar} checked={charsParam.exclude_similar} onChange={event => setCharsParam({
           ...charsParam,
-          exlcude_similar: event.currentTarget.checked,
+          exclude_similar: event.currentTarget.checked,
         })} />
       </GridItem>
       <GridItem colSpan={2}>
