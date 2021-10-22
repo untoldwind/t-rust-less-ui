@@ -23,7 +23,7 @@ impl State {
       Some(service) => Ok(service.clone()),
       None => {
         let service = create_service().map_err(|err| format!("{}", err))?;
-        maybe_service.insert(service.clone());
+        *maybe_service = Some(service.clone());
         Ok(service)
       }
     }
