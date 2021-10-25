@@ -261,6 +261,10 @@ export function clipboardCurrentlyProviding(): Promise<ClipboardProviding | null
   return invoke("clipboard_currently_providing");
 }
 
+export function clipboardProvideNext(): Promise<ClipboardProviding | null> {
+  return invoke("clipboard_provide_next");
+}
+
 export function clipboardDestroy(): Promise<void> {
   return invoke("clipboard_destroy");
 }

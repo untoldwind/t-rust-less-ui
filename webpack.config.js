@@ -2,6 +2,7 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require("webpack");
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
     devtool: 'inline-source-map',
@@ -19,7 +20,11 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: [{
                     loader: 'ts-loader',
+                    options: {
+                        transpileOnly: true
+                    }
                 }],
+                exclude: /node_modules/,
             },
             {
                 test: /\.css$/,
@@ -88,5 +93,6 @@ module.exports = {
     }), new MiniCssExtractPlugin({
         filename: "[name].css",
         chunkFilename: "[id].css",
-    })]
+    }),
+    new ForkTsCheckerWebpackPlugin()]
 }

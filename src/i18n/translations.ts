@@ -74,6 +74,8 @@ export interface ClipboardTranslations {
   controlTitle: string
   secretName: string
   property: string
+  cancelButton: string
+  nextButton: string
 }
 
 export interface Translations {

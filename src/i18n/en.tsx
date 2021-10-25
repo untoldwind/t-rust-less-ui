@@ -90,6 +90,8 @@ export const EN: Translations = {
     controlTitle: "Clipboard providing",
     secretName: "Secret",
     property: "Property",
+    nextButton: "Next",
+    cancelButton: "Cancel",
   },
   formatTimestamp: (timestamp: string) => moment(timestamp).format("YYYY-MM-DD HH:mm:ss Z"),
 }

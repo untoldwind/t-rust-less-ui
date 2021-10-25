@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRecoilCallback, useRecoilValue } from "recoil";
 import moment from "moment";
-import { checkAutolock, lock, unlock, status, setDefaultStore, StoreConfig, upsertStoreConfig, Identity, addIdentity, generateId, SecretType, addSecretVersion, secretToClipboard, clipboardDestroy, clipboardCurrentlyProviding, ClipboardProviding } from "./backend-tauri";
+import { checkAutolock, lock, unlock, status, setDefaultStore, StoreConfig, upsertStoreConfig, Identity, addIdentity, generateId, SecretType, addSecretVersion, secretToClipboard, clipboardDestroy, clipboardCurrentlyProviding, ClipboardProviding, clipboardProvideNext } from "./backend-tauri";
 import { clipboardProvidingState, defaultStoreNameState, editSecretVersionState, errorState, mainPanelState, secretListFilterState, secretListRequestIdState, secretListState, selectedSecretIdState, selectedSecretState, selectedSecretVersionIdState, selectedSecretVersionState, selectedStoreState, statusState, storeConfigsRequestIdState } from "./state";
 
 export function useStatusRefresh() {
@@ -209,7 +209,8 @@ export function useCopySecretProperties(): (properties: string[]) => void {
 export function useClipboardControl(): [ClipboardProviding | null, () => void, () => void] {
   return [
     useRecoilValue(clipboardProvidingState),
-    useRecoilCallback<[], void>(({ }) => async () => {
+    useRecoilCallback<[], void>(({ set }) => async () => {
+      set(clipboardProvidingState, await clipboardProvideNext());
     }),
     useRecoilCallback<[], void>(({ set }) => async () => {
       await clipboardDestroy();
