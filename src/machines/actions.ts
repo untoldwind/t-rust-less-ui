@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRecoilCallback, useRecoilValue } from "recoil";
 import moment from "moment";
 import { checkAutolock, lock, unlock, status, setDefaultStore, StoreConfig, upsertStoreConfig, Identity, addIdentity, generateId, SecretType, addSecretVersion, secretToClipboard, clipboardDestroy, clipboardCurrentlyProviding, ClipboardProviding, clipboardProvideNext } from "./backend-tauri";
-import { clipboardProvidingState, defaultStoreNameState, editSecretVersionState, errorState, mainPanelState, secretListFilterState, secretListRequestIdState, secretListState, selectedSecretIdState, selectedSecretState, selectedSecretVersionIdState, selectedSecretVersionState, selectedStoreState, statusState, storeConfigsRequestIdState } from "./state";
+import { clipboardProvidingState, defaultStoreNameState, editSecretVersionState, errorState, mainPanelState, secretListFilterState, secretListRequestIdState, secretListState, selectedSecretIdState, selectedSecretState, selectedSecretVersionIdState, selectedSecretVersionState, selectedStoreState, statusState, storeConfigsRequestIdState, zoomSecretPropertyState } from "./state";
 
 export function useStatusRefresh() {
   const refreshStatus = useRecoilCallback(({ set, reset, snapshot }) => async () => {
@@ -72,6 +72,8 @@ export function useTryUnlock(): [(identityId: string, passphrase: string) => voi
       reset(selectedSecretIdState);
       reset(selectedSecretVersionIdState);
       reset(editSecretVersionState);
+      reset(clipboardProvidingState);
+      reset(zoomSecretPropertyState);
     } catch (err: any) {
       set(errorState, err.toString());
     } finally {
@@ -93,6 +95,8 @@ export function useLock(): () => void {
       reset(selectedSecretIdState);
       reset(selectedSecretVersionIdState);
       reset(editSecretVersionState);
+      reset(clipboardProvidingState);
+      reset(zoomSecretPropertyState);
     } catch (err: any) {
       set(errorState, err.toString());
     }

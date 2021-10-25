@@ -7,16 +7,22 @@ import { NoWrap } from "./ui/nowrap";
 export interface FieldTextProps {
   label: string
   value: string
+  onZoom?: () => void
   onCopy?: () => void
 }
 
-export const FieldText: React.FC<FieldTextProps> = React.memo(({ label, value, onCopy }) => {
+export const FieldText: React.FC<FieldTextProps> = React.memo(({ label, value, onZoom, onCopy }) => {
   return (
     <>
       <NoWrap>{label}</NoWrap>
       <Flex flexDirection="row" gap={5}>
         <FlexItem flexGrow={1}>{value}</FlexItem>
-        {onCopy && <FlexItem flexGrow={0}><Button icon="clipboard" minimal onClick={onCopy} /></FlexItem>}
+        <FlexItem flexGrow={0}>
+          <Flex flexDirection="row">
+            {onZoom && <Button icon="zoom-in" minimal onClick={onZoom} />}
+            {onCopy && <Button icon="clipboard" minimal onClick={onCopy} />}
+          </Flex>
+        </FlexItem>
       </Flex>
     </>
   );

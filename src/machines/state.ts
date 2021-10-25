@@ -226,3 +226,7 @@ export const clipboardProvidingState = atom<ClipboardProviding | null>({
   default: null,
 });
 
+export const zoomSecretPropertyState = atom<string | null>({
+  key: "zoomSecretPropertyState",
+  default: null,
+});

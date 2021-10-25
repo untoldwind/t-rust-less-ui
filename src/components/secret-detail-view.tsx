@@ -16,8 +16,8 @@ import { FieldTags } from "./field-tags";
 import { FieldUrls } from "./field-urls";
 import { FieldRecipients } from "./field-recipients";
 import { PasswordStrength } from "../machines/backend-tauri";
-import { identitiesState, selectedSecretState, selectedSecretVersionState, useTranslate } from "../machines/state";
-import { useRecoilValue } from "recoil";
+import { identitiesState, selectedSecretState, selectedSecretVersionState, useTranslate, zoomSecretPropertyState } from "../machines/state";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useAddSecretVersion, useCopySecretProperties, useToggleArchiveSecret } from "../machines/actions";
 
 export const SecretDetailView: React.FC = () => {
@@ -28,6 +28,7 @@ export const SecretDetailView: React.FC = () => {
   const addSecretVersion = useAddSecretVersion();
   const toggleArchiveSecret = useToggleArchiveSecret();
   const copySecretProperties = useCopySecretProperties();
+  const setZoomSecretProperty = useSetRecoilState(zoomSecretPropertyState);
 
   function renderProperty(name: string, value: string, strength?: PasswordStrength): React.ReactNode {
     switch (name) {
@@ -37,7 +38,7 @@ export const SecretDetailView: React.FC = () => {
         );
       case "password":
         return (
-          <FieldPassword key={name} label={translate.secret.property(name)} value={value} strength={strength} onCopy={() => copySecretProperties([name])} />
+          <FieldPassword key={name} label={translate.secret.property(name)} value={value} strength={strength} onZoom={() => setZoomSecretProperty(name)} onCopy={() => copySecretProperties([name])} />
         );
       case "totpUrl":
         return (
@@ -45,7 +46,7 @@ export const SecretDetailView: React.FC = () => {
         );
       default:
         return (
-          <FieldText key={name} label={translate.secret.property(name)} value={value} onCopy={() => copySecretProperties([name])} />
+          <FieldText key={name} label={translate.secret.property(name)} value={value} onZoom={() => setZoomSecretProperty(name)} onCopy={() => copySecretProperties([name])} />
         );
     }
   }

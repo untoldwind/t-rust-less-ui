@@ -3,6 +3,7 @@ import { useHotkeys } from "@blueprintjs/core";
 import { ListSecrets } from "./list-secrets";
 import { useCopySecretProperties, useSecretNavigate } from "../machines/actions";
 import { ClipboardControl } from "./clipboard-control";
+import { ZoomDisplay } from "./zoom-display";
 
 export const ListSecretsHotkeys: React.FC = ({ children }) => {
   const { secretUp, secretDown } = useSecretNavigate();
@@ -45,6 +46,7 @@ export const ListSecretsHotkeys: React.FC = ({ children }) => {
     <>
       <ListSecrets onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
       <ClipboardControl />
+      <ZoomDisplay />
     </>
   )
 };

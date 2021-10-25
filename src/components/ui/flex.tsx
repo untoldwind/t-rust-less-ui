@@ -13,6 +13,7 @@ export interface FlexProps {
   alignItems?: AlignSpec
   flexGrow?: number
   flexShrink?: number
+  flexWrap?: "nowrap" | "wrap" | "wrap-reverse"
   width?: SizeSpec
   maxWidth?: SizeSpec
   height?: SizeSpec
@@ -21,7 +22,7 @@ export interface FlexProps {
   backgroundColor?: string
 }
 
-export const Flex: React.FC<FlexProps> = React.memo(({ flexDirection, alignItems, flexGrow, flexShrink, width, height, maxWidth, gap, padding, backgroundColor, children }) => {
+export const Flex: React.FC<FlexProps> = React.memo(({ flexDirection, alignItems, flexGrow, flexShrink, flexWrap, width, height, maxWidth, gap, padding, backgroundColor, children }) => {
   const classes = [flexClass];
   const emotionStyles: CSSInterpolation[] = []
 
@@ -29,6 +30,7 @@ export const Flex: React.FC<FlexProps> = React.memo(({ flexDirection, alignItems
   alignItems !== undefined && emotionStyles.push({ alignItems });
   flexGrow !== undefined && emotionStyles.push({ flexGrow });
   flexShrink !== undefined && emotionStyles.push({ flexShrink });
+  flexWrap != undefined && emotionStyles.push({ flexWrap });
   height !== undefined && emotionStyles.push({ height: height.join("") });
   width !== undefined && emotionStyles.push({ width: width.join(""), });
   maxWidth !== undefined && emotionStyles.push({ maxWidth: maxWidth.join(""), });
