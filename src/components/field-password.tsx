@@ -22,6 +22,10 @@ export interface FieldPasswordState {
 export const FieldPassword: React.FC<FieldPasswordProps> = ({ label, value, strength, onZoom, onCopy }) => {
   const [reveal, setReveal] = React.useState(false);
 
+  React.useEffect(() => {
+    setReveal(false);
+  }, [value]);
+
   return (
     <>
       <NoWrap>{label}</NoWrap>
@@ -34,8 +38,8 @@ export const FieldPassword: React.FC<FieldPasswordProps> = ({ label, value, stre
         </FlexItem>
         <FlexItem flexGrow={0}>
           <Flex flexDirection="row">
-            <Button active={reveal} minimal onClick={() => setReveal(!reveal)} icon={reveal ? "eye-off" : "eye-open"} />
             <Button icon="zoom-in" minimal onClick={onZoom} />
+            <Button active={reveal} minimal onClick={() => setReveal(!reveal)} icon={reveal ? "eye-off" : "eye-open"} />
             <Button icon="clipboard" minimal onClick={onCopy} />
           </Flex>
         </FlexItem>
