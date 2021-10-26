@@ -4,13 +4,12 @@ import { Tooltip2 } from "@blueprintjs/popover2";
 import { Grid } from "./ui/grid";
 import { autolockInState, mainPanelState, secretListFilterNameState, useTranslate } from "../machines/state";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { useLock, useSecretNavigate } from "../machines/actions";
+import { useLock } from "../machines/actions";
 
 export const ListSecretsHeader: React.FC = () => {
   const translate = useTranslate();
   const lock = useLock();
   const [secretListFilterName, setSecretListFilterName] = useRecoilState(secretListFilterNameState);
-  const { secretUp, secretDown } = useSecretNavigate();
   const { autolockIn, autolockTimeout } = useRecoilValue(autolockInState);
   const setMainPanel = useSetRecoilState(mainPanelState);
 
@@ -20,25 +19,13 @@ export const ListSecretsHeader: React.FC = () => {
     setSecretListFilterName(value.length > 0 ? value : undefined);
   }
 
-  function onKeyDown(event: React.KeyboardEvent) {
-    switch (event.key) {
-      case "ArrowDown":
-        secretDown();
-        break;
-      case "ArrowUp":
-        secretUp();
-        break;
-    }
-  }
-
   return (
     <Navbar>
       <Navbar.Group align="left">
         <InputGroup
           leftIcon="search" autoFocus
           value={secretListFilterName || ""}
-          onChange={onChangeNameFilter}
-          onKeyDown={onKeyDown} />
+          onChange={onChangeNameFilter} />
       </Navbar.Group>
       <Navbar.Group align="right">
         <Tooltip2 content={translate.action.config}>
