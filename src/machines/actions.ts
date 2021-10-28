@@ -205,7 +205,11 @@ export function useCopySecretProperties(): (properties: string[]) => void {
 
     if (!storeName || !currentSecret) return;
 
-    await secretToClipboard(storeName, currentSecretVersionId ?? currentSecret.current_block_id, properties);
+    try {
+      await secretToClipboard(storeName, currentSecretVersionId ?? currentSecret.current_block_id, properties);
+    } catch (error: any) {
+      set(errorState, error.toString());
+    }
 
     set(clipboardProvidingState, await clipboardCurrentlyProviding());
   });
