@@ -193,6 +193,7 @@ export function useStoreSecretVersion(): () => void {
       set(errorState, error.toString());
     }
     set(secretListRequestIdState, current => current + 1);
+    set(editSecretVersionState, undefined);
   });
 }
 
