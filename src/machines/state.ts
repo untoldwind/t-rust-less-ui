@@ -91,16 +91,14 @@ export const defaultStoreNameState = atom<string | null>({
   default: getDefaultStore(),
 })
 
-export const secretListFilterState = atom<SecretListFilter>({
+export const secretListFilterState = atom<SecretListFilter | undefined>({
   key: "secretListFilter",
-  default: {
-    type: "login",
-  },
+  default: undefined,
 });
 
 export const secretListFilterNameState = selector<string | undefined>({
   key: "secretListFilterName",
-  get: ({ get }) => get(secretListFilterState).name,
+  get: ({ get }) => get(secretListFilterState)?.name,
   set: ({ set, reset }, name) => {
     reset(selectedSecretIdState);
     reset(selectedSecretVersionIdState);
@@ -114,12 +112,12 @@ export const secretListFilterNameState = selector<string | undefined>({
 
 export const secretListFilterTypeState = selector<SecretType | undefined>({
   key: "secretListFilterType",
-  get: ({ get }) => get(secretListFilterState).type,
+  get: ({ get }) => get(secretListFilterState)?.type,
   set: ({ set, reset }, secretType) => {
     reset(selectedSecretIdState);
     reset(selectedSecretVersionIdState);
     set(secretListFilterState, filter => ({
-      name: filter.name,
+      name: filter?.name,
       type: secretType instanceof DefaultValue ? undefined : secretType,
     }));
   },
@@ -128,12 +126,12 @@ export const secretListFilterTypeState = selector<SecretType | undefined>({
 
 export const secretListFilterTagState = selector<string | undefined>({
   key: "secretListFilterTag",
-  get: ({ get }) => get(secretListFilterState).tag,
+  get: ({ get }) => get(secretListFilterState)?.tag,
   set: ({ set, reset }, tag) => {
     reset(selectedSecretIdState);
     reset(selectedSecretVersionIdState);
     set(secretListFilterState, filter => ({
-      name: filter.name,
+      name: filter?.name,
       tag: tag instanceof DefaultValue ? undefined : tag,
     }));
   },
@@ -142,12 +140,12 @@ export const secretListFilterTagState = selector<string | undefined>({
 
 export const secretListFilterDeletedState = selector<boolean | undefined>({
   key: "secretListFilterDeleted",
-  get: ({ get }) => get(secretListFilterState).deleted,
+  get: ({ get }) => get(secretListFilterState)?.deleted,
   set: ({ set, reset }, deleted) => {
     reset(selectedSecretIdState);
     reset(selectedSecretVersionIdState);
     set(secretListFilterState, filter => ({
-      name: filter.name,
+      name: filter?.name,
       deleted: deleted instanceof DefaultValue ? undefined : deleted,
     }));
   },
@@ -170,7 +168,13 @@ export const secretListState = selector<SecretList>({
 
     const filter = get(secretListFilterState);
 
-    return listSecrets(storeName, filter);
+    if(filter)
+      return listSecrets(storeName, filter);
+    else
+      return {
+        all_tags: [],
+        entries: [],
+      };
   },
   cachePolicy_UNSTABLE: { eviction: "most-recent" },
 });

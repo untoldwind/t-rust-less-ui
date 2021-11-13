@@ -68,7 +68,9 @@ export function useTryUnlock(): [(identityId: string, passphrase: string) => voi
       await unlock(storeName, identityId, passphrase);
       set(statusState, await status(storeName));
       set(mainPanelState, "browse");
-      reset(secretListFilterState);
+      set(secretListFilterState, {
+          type: "login",
+      });
       reset(selectedSecretIdState);
       reset(selectedSecretVersionIdState);
       reset(editSecretVersionState);
