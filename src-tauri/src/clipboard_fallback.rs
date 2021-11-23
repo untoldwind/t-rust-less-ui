@@ -31,7 +31,7 @@ impl ClipboardFallback {
       Some(secret) => self
         .app
         .clipboard_manager()
-        .write_text(secret)
+        .write_text(secret.as_str())
         .map_err(|err| ServiceError::IO(format!("{}", err)))?,
       _ => self
         .app
