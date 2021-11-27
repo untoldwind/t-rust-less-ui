@@ -1,8 +1,31 @@
 import { useEffect, useState } from "react";
-import { useRecoilCallback, useRecoilValue } from "recoil";
+import { CallbackInterface, useRecoilCallback, useRecoilValue } from "recoil";
 import moment from "moment";
 import { checkAutolock, lock, unlock, status, setDefaultStore, StoreConfig, upsertStoreConfig, Identity, addIdentity, generateId, SecretType, addSecretVersion, secretToClipboard, clipboardDestroy, clipboardCurrentlyProviding, ClipboardProviding, clipboardProvideNext } from "./backend-tauri";
 import { clipboardProvidingState, defaultStoreNameState, editSecretVersionState, errorState, mainPanelState, secretListFilterState, secretListRequestIdState, secretListState, selectedSecretIdState, selectedSecretState, selectedSecretVersionIdState, selectedSecretVersionState, selectedStoreState, statusState, storeConfigsRequestIdState, zoomSecretPropertyState } from "./state";
+
+async function doLock(set: CallbackInterface["set"], reset: CallbackInterface["reset"]) {
+  await clipboardDestroy();
+  set(mainPanelState, "unlock");
+  reset(secretListFilterState);
+  reset(selectedSecretIdState);
+  reset(selectedSecretVersionIdState);
+  reset(editSecretVersionState);
+  reset(clipboardProvidingState);
+  reset(zoomSecretPropertyState);
+}
+
+async function doUnlock(set: CallbackInterface["set"], reset: CallbackInterface["reset"]) {
+  set(mainPanelState, "browse");
+  set(secretListFilterState, {
+      type: "login",
+  });
+  reset(selectedSecretIdState);
+  reset(selectedSecretVersionIdState);
+  reset(editSecretVersionState);
+  reset(clipboardProvidingState);
+  reset(zoomSecretPropertyState);
+}
 
 export function useStatusRefresh() {
   const refreshStatus = useRecoilCallback(({ set, reset, snapshot }) => async () => {
@@ -16,11 +39,12 @@ export function useStatusRefresh() {
     }
 
     const nextStatus = await status(selectedStore);
+    const currentMainPanel = await snapshot.getPromise(mainPanelState);
 
-    if (nextStatus.locked) {
-      set(mainPanelState, current => current === "browse" ? "unlock" : current);
-    } else if (!nextStatus.locked) {
-      set(mainPanelState, current => current === "unlock" ? "browse" : current);
+    if (nextStatus.locked && currentMainPanel === "browse") {
+      doLock(set, reset);
+    } else if (!nextStatus.locked && currentMainPanel === "unlock") {
+      doUnlock(set, reset);
     }
     set(statusState, nextStatus);
     set(clipboardProvidingState, await clipboardCurrentlyProviding())
@@ -67,15 +91,7 @@ export function useTryUnlock(): [(identityId: string, passphrase: string) => voi
     try {
       await unlock(storeName, identityId, passphrase);
       set(statusState, await status(storeName));
-      set(mainPanelState, "browse");
-      set(secretListFilterState, {
-          type: "login",
-      });
-      reset(selectedSecretIdState);
-      reset(selectedSecretVersionIdState);
-      reset(editSecretVersionState);
-      reset(clipboardProvidingState);
-      reset(zoomSecretPropertyState);
+      await doUnlock(set, reset);
     } catch (err: any) {
       set(errorState, err.toString());
     } finally {
@@ -90,15 +106,8 @@ export function useLock(): () => void {
     if (!storeName) return;
     try {
       await lock(storeName);
-      await clipboardDestroy();
       set(statusState, await status(storeName));
-      set(mainPanelState, "unlock");
-      reset(secretListFilterState);
-      reset(selectedSecretIdState);
-      reset(selectedSecretVersionIdState);
-      reset(editSecretVersionState);
-      reset(clipboardProvidingState);
-      reset(zoomSecretPropertyState);
+      await doLock(set, reset);
     } catch (err: any) {
       set(errorState, err.toString());
     }
