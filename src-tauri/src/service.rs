@@ -1,5 +1,5 @@
 use crate::{clipboard_fallback::ClipboardFallback, state::State};
-use std::{env, sync::Arc};
+use std::sync::Arc;
 use t_rust_less_lib::{
   api::{PasswordGeneratorParam, StoreConfig},
   service::{secrets_provider::SecretsProvider, ServiceError},
@@ -82,15 +82,13 @@ pub fn service_secret_to_clipboard(
   state: tauri::State<State>,
   app: tauri::AppHandle,
 ) -> Result<(), String> {
-  let display_name = env::var("DISPLAY").unwrap_or_else(|_| ":0".to_string());
-
   state.inner().clear_clipboard()?;
 
   let properties_ref = properties.iter().map(AsRef::as_ref).collect::<Vec<&str>>();
   match state
     .inner()
     .get_service()?
-    .secret_to_clipboard(&store_name, &block_id, &properties_ref, &display_name)
+    .secret_to_clipboard(&store_name, &block_id, &properties_ref)
   {
     Ok(clipboard_control) => state.inner().set_clipboard(clipboard_control)?,
     Err(ServiceError::NotAvailable) => {
