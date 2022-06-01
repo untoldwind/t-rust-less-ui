@@ -13,6 +13,7 @@ import { FieldEditRecipients } from "./field-edit-recipients";
 import { editSecretVersionState, identitiesState, secretListState, useTranslate } from "../machines/state";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useStoreSecretVersion } from "../machines/actions";
+import { FieldEditTOTP } from "./field-edit-totp";
 
 export const SecretEditView: React.FC = () => {
   const translate = useTranslate();
@@ -33,6 +34,10 @@ export const SecretEditView: React.FC = () => {
       case "password":
         return (
           <FieldEditPassword key={name} label={translate.secret.property(name)} value={value} onChange={onChange} />
+        )
+      case "totpUrl":
+        return (
+          <FieldEditTOTP key={name} label={translate.secret.property(name)} value={value} onChange={onChange} />
         )
       default:
         return (

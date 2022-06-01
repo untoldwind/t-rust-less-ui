@@ -40,9 +40,9 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({ password, disabled
       <InputGroup value={password} disabled={disabled} fill
         type={reveal ? "text" : "password"}
         onChange={event => onChange(event.currentTarget.value)}
-        rightElement={<Flex flexDirection="row" gap={5}>
+        rightElement={<Flex flexDirection="row" gap={5} padding={[0, 5, 0, 0]}>
           <Button minimal icon={reveal ? "eye-on" : "eye-off"} onClick={() => setReveal(!reveal)} />
-          <Popover2 fill position="bottom-right" content={<PasswordGenerator onPasswordGenerated={onChange} />}>
+          <Popover2 fill usePortal position="bottom-right" content={<PasswordGenerator onPasswordGenerated={onChange} />}>
             <Button minimal icon="cog" />
           </Popover2>
         </Flex>}
