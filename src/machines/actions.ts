@@ -18,7 +18,7 @@ async function doLock(set: CallbackInterface["set"], reset: CallbackInterface["r
 async function doUnlock(set: CallbackInterface["set"], reset: CallbackInterface["reset"]) {
   set(mainPanelState, "browse");
   set(secretListFilterState, {
-      type: "login",
+    type: "login",
   });
   reset(selectedSecretIdState);
   reset(selectedSecretVersionIdState);
@@ -64,19 +64,25 @@ export function useUpdateDefaultStoreName(): (storeName: string) => void {
   });
 }
 
-export function useUpsertStoreConfig(): (storeConfig: StoreConfig) => void {
-  return useRecoilCallback<[StoreConfig], void>(({ set }) => async (storeConfig) => {
+export function useUpsertStoreConfig(): (storeConfig: StoreConfig) => Promise<void> {
+  return useRecoilCallback<[StoreConfig], Promise<void>>(({ set }) => async (storeConfig) => {
+    if (storeConfig.client_id === "") {
+      storeConfig.client_id = await generateId();
+    }
     await upsertStoreConfig(storeConfig);
     set(storeConfigsRequestIdState, current => current + 1);
   });
 }
 
-export function useAddIdentity(): (identity: Identity, passphrase: string) => void {
-  return useRecoilCallback<[Identity, string], void>(({ set, snapshot }) => async (identity, passphrase) => {
+export function useAddIdentity(): (identity: Identity, passphrase: string) => Promise<void> {
+  return useRecoilCallback<[Identity, string], Promise<void>>(({ set, snapshot }) => async (identity, passphrase) => {
     const selectedStore = await snapshot.getPromise(selectedStoreState);
 
     if (!selectedStore) return;
 
+    if (identity.id === "") {
+      identity.id = await generateId();
+    }
     await addIdentity(selectedStore, identity, passphrase);
     set(storeConfigsRequestIdState, current => current + 1);
   });

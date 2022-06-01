@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { css, cx, CSSInterpolation } from "@emotion/css";
 import { SizeSpec, AlignSpec, OffsetSpec, offsetSpecToPadding, Size } from "./constraints";
 
@@ -22,7 +22,7 @@ export interface FlexProps {
   backgroundColor?: string
 }
 
-export const Flex: React.FC<FlexProps> = React.memo(({ flexDirection, alignItems, flexGrow, flexShrink, flexWrap, width, height, maxWidth, gap, padding, backgroundColor, children }) => {
+export const Flex: React.FC<PropsWithChildren<FlexProps>> = React.memo(({ flexDirection, alignItems, flexGrow, flexShrink, flexWrap, width, height, maxWidth, gap, padding, backgroundColor, children }) => {
   const classes = [flexClass];
   const emotionStyles: CSSInterpolation[] = []
 

@@ -9,10 +9,11 @@ import { Grid } from "./ui/grid";
 
 export interface PasswordInputProps {
   password: string
+  disabled?: boolean
   onChange: (password: string) => void
 }
 
-export const PasswordInput: React.FC<PasswordInputProps> = ({ password, onChange }) => {
+export const PasswordInput: React.FC<PasswordInputProps> = ({ password, disabled, onChange }) => {
   const [timer, setTimer] = React.useState<number | null>(null);
   const [reveal, setReveal] = React.useState(false);
   const [passwordStrength, setPasswordStrength] = React.useState<PasswordStrength | undefined>(undefined);
@@ -36,7 +37,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({ password, onChange
 
   return (
     <Grid columns={1}>
-      <InputGroup value={password} fill
+      <InputGroup value={password} disabled={disabled} fill
         type={reveal ? "text" : "password"}
         onChange={event => onChange(event.currentTarget.value)}
         rightElement={<Flex flexDirection="row" gap={5}>

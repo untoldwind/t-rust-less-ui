@@ -297,7 +297,7 @@ export async function selectStoreLocation(defaultPath?: string): Promise<string 
     directory: true,
   }) as string | null;
 
-  return result ? decodeURI(`file://${result}`) : null;
+  return result;
 }
 
 export function addIdentity(storeName: string, identity: Identity, passphrase: string): Promise<void> {

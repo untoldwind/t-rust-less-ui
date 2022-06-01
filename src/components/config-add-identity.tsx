@@ -16,16 +16,18 @@ export const ConfigAddIdentity: React.FC = () => {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [passphrase, setPassphrase] = React.useState("");
+  const [adding, setAdding] = React.useState(false);
   const addIdentity = useAddIdentity();
 
   function onClose() {
     setName("");
     setEmail("");
     setPassphrase("");
+    setAdding(false);
     setIsOpen(false);
   }
 
-  function onCreate() {
+  async function onCreate() {
     const identity: Identity = {
       id: "",
       name,
@@ -33,7 +35,8 @@ export const ConfigAddIdentity: React.FC = () => {
       hidden: false,
     };
 
-    addIdentity(identity, passphrase);
+    setAdding(true);
+    await addIdentity(identity, passphrase);
     onClose();
   }
 
@@ -45,16 +48,16 @@ export const ConfigAddIdentity: React.FC = () => {
       <Dialog autoFocus lazy title={translate.storeConfig.addIdentity} isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Grid columnSpec="min-content 1fr" padding={[20, 10, 0, 10]} gap={5} alignItems="center">
           <NoWrap>{translate.storeConfig.identityName}</NoWrap>
-          <InputGroup value={name} fill onChange={event => setName(event.currentTarget.value)} />
+          <InputGroup value={name} disabled={adding} fill onChange={event => setName(event.currentTarget.value)} />
           <NoWrap>{translate.storeConfig.identityEmail}</NoWrap>
-          <InputGroup value={email} fill onChange={event => setEmail(event.currentTarget.value)} />
+          <InputGroup value={email} disabled={adding} fill onChange={event => setEmail(event.currentTarget.value)} />
           <NoWrap>{translate.storeConfig.identityPassphrase}</NoWrap>
-          <PasswordInput password={passphrase} onChange={setPassphrase} />
+          <PasswordInput password={passphrase} disabled={adding} onChange={setPassphrase} />
           <GridItem colSpan={2}>
             <Flex flexDirection="row" padding={[10, 0, 0, 0]}>
               <Button onClick={onClose}>{translate.action.cancel}</Button>
               <FlexItem flexGrow={1} />
-              <Button intent="primary" disabled={!isValid} onClick={onCreate}>{translate.action.create}</Button>
+              <Button intent="primary" loading={adding} disabled={!isValid} onClick={onCreate}>{translate.action.create}</Button>
             </Flex>
           </GridItem>
         </Grid>

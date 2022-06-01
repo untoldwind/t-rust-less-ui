@@ -168,7 +168,7 @@ export const secretListState = selector<SecretList>({
 
     const filter = get(secretListFilterState);
 
-    if(filter)
+    if (filter)
       return listSecrets(storeName, filter);
     else
       return {

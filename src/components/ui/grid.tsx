@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { Size, SizeSpec, OffsetSpec, offsetSpecToPadding, JustifySpec, AlignSpec } from "./constraints";
 import { css, cx, CSSInterpolation } from "@emotion/css";
 
@@ -22,7 +22,7 @@ export interface GridProps extends React.DOMAttributes<HTMLElement> {
   backgroundColor?: string
 }
 
-export const Grid: React.FC<GridProps> = React.memo(({ gap, rowGap, colGap, padding, columns, columnSpec, rowSpec, height, width, maxWidth, alignItems, justifyItems, backgroundColor, children, ...attrs }) => {
+export const Grid: React.FC<PropsWithChildren<GridProps>> = React.memo(({ gap, rowGap, colGap, padding, columns, columnSpec, rowSpec, height, width, maxWidth, alignItems, justifyItems, backgroundColor, children, ...attrs }) => {
   const classes = [gridClass];
 
   const emotionStyles: CSSInterpolation[] = []

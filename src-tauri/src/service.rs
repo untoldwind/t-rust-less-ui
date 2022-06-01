@@ -33,7 +33,7 @@ pub fn service_set_default_store(store_name: String, state: tauri::State<State>)
 }
 
 #[tauri::command]
-pub fn service_upsert_store_config(store_config: StoreConfig, state: tauri::State<State>) -> Result<(), String> {
+pub fn service_upsert_store_config(store_config: StoreConfig, state: tauri::State<State>) -> Result<(), String> {  
   state
     .inner()
     .get_service()?

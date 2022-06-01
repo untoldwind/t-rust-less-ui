@@ -19,7 +19,7 @@ export const ListSecretsSidebar: React.FC = () => {
   }, [secretList]);
 
   return (
-    <div className="bp3-dark browser-sidebar">
+    <div className="bp4-dark browser-sidebar">
       <Menu>
         {SECRET_TYPES.map((secretType, idx) => (
           <MenuItem key={idx} text={translate.secret.typeName[secretType]} active={secretListFilterType === secretType} onClick={() => setSecretListFilterType(secretType)} />

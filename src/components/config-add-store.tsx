@@ -17,6 +17,7 @@ export const ConfigAddStore: React.FC = () => {
   const [directory, setDirectory] = React.useState("");
   const [autolockTimeout, setAutolockTimeout] = React.useState(300);
   const [isDirectorySelectOpen, setIsDirectorSelectOpen] = React.useState(false);
+  const [creating, setCreating] = React.useState(false);
   const upsertStoreConfig = useUpsertStoreConfig();
 
   function selectDirectory() {
@@ -35,10 +36,11 @@ export const ConfigAddStore: React.FC = () => {
     setDirectory("");
     setAutolockTimeout(300);
     setIsDirectorSelectOpen(false);
+    setCreating(false);
     setIsOpen(false);
   }
 
-  function onCreate() {
+  async function onCreate() {
     let store_url = encodeURI("multilane+file://" + directory);
 
     if (!store_url.endsWith("/")) store_url += "/";
@@ -50,7 +52,8 @@ export const ConfigAddStore: React.FC = () => {
       autolock_timeout_secs: autolockTimeout,
     };
 
-    upsertStoreConfig(storeConfig);
+    setCreating(true);
+    await upsertStoreConfig(storeConfig);
     onClose();
   }
 
@@ -64,20 +67,20 @@ export const ConfigAddStore: React.FC = () => {
       <Dialog autoFocus lazy title={translate.storeConfig.addStore} isOpen={isOpen} onClose={onClose}>
         <Grid columnSpec="min-content 1fr" padding={[20, 10, 0, 10]} gap={5} alignItems="center">
           <NoWrap>{translate.storeConfig.storeName}</NoWrap>
-          <InputGroup value={storeName} fill onChange={event => setStoreName(event.currentTarget.value)} />
+          <InputGroup value={storeName} fill disabled={creating} onChange={event => setStoreName(event.currentTarget.value)} />
           <NoWrap>{translate.storeConfig.directory}</NoWrap>
-          <InputGroup value={directory} fill
+          <InputGroup value={directory} disabled={creating} fill
             rightElement={<Button icon="folder-open" minimal disabled={isDirectorySelectOpen} onClick={selectDirectory} />}
             onChange={event => setDirectory(event.currentTarget.value)} />
           <NoWrap>{translate.storeConfig.autolockTimeout}</NoWrap>
-          <NumericInput defaultValue={autolockTimeout} min={0} stepSize={10} fill
+          <NumericInput defaultValue={autolockTimeout} min={0} stepSize={10} disabled={creating} fill
             rightElement={<Tag minimal>{translate.storeConfig.autolockTimeoutUnit}</Tag>}
             onValueChange={value => setAutolockTimeout(value)} />
           <GridItem colSpan={2}>
             <Flex flexDirection="row" padding={[10, 0, 0, 0]}>
-              <Button onClick={onClose}>{translate.action.cancel}</Button>
+              <Button disabled={creating} onClick={onClose}>{translate.action.cancel}</Button>
               <FlexItem flexGrow={1} />
-              <Button intent="primary" disabled={!isValid} onClick={onCreate}>{translate.action.create}</Button>
+              <Button intent="primary" loading={creating} disabled={!isValid} onClick={onCreate}>{translate.action.create}</Button>
             </Flex>
           </GridItem>
         </Grid>

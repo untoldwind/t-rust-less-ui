@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { useHotkeys } from "@blueprintjs/core";
 import { ListSecrets } from "./list-secrets";
 import { useCopySecretProperties, useSecretNavigate } from "../machines/actions";
@@ -7,7 +7,7 @@ import { ZoomDisplay } from "./zoom-display";
 import { useRecoilValue } from "recoil";
 import { editSecretVersionState } from "../machines/state";
 
-export const ListSecretsHotkeys: React.FC = ({ children }) => {
+export const ListSecretsHotkeys: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const { secretUp, secretDown } = useSecretNavigate();
   const copySecretProperties = useCopySecretProperties();
   const editSecretVersion = useRecoilValue(editSecretVersionState);
