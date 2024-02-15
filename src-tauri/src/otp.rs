@@ -21,7 +21,7 @@ pub fn calculate_otp_token(otp_url: String) -> OTPToken {
     Ok(otpauth) => {
       let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
       let (token, valid_until_secs) = otpauth.generate(now);
-      let valid_until = Utc.timestamp(valid_until_secs as i64, 0);
+      let valid_until = Utc.timestamp_opt(valid_until_secs as i64, 0).unwrap();
       let valid_for = (valid_until - Utc::now()).num_seconds();
       match otpauth.otp_type {
         OTPType::Totp { period } => OTPToken::Totp {
