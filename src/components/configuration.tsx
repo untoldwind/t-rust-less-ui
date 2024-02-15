@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, H2, H4, Icon, Toast, Toaster } from "@blueprintjs/core";
+import { Button, Card, H2, H4, Icon, OverlayToaster, Toast2 } from "@blueprintjs/core";
 import { StoreConfig } from "../machines/backend-tauri";
 import { ConfigAddStore } from "./config-add-store";
 import { ConfigIdentitiesList } from "./config-identities-list";
@@ -64,9 +64,9 @@ export const Configuration: React.FC = () => {
       <GridItem overflow="auto">
         <Grid columns={1} padding={10} rowGap={10}>
           {error && <GridItem>
-            <Toaster>
-              <Toast intent="danger" message={error} timeout={2000} onDismiss={() => setError(undefined)} />
-            </Toaster>
+            <OverlayToaster>
+              <Toast2 intent="danger" message={error} timeout={2000} onDismiss={() => setError(undefined)} />
+            </OverlayToaster>
           </GridItem>}
           <H2>Stores</H2>
           {storeConfigs.map(renderStoreConfig)}

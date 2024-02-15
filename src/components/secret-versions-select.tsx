@@ -20,7 +20,7 @@ export const SecretVersionSelect: React.FC = () => {
           <MenuItem
             key={versionRef.block_id}
             active={currentBlockId === versionRef.block_id}
-            label={translate.formatTimestamp(versionRef.timestamp)}
+            text={translate.formatTimestamp(versionRef.timestamp)}
             onClick={() => setSelectedSecretVersionId(versionRef.block_id)}
           />
         ))}

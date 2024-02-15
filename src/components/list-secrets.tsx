@@ -5,7 +5,7 @@ import { SecretEntryList } from "./secret-entry-list";
 import { SecretDetailView } from "./secret-detail-view";
 import { ListSecretsHeader } from "./list-secrets-header";
 import { ListSecretsSidebar } from "./list-secrets-sidebar";
-import { Toaster, Toast } from "@blueprintjs/core";
+import { OverlayToaster, Toast2 } from "@blueprintjs/core";
 import { SecretEditView } from "./secret-edit-view";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { editSecretVersionState, errorState } from "../machines/state";
@@ -29,9 +29,9 @@ export const ListSecrets: React.FC<ListSecretsProps> = ({ onKeyUp, onKeyDown }) 
         <ListSecretsHeader />
       </GridItem>
       <GridItem colSpan={3}>
-        <Toaster>
-          {error && <Toast intent="danger" message={error} timeout={2000} onDismiss={() => setError(undefined)} />}
-        </Toaster>
+        <OverlayToaster>
+          {error && <Toast2 intent="danger" message={error} timeout={2000} onDismiss={() => setError(undefined)} />}
+        </OverlayToaster>
       </GridItem>
       <ListSecretsSidebar />
       <React.Suspense fallback={<Loading />}>

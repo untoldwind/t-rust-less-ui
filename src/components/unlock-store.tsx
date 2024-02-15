@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid } from "./ui/grid";
 import { GridItem } from "./ui/grid-item";
-import { HTMLSelect, InputGroup, Button, Toaster, Toast, Tabs, Tab, Callout, NonIdealState } from "@blueprintjs/core";
+import { HTMLSelect, InputGroup, Button, Toast2, Tabs, Tab, Callout, NonIdealState, OverlayToaster } from "@blueprintjs/core";
 import { Muted } from "./ui/muted";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { appVersionState, errorState, identitiesState, mainPanelState, selectedStoreState, storeConfigsState, useTranslate } from "../machines/state";
@@ -58,9 +58,9 @@ export const UnlockStore: React.FC = () => {
       rowSpec="1fr min-content min-content 1fr min-content"
       rowGap={40}>
       <GridItem colSpan={3}>
-        {error && <Toaster>
-          <Toast intent="danger" message={error} timeout={2000} onDismiss={() => setError(undefined)} />
-        </Toaster>}
+        {error && <OverlayToaster>
+          <Toast2 intent="danger" message={error} timeout={2000} onDismiss={() => setError(undefined)} />
+        </OverlayToaster>}
       </GridItem>
       <GridItem colStart={2}>
         <Grid columns={1}>
