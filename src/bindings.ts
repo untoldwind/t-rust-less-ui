@@ -7,7 +7,13 @@ export const commands = {
   async greet(name: string): Promise<string> {
     return await TAURI_INVOKE("greet", { name });
   },
-  async serviceListStores(): Promise<Result<StoreConfig[], string>> {
+  async estimatePasswordStrength(password: string): Promise<PasswordStrength> {
+    return await TAURI_INVOKE("estimate_password_strength", { password });
+  },
+  async calculateOtpToken(otpUrl: string): Promise<OTPToken> {
+    return await TAURI_INVOKE("calculate_otp_token", { otpUrl });
+  },
+  async serviceListStores(): Promise<Result<StoreConfig[], ServiceError>> {
     try {
       return { status: "ok", data: await TAURI_INVOKE("service_list_stores") };
     } catch (e) {
@@ -15,7 +21,7 @@ export const commands = {
       else return { status: "error", error: e as any };
     }
   },
-  async serviceGetDefaultStore(): Promise<Result<string | null, string>> {
+  async serviceGetDefaultStore(): Promise<Result<string | null, ServiceError>> {
     try {
       return {
         status: "ok",
@@ -28,7 +34,7 @@ export const commands = {
   },
   async serviceSetDefaultStore(
     storeName: string,
-  ): Promise<Result<null, string>> {
+  ): Promise<Result<null, ServiceError>> {
     try {
       return {
         status: "ok",
@@ -41,7 +47,7 @@ export const commands = {
   },
   async serviceUpsertStoreConfig(
     storeConfig: StoreConfig,
-  ): Promise<Result<null, string>> {
+  ): Promise<Result<null, ServiceError>> {
     try {
       return {
         status: "ok",
@@ -54,7 +60,7 @@ export const commands = {
       else return { status: "error", error: e as any };
     }
   },
-  async serviceCheckAutolock(): Promise<Result<null, string>> {
+  async serviceCheckAutolock(): Promise<Result<null, ServiceError>> {
     try {
       return {
         status: "ok",
@@ -65,7 +71,7 @@ export const commands = {
       else return { status: "error", error: e as any };
     }
   },
-  async storeStatus(storeName: string): Promise<Result<Status, string>> {
+  async storeStatus(storeName: string): Promise<Result<Status, ServiceError>> {
     try {
       return {
         status: "ok",
@@ -78,7 +84,7 @@ export const commands = {
   },
   async storeIdentities(
     storeName: string,
-  ): Promise<Result<Identity[], string>> {
+  ): Promise<Result<Identity[], ServiceError>> {
     try {
       return {
         status: "ok",
@@ -89,7 +95,7 @@ export const commands = {
       else return { status: "error", error: e as any };
     }
   },
-  async storeLock(storeName: string): Promise<Result<null, string>> {
+  async storeLock(storeName: string): Promise<Result<null, ServiceError>> {
     try {
       return {
         status: "ok",
@@ -104,7 +110,7 @@ export const commands = {
     storeName: string,
     identityId: string,
     passphrase: string,
-  ): Promise<Result<null, string>> {
+  ): Promise<Result<null, ServiceError>> {
     try {
       return {
         status: "ok",
@@ -123,7 +129,7 @@ export const commands = {
     storeName: string,
     identity: Identity,
     passphrase: string,
-  ): Promise<Result<null, string>> {
+  ): Promise<Result<null, ServiceError>> {
     try {
       return {
         status: "ok",
@@ -157,6 +163,48 @@ export type Identity = {
   email: string;
   hidden: boolean;
 };
+export type OTPToken =
+  | {
+      totp: {
+        token: string;
+        valid_until: string;
+        valid_for: number;
+        period: number;
+      };
+    }
+  | "invalid";
+export type PasswordStrength = {
+  entropy: number;
+  crack_time: number;
+  crack_time_display: string;
+  score: number;
+};
+export type SecretStoreError =
+  | "Locked"
+  | "Forbidden"
+  | "InvalidPassphrase"
+  | "AlreadyUnlocked"
+  | "Conflict"
+  | { KeyDerivation: string }
+  | { Cipher: string }
+  | { IO: string }
+  | "NoRecipient"
+  | "Padding"
+  | { Mutex: string }
+  | { BlockStore: StoreError }
+  | { InvalidStoreUrl: string }
+  | { Json: string }
+  | { InvalidRecipient: string }
+  | { MissingPrivateKey: string }
+  | "NotFound";
+export type ServiceError =
+  | { SecretsStore: SecretStoreError }
+  | { StoreError: StoreError }
+  | { IO: string }
+  | { Mutex: string }
+  | { StoreNotFound: string }
+  | "ClipboardClosed"
+  | "NotAvailable";
 /**
  * Status information of a secrets store
  *
@@ -177,6 +225,13 @@ export type StoreConfig = {
   autolock_timeout_secs: number;
   default_identity_id: string | null;
 };
+export type StoreError =
+  | { InvalidBlock: string }
+  | { InvalidStoreUrl: string }
+  | { IO: string }
+  | { Mutex: string }
+  | { Conflict: string }
+  | { StoreNotFound: string };
 export type ZeroizeDateTime = string;
 
 /** tauri-specta globals **/

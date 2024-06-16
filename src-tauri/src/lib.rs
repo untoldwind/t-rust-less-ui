@@ -1,6 +1,8 @@
-mod state;
 mod service;
+mod state;
 mod store;
+mod otp;
+mod estimate;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -15,6 +17,8 @@ pub fn run() {
         let builder = tauri_specta::ts::builder()
             .commands(tauri_specta::collect_commands![
                 greet,
+                estimate::estimate_password_strength,
+                otp::calculate_otp_token,
                 service::service_list_stores,
                 service::service_get_default_store,
                 service::service_set_default_store,
@@ -26,11 +30,15 @@ pub fn run() {
                 store::store_unlock,
                 store::store_add_identity,
             ])
-//            .events(tauri_specta::collect_events![crate::DemoEvent, EmptyEvent])
-//            .types(TypeCollection::default().register::<Custom>())
-            .config(specta::ts::ExportConfig::default().formatter(specta::ts::formatter::prettier).bigint(specta::ts::BigIntExportBehavior::Number))
-//            .types(TypeCollection::default().register::<Testing>())
-//            .statics(StaticCollection::default().register("universalConstant", 42))
+            //            .events(tauri_specta::collect_events![crate::DemoEvent, EmptyEvent])
+            //            .types(TypeCollection::default().register::<Custom>())
+            .config(
+                specta::ts::ExportConfig::default()
+                    .formatter(specta::ts::formatter::prettier)
+                    .bigint(specta::ts::BigIntExportBehavior::Number),
+            )
+            //            .types(TypeCollection::default().register::<Testing>())
+            //            .statics(StaticCollection::default().register("universalConstant", 42))
             .header("/* These are my Tauri Specta Bindings! */");
 
         #[cfg(debug_assertions)]
