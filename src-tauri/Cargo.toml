@@ -1,34 +1,22 @@
 [package]
 name = "t-rust-less-ui"
-version = "0.2.5"
-description = "T-Rust-Less"
-authors = ["Untoldwind <landru@untoldwind.net>"]
-license = ""
-repository = ""
-default-run = "t-rust-less-ui"
-edition = "2018"
-build = "src/build.rs"
+version = "0.0.0"
+description = "A Tauri App"
+authors = ["you"]
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+name = "t_rust_less_ui_lib"
+crate-type = ["lib", "cdylib", "staticlib"]
+
 [build-dependencies]
-tauri-build = { version = "1.0.0-beta.4" }
+tauri-build = { version = "2.0.0-beta", features = [] }
 
 [dependencies]
-serde_json = "1.0"
-serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.0.0-beta.8", features = ["api-all"] }
-t-rust-less-lib = "0.2.5"
-serde_derive = "1"
-chrono = { version = "0", features = ["serde"] }
+tauri = { version = "2.0.0-beta", features = [] }
+tauri-plugin-shell = "2.0.0-beta"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 
-[features]
-default = [ "custom-protocol" ]
-custom-protocol = [ "tauri/custom-protocol" ]
-
-[profile.release]
-panic = "abort"
-codegen-units = 1
-lto = true
-incremental = false
-opt-level = "s"

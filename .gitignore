@@ -1,15 +1,24 @@
-node_modules/
-dist/
-.awcache/
+# Logs
+logs
 *.log
-*.dll
-app/
-native/*.node
-native/target
-native/artifacts.json
-<<<<<<< HEAD
-.idea/
-=======
-*.iml
-.idea/
->>>>>>> e12f41e (Replace electron with tauri)
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
