@@ -4001,7 +4001,7 @@ dependencies = [
  "tiny_http",
  "tokio",
  "tokio-util",
- "toml 0.7.8",
+ "toml 0.8.2",
  "typenum",
  "url",
  "wayland-client",
