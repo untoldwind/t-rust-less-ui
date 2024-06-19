@@ -1,6 +1,6 @@
 {
   "productName": "t-rust-less-ui",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "identifier": "io.github.untoldwind",
   "build": {
     "beforeDevCommand": "npm run dev",

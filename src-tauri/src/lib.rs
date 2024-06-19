@@ -39,9 +39,9 @@ pub fn run() {
             )
             //            .types(TypeCollection::default().register::<Testing>())
             //            .statics(StaticCollection::default().register("universalConstant", 42))
-            .header("/* These are my Tauri Specta Bindings! */");
+            .header("// @ts-nocheck");
 
-        #[cfg(debug_assertions)]
+        #[cfg(all(debug_assertions, not(mobile)))]
         let builder = builder.path("../src/bindings.ts");
 
         builder.build().unwrap()
