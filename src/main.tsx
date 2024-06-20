@@ -1,13 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { App } from "./App";
 
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { ThemeProvider } from "@emotion/react";
-import { createTheme } from "@mui/material";
+import { CssBaseline, createTheme } from "@mui/material";
+import { Navigation } from "./components/navigation";
+import { BackendProvider } from "./backend/provider";
 
 export const ColorModeContext = React.createContext({
   mode: "light",
@@ -40,7 +41,10 @@ const Root: React.FC = () => {
     <React.StrictMode>
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
-          <App />
+          <CssBaseline />
+          <BackendProvider>
+            <Navigation />
+          </BackendProvider>
         </ThemeProvider>
       </ColorModeContext.Provider>
     </React.StrictMode>

@@ -42,7 +42,7 @@ pub fn run() {
             .header("// @ts-nocheck");
 
         #[cfg(all(debug_assertions, not(mobile)))]
-        let builder = builder.path("../src/bindings.ts");
+        let builder = builder.path("../src/backend/bindings.ts");
 
         builder.build().unwrap()
     };
