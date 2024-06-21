@@ -9,6 +9,7 @@ import { ThemeProvider } from "@emotion/react";
 import { CssBaseline, createTheme } from "@mui/material";
 import { Navigation } from "./components/navigation";
 import { BackendProvider } from "./backend/provider";
+import { SnackbarProvider } from "notistack";
 
 export const ColorModeContext = React.createContext({
   mode: "light",
@@ -42,9 +43,11 @@ const Root: React.FC = () => {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <BackendProvider>
-            <Navigation />
-          </BackendProvider>
+          <SnackbarProvider maxSnack={5}>
+            <BackendProvider>
+              <Navigation />
+            </BackendProvider>
+          </SnackbarProvider>
         </ThemeProvider>
       </ColorModeContext.Provider>
     </React.StrictMode>

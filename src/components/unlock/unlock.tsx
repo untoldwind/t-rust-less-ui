@@ -7,10 +7,16 @@ import {
   Link,
   TextField,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 import React from "react";
 
 export const Unlock: React.FC = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {};
+  const { enqueueSnackbar } = useSnackbar();
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    enqueueSnackbar({ message: "Unlocked!", variant: "info" });
+  };
   return (
     <Grid
       container
