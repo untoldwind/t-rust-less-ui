@@ -1,16 +1,36 @@
 import { useEffect, useState } from "react";
 import { Result, ServiceError } from "./bindings";
-import { useSnackbar } from "notistack";
+import { VariantType, useSnackbar } from "notistack";
+
+export function errorToSnackbar(error: any): {
+  message: string;
+  variant: VariantType;
+} {
+  return {
+    message: error.toString(),
+    variant: "error",
+  };
+}
+
+export function serviceErrorToSnackbar(error: ServiceError): {
+  message: string;
+  variant: VariantType;
+} {
+  return {
+    message: JSON.stringify(error),
+    variant: "error",
+  };
+}
 
 export function useBackend<T>(
   command: () => Promise<Result<T, ServiceError>> | undefined,
-  dependencies: any[] = []
-): [T | undefined, boolean] {
+  dependencies: any[] = [],
+): [T | undefined, boolean, () => void] {
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState<T | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  function refresh() {
     const pendingResult = command();
     if (pendingResult === undefined) return;
     setLoading(true);
@@ -20,18 +40,19 @@ export function useBackend<T>(
         if (result.status === "ok") {
           setData(result.data);
         } else {
-          enqueueSnackbar({
-            message: JSON.stringify(result.error),
-            variant: "error",
-          });
+          enqueueSnackbar(serviceErrorToSnackbar(result.error));
         }
       },
       (error) => {
         setLoading(false);
-        enqueueSnackbar({ message: error.message, variant: "error" });
-      }
+        enqueueSnackbar(errorToSnackbar(error));
+      },
     );
+  }
+
+  useEffect(() => {
+    refresh();
   }, dependencies);
 
-  return [data, loading];
+  return [data, loading, refresh];
 }
