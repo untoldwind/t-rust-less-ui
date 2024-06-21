@@ -144,6 +144,48 @@ export const commands = {
       else return { status: "error", error: e as any };
     }
   },
+  async storeList(
+    storeName: string,
+    filter: SecretListFilter,
+  ): Promise<Result<SecretList, ServiceError>> {
+    try {
+      return {
+        status: "ok",
+        data: await TAURI_INVOKE("store_list", { storeName, filter }),
+      };
+    } catch (e) {
+      if (e instanceof Error) throw e;
+      else return { status: "error", error: e as any };
+    }
+  },
+  async storeGet(
+    storeName: string,
+    secretId: string,
+  ): Promise<Result<Secret, ServiceError>> {
+    try {
+      return {
+        status: "ok",
+        data: await TAURI_INVOKE("store_get", { storeName, secretId }),
+      };
+    } catch (e) {
+      if (e instanceof Error) throw e;
+      else return { status: "error", error: e as any };
+    }
+  },
+  async storeGetVersion(
+    storeName: string,
+    blockId: string,
+  ): Promise<Result<SecretVersion, ServiceError>> {
+    try {
+      return {
+        status: "ok",
+        data: await TAURI_INVOKE("store_get_version", { storeName, blockId }),
+      };
+    } catch (e) {
+      if (e instanceof Error) throw e;
+      else return { status: "error", error: e as any };
+    }
+  },
 };
 
 /** user-defined events **/
@@ -179,6 +221,99 @@ export type PasswordStrength = {
   crack_time_display: string;
   score: number;
 };
+/**
+ * Representation of a secret with all its versions.
+ *
+ * The is the default view when retrieving a specific secret.
+ */
+export type Secret = {
+  id: string;
+  type: SecretType;
+  current: SecretVersion;
+  current_block_id: string;
+  versions: SecretVersionRef[];
+  password_strengths: { [key in string]: PasswordStrength };
+};
+/**
+ * Some short of attachment to a secret.
+ *
+ * Be aware that t-rust-less is supposed to be a password store, do not misuse it as a
+ * secure document store. Nevertheless, sometimes it might be convenient added some
+ * sort of (small) document to a password.
+ *
+ */
+export type SecretAttachment = {
+  name: string;
+  mime_type: string;
+  content: number[];
+};
+/**
+ * SecretEntry contains all the information of a secrets that should be
+ * indexed.
+ *
+ * Even though a SecretEntry does no contain a password it is still supposed to
+ * be sensitive data.
+ *
+ * See SecretVersion for further detail.
+ *
+ */
+export type SecretEntry = {
+  id: string;
+  name: string;
+  type: SecretType;
+  tags: string[];
+  urls: string[];
+  timestamp: ZeroizeDateTime;
+  deleted: boolean;
+};
+/**
+ * Representation of a filter match to a SecretEntry.
+ *
+ * For the most part this is just the entry itself with some additional information
+ * which parts should be highlighted in the UI
+ *
+ */
+export type SecretEntryMatch = {
+  entry: SecretEntry;
+  /**
+   * Matching score of the name
+   */
+  name_score: number;
+  /**
+   * Array of positions (single chars) to highlight in the name of the entry
+   */
+  name_highlights: number[];
+  /**
+   * Array of matching urls
+   */
+  url_highlights: number[];
+  /**
+   * Array of matching tags
+   */
+  tags_highlights: number[];
+};
+/**
+ * Convenient wrapper of a list of SecretEntryMatch'es.
+ *
+ * Also contains a unique list of tags of all secrets (e.g. to support autocompletion)
+ */
+export type SecretList = { all_tags: string[]; entries: SecretEntryMatch[] };
+/**
+ * A combination of filter criterias to search for a secret.
+ *
+ * All criterias are supposed to be combined by AND (i.e. all criterias have
+ * to match).
+ * Match on `name` is supposed to be "fuzzy" by some fancy scheme.
+ *
+ */
+export type SecretListFilter = {
+  url: string | null;
+  tag: string | null;
+  type: SecretType | null;
+  name: string | null;
+  deleted?: boolean;
+};
+export type SecretProperties = { [key in string]: string };
 export type SecretStoreError =
   | "Locked"
   | "Forbidden"
@@ -197,6 +332,85 @@ export type SecretStoreError =
   | { InvalidRecipient: string }
   | { MissingPrivateKey: string }
   | "NotFound";
+/**
+ * General type of a secret.
+ *
+ * This only serves as a hint for an UI.
+ *
+ */
+export type SecretType =
+  | "login"
+  | "note"
+  | "licence"
+  | "wlan"
+  | "password"
+  | "other";
+/**
+ * SecretVersion holds all information of a specific version of a secret.
+ *
+ * Under the hood t-rust-less only stores SecretVersion's, a Secret is no more (or less)
+ * than a group-by view over all SecretVersion's. As a rule a SecretVersion shall never be
+ * overwritten or modified once stored. To change a Secret just add a new SecretVersion for it.
+ *
+ */
+export type SecretVersion = {
+  /**
+   * Identifier of the secret this version belongs to.
+   * This should be opaque (i.e. not reveal anything about the content whatsoever), e.g. a
+   * random string of sufficient length or some sort of UUID will do fine.
+   *
+   * By the way, as UUID was mentioned: A time-based UUID will reveal the MAC address of the
+   * creator of the Secret as well as when it was created. If you are fine was that, ok,
+   * otherwise do not use this kind of UUID.
+   */
+  secret_id: string;
+  /**
+   * General type of the Secret (in this version)
+   */
+  type: SecretType;
+  /**
+   * Timestamp of this version. All SecretVersion's of a Secret a sorted by their timestamps,
+   * the last one will be considered the current version.
+   */
+  timestamp: ZeroizeDateTime;
+  /**
+   * Name/title of the Secret (in this version)
+   */
+  name: string;
+  /**
+   * List or arbitrary tags for filtering (or just displaying)
+   */
+  tags?: string[];
+  /**
+   * List of URLs the Secret might be associated with (most commonly the login page where
+   * the Secret is needed)
+   */
+  urls?: string[];
+  /**
+   * Generic list of secret properties. The `secret_type` defines a list of commonly used
+   * property-names for that type.
+   */
+  properties: SecretProperties;
+  /**
+   * List of attachments.
+   */
+  attachments?: SecretAttachment[];
+  /**
+   * If this version of the Secret should be marked as deleted.
+   * As a rule of thumb it is a very bad idea to just delete secret. Maybe it was deleted by
+   * accident, or you might need it for other reasons you have not thought of. Also just
+   * deleting a Secret does not make it unseen. The information that someone (or yourself) has
+   * once seen this secret might be as valuable as the secret itself.
+   */
+  deleted?: boolean;
+  /**
+   * List of recipients that may see this version of the Secret.
+   * Again: Once published, it cannot be made unseen. The only safe way to remove a recipient is
+   * to change the Secret and create a new version without the recipient.
+   */
+  recipients?: string[];
+};
+export type SecretVersionRef = { block_id: string; timestamp: ZeroizeDateTime };
 export type ServiceError =
   | { SecretsStore: SecretStoreError }
   | { StoreError: StoreError }

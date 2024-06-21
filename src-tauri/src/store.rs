@@ -1,5 +1,5 @@
 use t_rust_less_lib::{
-    api::{Identity, Status},
+    api::{Identity, Secret, SecretList, SecretListFilter, SecretVersion, Status},
     memguard::SecretBytes,
     service::ServiceError,
 };
@@ -57,4 +57,37 @@ pub fn store_add_identity(
         .inner()
         .get_store(store_name)?
         .add_identity(identity, SecretBytes::from(passphrase))?)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn store_list(
+    store_name: String,
+    filter: SecretListFilter,
+    state: tauri::State<State>,
+) -> Result<SecretList, ServiceError> {
+    Ok(state.inner().get_store(store_name)?.list(&filter)?)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn store_get(
+    store_name: String,
+    secret_id: String,
+    state: tauri::State<State>,
+) -> Result<Secret, ServiceError> {
+    Ok(state.inner().get_store(store_name)?.get(&secret_id)?)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn store_get_version(
+    store_name: String,
+    block_id: String,
+    state: tauri::State<State>,
+) -> Result<SecretVersion, ServiceError> {
+    Ok(state
+        .inner()
+        .get_store(store_name)?
+        .get_version(&block_id)?)
 }

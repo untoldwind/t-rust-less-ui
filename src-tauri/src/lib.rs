@@ -1,8 +1,8 @@
+mod estimate;
+mod otp;
 mod service;
 mod state;
 mod store;
-mod otp;
-mod estimate;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -29,6 +29,9 @@ pub fn run() {
                 store::store_lock,
                 store::store_unlock,
                 store::store_add_identity,
+                store::store_list,
+                store::store_get,
+                store::store_get_version,
             ])
             //            .events(tauri_specta::collect_events![crate::DemoEvent, EmptyEvent])
             //            .types(TypeCollection::default().register::<Custom>())
