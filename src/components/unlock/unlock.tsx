@@ -1,22 +1,40 @@
 import {
   Box,
   Button,
-  Checkbox,
-  FormControlLabel,
+  FormControl,
   Grid,
-  Link,
+  InputLabel,
+  MenuItem,
+  Select,
+  Tab,
+  Tabs,
   TextField,
 } from "@mui/material";
-import { useSnackbar } from "notistack";
-import React from "react";
+import React, { FormEvent, useContext, useEffect, useState } from "react";
+import { BackendContext } from "../../backend/provider";
 
 export const Unlock: React.FC = () => {
-  const { enqueueSnackbar } = useSnackbar();
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const { stores, selectedStore, identities, unlockStore } =
+    useContext(BackendContext);
+  const [identityId, setIdentityId] = useState<string>("");
+  const [passphrase, setPassphrase] = useState<string>("");
+
+  useEffect(() => {
+    if (!selectedStore || !identities) return;
+    if (identities.findIndex((identity) => identity.id === identityId) >= 0)
+      return;
+    if (selectedStore.default_identity_id)
+      setIdentityId(selectedStore.default_identity_id);
+    if (identities.length > 0) setIdentityId(identities[0].id);
+  }, [stores, selectedStore, identities]);
+
+  function handleSubmit(event: FormEvent) {
     event.preventDefault();
     event.stopPropagation();
-    enqueueSnackbar({ message: "Unlocked!", variant: "info" });
-  };
+    unlockStore(identityId, passphrase);
+    setPassphrase("");
+  }
+
   return (
     <Grid
       container
@@ -28,29 +46,47 @@ export const Unlock: React.FC = () => {
     >
       <Grid item xs={3}>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            sx={{
+              borderBottom: 1,
+              borderColor: "divider",
+            }}
+          >
+            {stores && selectedStore && (
+              <Tabs
+                value={stores.findIndex((store) => store === selectedStore)}
+                onChange={() => {}}
+                aria-label="basic tabs example"
+              >
+                {stores?.map((store, idx) => (
+                  <Tab key={idx} label={store.name} />
+                ))}
+              </Tabs>
+            )}
+          </Box>
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="identity-select">Identity</InputLabel>
+            <Select
+              label="Identity"
+              value={identityId}
+              labelId="identity-select"
+              onChange={(event) => setIdentityId(event.target.value)}
+            >
+              {identities?.map((identity, idx) => (
+                <MenuItem key={idx} value={identity.id}>
+                  {identity.email} ({identity.name})
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <TextField
             margin="normal"
-            required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
+            value={passphrase}
             label="Password"
             type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            autoFocus
+            onChange={(event) => setPassphrase(event.target.value)}
           />
           <Button
             type="submit"
@@ -58,20 +94,8 @@ export const Unlock: React.FC = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign In
+            Unlock
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
       </Grid>
     </Grid>

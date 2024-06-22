@@ -8,13 +8,13 @@ import {
 import { useSnackbar } from "notistack";
 
 export interface BackendState {
-  stores?: StoreConfig[];
-  selectedStore?: string;
-  identities?: Identity[];
-  status?: Status;
   loading: boolean;
   lockingUnlocking: boolean;
-  selectStore: (storeId: string) => void;
+  stores: StoreConfig[] | undefined;
+  selectedStore: StoreConfig | undefined;
+  identities: Identity[] | undefined;
+  status: Status | undefined;
+  selectStore: (store: StoreConfig) => void;
   lockStore: () => void;
   unlockStore: (identityId: string, passphrase: string) => void;
 }
@@ -22,6 +22,10 @@ export interface BackendState {
 export const BackendContext = React.createContext<BackendState>({
   loading: false,
   lockingUnlocking: false,
+  stores: undefined,
+  selectedStore: undefined,
+  identities: undefined,
+  status: undefined,
   selectStore: () => {},
   lockStore: () => {},
   unlockStore: () => {},
@@ -30,23 +34,23 @@ export const BackendContext = React.createContext<BackendState>({
 export const BackendProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [stores, storesLoading] = useBackend(() =>
-    commands.serviceListStores(),
+    commands.serviceListStores()
   );
   const [defaultStore, defaultStoreLoading] = useBackend(() =>
-    commands.serviceGetDefaultStore(),
+    commands.serviceGetDefaultStore()
   );
-  const [selectedStore, setSelectedStore] = useState<string | undefined>(
-    undefined,
+  const [selectedStore, setSelectedStore] = useState<StoreConfig | undefined>(
+    undefined
   );
   const [identities, identitiesLoading] = useBackend(() => {
     if (!selectedStore || !stores) return undefined;
 
-    return commands.storeIdentities(selectedStore);
+    return commands.storeIdentities(selectedStore.name);
   }, [stores, selectedStore]);
   const [status, statusLoading, refreshStatus] = useBackend(() => {
     if (!selectedStore || !stores) return undefined;
 
-    return commands.storeStatus(selectedStore);
+    return commands.storeStatus(selectedStore.name);
   }, [stores, selectedStore]);
   const [lockingUnlocking, setLockingUnlocking] = useState(false);
 
@@ -54,7 +58,7 @@ export const BackendProvider: React.FC<PropsWithChildren> = ({ children }) => {
     if (!selectedStore || lockingUnlocking) return;
 
     setLockingUnlocking(true);
-    commands.storeLock(selectedStore).then(
+    commands.storeLock(selectedStore.name).then(
       () => {
         setLockingUnlocking(false);
         refreshStatus();
@@ -62,7 +66,7 @@ export const BackendProvider: React.FC<PropsWithChildren> = ({ children }) => {
       (error) => {
         setLockingUnlocking(false);
         enqueueSnackbar(errorToSnackbar(error));
-      },
+      }
     );
   }
 
@@ -70,7 +74,7 @@ export const BackendProvider: React.FC<PropsWithChildren> = ({ children }) => {
     if (!selectedStore || lockingUnlocking) return;
 
     setLockingUnlocking(true);
-    commands.storeUnlock(selectedStore, identityId, passphrase).then(
+    commands.storeUnlock(selectedStore.name, identityId, passphrase).then(
       (result) => {
         setLockingUnlocking(false);
         if (result.status === "ok") {
@@ -82,13 +86,14 @@ export const BackendProvider: React.FC<PropsWithChildren> = ({ children }) => {
       (error) => {
         setLockingUnlocking(false);
         enqueueSnackbar(errorToSnackbar(error));
-      },
+      }
     );
   }
 
   useEffect(() => {
-    if (!selectedStore && defaultStore) setSelectedStore(defaultStore);
-  }, [defaultStore]);
+    if (!selectedStore && defaultStore && stores)
+      setSelectedStore(stores.find((store) => store.name === defaultStore));
+  }, [stores, defaultStore]);
 
   useEffect(() => {
     if (!status || statusLoading) return;
@@ -106,6 +111,7 @@ export const BackendProvider: React.FC<PropsWithChildren> = ({ children }) => {
         stores,
         identities,
         status,
+        selectedStore,
         selectStore: setSelectedStore,
         lockStore,
         unlockStore,

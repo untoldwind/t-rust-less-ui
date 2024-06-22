@@ -1,6 +1,5 @@
 import React from "react";
 import { Unlock } from "./unlock/unlock";
-import { BackendContext } from "../backend/provider";
 
 export interface NavigationState {
   page: "Unlock";
@@ -12,9 +11,6 @@ export const NavigationContext = React.createContext<NavigationState>({
 
 export const Navigation: React.FC = () => {
   const [page, _] = React.useState<NavigationState["page"]>("Unlock");
-  const backend = React.useContext(BackendContext);
-
-  console.log(backend);
 
   function pageComponent() {
     switch (page) {
