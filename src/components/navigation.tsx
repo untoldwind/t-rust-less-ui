@@ -37,7 +37,7 @@ export const Navigation: React.FC = () => {
   return (
     <NavigationContext.Provider value={{ page }}>
       <Box sx={{ display: "flex" }}>
-        <AppBar position="absolute">
+        <AppBar>
           <Toolbar variant="dense">
             <Box sx={{ flexGrow: 1 }} />
             {status?.unlocked_by && (

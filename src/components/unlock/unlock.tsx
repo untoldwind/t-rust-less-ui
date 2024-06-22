@@ -13,9 +13,10 @@ import {
 import React, { FormEvent, useContext, useEffect, useState } from "react";
 import { BackendContext } from "../../backend/provider";
 import { LockOpen } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 
 export const Unlock: React.FC = () => {
-  const { stores, selectedStore, identities, unlockStore } =
+  const { stores, selectedStore, identities, unlockStore, lockingUnlocking } =
     useContext(BackendContext);
   const [identityId, setIdentityId] = useState<string>("");
   const [passphrase, setPassphrase] = useState<string>("");
@@ -89,15 +90,16 @@ export const Unlock: React.FC = () => {
             autoFocus
             onChange={(event) => setPassphrase(event.target.value)}
           />
-          <Button
+          <LoadingButton
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             startIcon={<LockOpen />}
+            loading={lockingUnlocking}
           >
             Unlock
-          </Button>
+          </LoadingButton>
         </Box>
       </Grid>
     </Grid>
