@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import React, { FormEvent, useContext, useEffect, useState } from "react";
 import { BackendContext } from "../../backend/provider";
+import { LockOpen } from "@mui/icons-material";
 
 export const Unlock: React.FC = () => {
   const { stores, selectedStore, identities, unlockStore } =
@@ -93,6 +94,7 @@ export const Unlock: React.FC = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            startIcon={<LockOpen />}
           >
             Unlock
           </Button>

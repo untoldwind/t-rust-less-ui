@@ -11,8 +11,11 @@ import { Navigation } from "./components/navigation";
 import { BackendProvider } from "./backend/provider";
 import { SnackbarProvider } from "notistack";
 
-export const ColorModeContext = React.createContext({
-  mode: "light",
+export const ColorModeContext = React.createContext<{
+  colorMode: "light" | "dark";
+  toggleColorMode: () => void;
+}>({
+  colorMode: "light",
   toggleColorMode: () => {},
 });
 
@@ -20,7 +23,7 @@ const Root: React.FC = () => {
   const [mode, setMode] = React.useState<"light" | "dark">("light");
   const colorMode = React.useMemo(
     () => ({
-      mode,
+      colorMode: mode,
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
       },
