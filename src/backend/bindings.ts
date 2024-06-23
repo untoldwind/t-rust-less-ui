@@ -71,6 +71,25 @@ export const commands = {
       else return { status: "error", error: e as any };
     }
   },
+  async serviceSecretToClipboard(
+    storeName: string,
+    blockId: string,
+    properties: string[],
+  ): Promise<Result<null, ServiceError>> {
+    try {
+      return {
+        status: "ok",
+        data: await TAURI_INVOKE("service_secret_to_clipboard", {
+          storeName,
+          blockId,
+          properties,
+        }),
+      };
+    } catch (e) {
+      if (e instanceof Error) throw e;
+      else return { status: "error", error: e as any };
+    }
+  },
   async storeStatus(storeName: string): Promise<Result<Status, ServiceError>> {
     try {
       return {
@@ -186,6 +205,40 @@ export const commands = {
       else return { status: "error", error: e as any };
     }
   },
+  async clipboardCurrentlyProviding(): Promise<
+    Result<ClipboardProviding | null, ServiceError>
+  > {
+    try {
+      return {
+        status: "ok",
+        data: await TAURI_INVOKE("clipboard_currently_providing"),
+      };
+    } catch (e) {
+      if (e instanceof Error) throw e;
+      else return { status: "error", error: e as any };
+    }
+  },
+  async clipboardProvideNext(): Promise<
+    Result<ClipboardProviding | null, ServiceError>
+  > {
+    try {
+      return {
+        status: "ok",
+        data: await TAURI_INVOKE("clipboard_provide_next"),
+      };
+    } catch (e) {
+      if (e instanceof Error) throw e;
+      else return { status: "error", error: e as any };
+    }
+  },
+  async clipboardDestroy(): Promise<Result<null, ServiceError>> {
+    try {
+      return { status: "ok", data: await TAURI_INVOKE("clipboard_destroy") };
+    } catch (e) {
+      if (e instanceof Error) throw e;
+      else return { status: "error", error: e as any };
+    }
+  },
 };
 
 /** user-defined events **/
@@ -194,6 +247,12 @@ export const commands = {
 
 /** user-defined types **/
 
+export type ClipboardProviding = {
+  store_name: string;
+  block_id: string;
+  secret_name: string;
+  property: string;
+};
 /**
  * An Identity that might be able to unlock a
  * secrets store and be a recipient of secrets.

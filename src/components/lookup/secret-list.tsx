@@ -19,10 +19,14 @@ const SecretListView: React.FC<SecretListViewProps> = React.memo(
         ))}
       </List>
     );
-  }
+  },
 );
 
-export const SecretList: React.FC = () => {
+export interface SecretListProps {
+  search: string;
+}
+
+export const SecretList: React.FC<SecretListProps> = ({ search }) => {
   const { selectedStore } = useContext(BackendContext);
   const [secretList] = useBackend(() => {
     if (!selectedStore) return undefined;
@@ -31,8 +35,8 @@ export const SecretList: React.FC = () => {
       url: null,
       tag: null,
       type: null,
-      name: null,
+      name: search === "" ? null : search,
     });
-  }, [selectedStore]);
+  }, [selectedStore, search]);
   return <SecretListView matches={secretList?.entries} />;
 };

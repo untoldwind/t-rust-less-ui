@@ -72,20 +72,24 @@ export const Navigation: React.FC = () => {
   const { colorMode, toggleColorMode } = useContext(ColorModeContext);
   const { status, lockStore } = useContext(BackendContext);
   const [page, setPage] = React.useState<NavigationState["page"]>("Unlock");
+  const [search, setSearch] = React.useState<string>("");
 
   function pageComponent() {
     switch (page) {
       case "Unlock":
         return <Unlock />;
       case "Lookup":
-        return <Lookup />;
+        return <Lookup search={search} />;
     }
   }
 
   useEffect(() => {
     if (!status) return;
     if (page === "Unlock" && !status.locked) setPage("Lookup");
-    if (page === "Lookup" && status.locked) setPage("Unlock");
+    if (page === "Lookup" && status.locked) {
+      setSearch("");
+      setPage("Unlock");
+    }
   }, [status]);
 
   return (
@@ -99,6 +103,8 @@ export const Navigation: React.FC = () => {
                   <Search />
                 </SearchIconWrapper>
                 <StyledInputBase
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
                   placeholder="Search…"
                   inputProps={{ "aria-label": "search" }}
                 />
