@@ -2,9 +2,23 @@ import React, { useContext, useEffect } from "react";
 import { Unlock } from "./unlock/unlock";
 import { Lookup } from "./lookup/lookup";
 import { BackendContext } from "../backend/provider";
-import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  IconButton,
+  InputBase,
+  Toolbar,
+  alpha,
+  styled,
+} from "@mui/material";
 import { ColorModeContext } from "../main";
-import { Brightness4, Brightness7, Lock, Settings } from "@mui/icons-material";
+import {
+  Brightness4,
+  Brightness7,
+  Lock,
+  Search,
+  Settings,
+} from "@mui/icons-material";
 
 export interface NavigationState {
   page: "Unlock" | "Lookup";
@@ -13,6 +27,46 @@ export interface NavigationState {
 export const NavigationContext = React.createContext<NavigationState>({
   page: "Unlock",
 });
+
+const SearchContainer = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(3),
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
+    },
+  },
+}));
 
 export const Navigation: React.FC = () => {
   const { colorMode, toggleColorMode } = useContext(ColorModeContext);
@@ -36,9 +90,20 @@ export const Navigation: React.FC = () => {
 
   return (
     <NavigationContext.Provider value={{ page }}>
-      <Box sx={{ display: "flex" }}>
-        <AppBar>
+      <Box>
+        <AppBar position="static">
           <Toolbar variant="dense">
+            {status?.unlocked_by && (
+              <SearchContainer>
+                <SearchIconWrapper>
+                  <Search />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ "aria-label": "search" }}
+                />
+              </SearchContainer>
+            )}
             <Box sx={{ flexGrow: 1 }} />
             {status?.unlocked_by && (
               <IconButton sx={{ ml: 1 }} onClick={lockStore} color="inherit">
