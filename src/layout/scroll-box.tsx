@@ -16,10 +16,12 @@ const InnerDiv = styled("div")(() => ({
   right: 0,
 }));
 
-export const ScrollBox: React.FC<PropsWithChildren> = ({ children }) => {
-  return (
-    <OuterDiv>
-      <InnerDiv>{children}</InnerDiv>
-    </OuterDiv>
-  );
-};
+export const ScrollBox: React.FC<PropsWithChildren> = React.memo(
+  ({ children }) => {
+    return (
+      <OuterDiv>
+        <InnerDiv>{children}</InnerDiv>
+      </OuterDiv>
+    );
+  }
+);

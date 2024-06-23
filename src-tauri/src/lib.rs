@@ -1,3 +1,5 @@
+mod clipboard;
+mod clipboard_fallback;
 mod estimate;
 mod otp;
 mod service;
@@ -24,6 +26,7 @@ pub fn run() {
                 service::service_set_default_store,
                 service::service_upsert_store_config,
                 service::service_check_autolock,
+                service::service_secret_to_clipboard,
                 store::store_status,
                 store::store_identities,
                 store::store_lock,
@@ -32,6 +35,9 @@ pub fn run() {
                 store::store_list,
                 store::store_get,
                 store::store_get_version,
+                clipboard::clipboard_currently_providing,
+                clipboard::clipboard_provide_next,
+                clipboard::clipboard_destroy,
             ])
             //            .events(tauri_specta::collect_events![crate::DemoEvent, EmptyEvent])
             //            .types(TypeCollection::default().register::<Custom>())
@@ -52,6 +58,7 @@ pub fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
         .manage(state::State::new())
         .invoke_handler(invoke_handler)
         .run(tauri::generate_context!())

@@ -17,6 +17,7 @@ tauri-build = { version = "2.0.0-beta", features = [] }
 [dependencies]
 tauri = { version = "2.0.0-beta", features = [] }
 tauri-plugin-shell = "2.0.0-beta"
+tauri-plugin-clipboard-manager = "2.1.0-beta"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 specta = { version = "2.0.0-rc", features = ["chrono"] }
@@ -24,14 +25,24 @@ tauri-specta = { version = "2.0.0-rc", features = ["typescript", "javascript"] }
 chrono = { version = "0", features = ["serde"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
-t-rust-less-lib = { version = "0.2.18", default-features = false, features = ["with_specta", "rust_crypto", "with_x11", "with_wayland" ] }
+t-rust-less-lib = { version = "0.2.18", default-features = false, features = [
+  "with_specta",
+  "rust_crypto",
+  "with_x11",
+  "with_wayland",
+] }
 
 [target.'cfg(target_os = "android")'.dependencies]
-t-rust-less-lib = { version = "0.2.18", default-features = false, features = ["with_specta", "rust_crypto"] }
+t-rust-less-lib = { version = "0.2.18", default-features = false, features = [
+  "with_specta",
+  "rust_crypto",
+] }
 
 [target.'cfg(windows)'.dependencies]
-t-rust-less-lib = { version = "0.2.18", default-features = false, features = ["with_specta", "rust_crypto"] }
-
+t-rust-less-lib = { version = "0.2.18", default-features = false, features = [
+  "with_specta",
+  "rust_crypto",
+] }
 
 
 [patch.crates-io]

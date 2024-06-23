@@ -1,8 +1,26 @@
 import { List, ListItemButton, ListItemText } from "@mui/material";
 import React, { useContext } from "react";
 import { useBackend } from "../../backend/use-backend";
-import { commands } from "../../backend/bindings";
+import { SecretEntryMatch, commands } from "../../backend/bindings";
 import { BackendContext } from "../../backend/provider";
+
+interface SecretListViewProps {
+  matches: SecretEntryMatch[] | undefined;
+}
+
+const SecretListView: React.FC<SecretListViewProps> = React.memo(
+  ({ matches }) => {
+    return (
+      <List sx={{ width: "100%" }} component="nav">
+        {matches?.map((entry, idx) => (
+          <ListItemButton key={idx}>
+            <ListItemText primary={entry.entry.name} />
+          </ListItemButton>
+        ))}
+      </List>
+    );
+  }
+);
 
 export const SecretList: React.FC = () => {
   const { selectedStore } = useContext(BackendContext);
@@ -16,13 +34,5 @@ export const SecretList: React.FC = () => {
       name: null,
     });
   }, [selectedStore]);
-  return (
-    <List sx={{ width: "100%" }} component="nav">
-      {secretList?.entries.map((entry, idx) => (
-        <ListItemButton key={idx}>
-          <ListItemText primary={entry.entry.name} />
-        </ListItemButton>
-      ))}
-    </List>
-  );
+  return <SecretListView matches={secretList?.entries} />;
 };
