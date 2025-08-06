@@ -5,7 +5,7 @@ use t_rust_less_lib::{
   clipboard::SelectionProvider,
   service::{ClipboardControl, ServiceError, ServiceResult},
 };
-use tauri::ClipboardManager;
+use tauri_plugin_clipboard_manager::ClipboardExt;
 
 pub struct ClipboardFallback {
   app: tauri::AppHandle,
@@ -30,12 +30,12 @@ impl ClipboardFallback {
     match self.provider.read()?.get_selection_value() {
       Some(secret) => self
         .app
-        .clipboard_manager()
+        .clipboard()
         .write_text(secret.as_str())
         .map_err(|err| ServiceError::IO(format!("{}", err)))?,
       _ => self
         .app
-        .clipboard_manager()
+        .clipboard()
         .write_text("")
         .map_err(|err| ServiceError::IO(format!("{}", err)))?,
     };
@@ -62,7 +62,7 @@ impl ClipboardControl for ClipboardFallback {
   fn destroy(&self) -> ServiceResult<()> {
     self
       .app
-      .clipboard_manager()
+      .clipboard()
       .write_text("")
       .map_err(|err| ServiceError::IO(format!("{}", err)))?;
     Ok(())

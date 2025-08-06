@@ -1,4 +1,7 @@
-import { app, shell, dialog, invoke } from "@tauri-apps/api";
+import * as app from "@tauri-apps/api/app";
+import { invoke } from "@tauri-apps/api/core";
+import * as shell from "@tauri-apps/plugin-shell";
+import * as dialog from "@tauri-apps/plugin-dialog";
 
 export interface AppVersion {
   version: string

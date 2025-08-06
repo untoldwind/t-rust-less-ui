@@ -1,0 +1,1 @@
+{"main-window":{"identifier":"main-window","description":"Main window capabilities","local":true,"windows":["main"],"permissions":["shell:allow-open","dialog:default","core:app:default"]}}

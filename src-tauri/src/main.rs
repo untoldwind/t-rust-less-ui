@@ -1,5 +1,7 @@
 #![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
 
+use std::error::Error;
+
 mod clipboard;
 mod clipboard_fallback;
 mod estimate;
@@ -8,8 +10,11 @@ mod service;
 mod state;
 mod store;
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
   tauri::Builder::default()
+    .plugin(tauri_plugin_shell::init())
+    .plugin(tauri_plugin_dialog::init())
+    .plugin(tauri_plugin_clipboard_manager::init())
     .manage(state::State::new())
     .invoke_handler(tauri::generate_handler![
       service::service_list_stores,
@@ -37,6 +42,7 @@ fn main() {
       estimate::estimate_password_strength,
       otp::calculate_otp_token,
     ])
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    .run(tauri::generate_context!())?;
+
+  Ok(())
 }
