@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from "react";
-import { css, cx, CSSInterpolation } from "@emotion/css";
+import { css, cx } from "@emotion/css";
+import { CSSInterpolation } from "@emotion/serialize";
 import { SizeSpec, AlignSpec, OffsetSpec, offsetSpecToPadding, Size } from "./constraints";
 
 export type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";

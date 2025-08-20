@@ -5,7 +5,7 @@ use crate::state::State;
 #[tauri::command]
 pub fn clipboard_currently_providing(state: tauri::State<State>) -> Result<Option<ClipboardProviding>, String> {
   match state.inner().get_clipboard()? {
-    Some(clipboard) => clipboard.currently_providing().map_err(|err| format!("{}", err)),
+    Some(clipboard) => clipboard.currently_providing().map_err(|err| format!("{err}")),
     None => Ok(None),
   }
 }
@@ -14,8 +14,8 @@ pub fn clipboard_currently_providing(state: tauri::State<State>) -> Result<Optio
 pub fn clipboard_provide_next(state: tauri::State<State>) -> Result<Option<ClipboardProviding>, String> {
   match state.inner().get_clipboard()? {
     Some(clipboard) => {
-      clipboard.provide_next().map_err(|err| format!("{}", err))?;
-      clipboard.currently_providing().map_err(|err| format!("{}", err))
+      clipboard.provide_next().map_err(|err| format!("{err}"))?;
+      clipboard.currently_providing().map_err(|err| format!("{err}"))
     }
     None => Ok(None),
   }

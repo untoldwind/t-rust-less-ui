@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from "react";
 import { Size, SizeSpec, OffsetSpec, offsetSpecToPadding, JustifySpec, AlignSpec } from "./constraints";
-import { css, cx, CSSInterpolation } from "@emotion/css";
+import { css, cx } from "@emotion/css";
+import { CSSInterpolation } from "@emotion/serialize";
 
 const gridClass = css({
   display: "grid",

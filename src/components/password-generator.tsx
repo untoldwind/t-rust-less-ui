@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid } from "./ui/grid";
-import { Tab, Tabs, NumericInput, Switch, InputGroup, Button } from "@blueprintjs/core";
+import { Tab, Tabs, NumericInput, Switch, InputGroup, Button, TabsExpander } from "@blueprintjs/core";
 import { GridItem } from "./ui/grid-item";
 import { generatePassword, PasswordGeneratorCharsParam, PasswordGeneratorWordsParam } from "../machines/backend-tauri";
 import { useTranslate } from "../machines/state";
@@ -123,7 +123,7 @@ export const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({ onPassword
       <Tabs selectedTabId={generator} onChange={(generator: Generator) => setGenerator(generator)}>
         <Tab id="chars" title={translate.passwordGenerator.chars} panel={charsPanel} />
         <Tab id="words" title={translate.passwordGenerator.words} panel={wordsPanel} />
-        <Tabs.Expander />
+        <TabsExpander />
         <Button icon="repeat" minimal onClick={onGenerate} />
       </Tabs>
     </Grid>

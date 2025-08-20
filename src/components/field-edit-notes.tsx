@@ -12,7 +12,7 @@ export const FieldEditNotes: React.FC<FieldEditNotesProps> = React.memo(({ label
   return (
     <>
       <NoWrap>{label}</NoWrap>
-      <TextArea growVertically fill value={value}
+      <TextArea autoResize fill value={value}
         onChange={event => onChange(event.currentTarget.value)} />
     </>
   )

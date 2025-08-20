@@ -11,7 +11,7 @@ pub fn service_list_stores(state: tauri::State<State>) -> Result<Vec<StoreConfig
     .inner()
     .get_service()?
     .list_stores()
-    .map_err(|err| format!("{}", err))
+    .map_err(|err| format!("{err}"))
 }
 
 #[tauri::command]
@@ -20,7 +20,7 @@ pub fn service_get_default_store(state: tauri::State<State>) -> Result<Option<St
     .inner()
     .get_service()?
     .get_default_store()
-    .map_err(|err| format!("{}", err))
+    .map_err(|err| format!("{err}"))
 }
 
 #[tauri::command]
@@ -29,7 +29,7 @@ pub fn service_set_default_store(store_name: String, state: tauri::State<State>)
     .inner()
     .get_service()?
     .set_default_store(&store_name)
-    .map_err(|err| format!("{}", err))
+    .map_err(|err| format!("{err}"))
 }
 
 #[tauri::command]
@@ -38,7 +38,7 @@ pub fn service_upsert_store_config(store_config: StoreConfig, state: tauri::Stat
     .inner()
     .get_service()?
     .upsert_store_config(store_config)
-    .map_err(|err| format!("{}", err))
+    .map_err(|err| format!("{err}"))
 }
 
 #[tauri::command]
@@ -47,7 +47,7 @@ pub fn service_delete_store_config(store_name: String, state: tauri::State<State
     .inner()
     .get_service()?
     .delete_store_config(&store_name)
-    .map_err(|err| format!("{}", err))
+    .map_err(|err| format!("{err}"))
 }
 
 #[tauri::command]
@@ -56,7 +56,7 @@ pub fn service_generate_id(state: tauri::State<State>) -> Result<String, String>
     .inner()
     .get_service()?
     .generate_id()
-    .map_err(|err| format!("{}", err))
+    .map_err(|err| format!("{err}"))
 }
 
 #[tauri::command]
@@ -65,7 +65,7 @@ pub fn service_generate_password(param: PasswordGeneratorParam, state: tauri::St
     .inner()
     .get_service()?
     .generate_password(param)
-    .map_err(|err| format!("{}", err))
+    .map_err(|err| format!("{err}"))
 }
 
 #[tauri::command]
@@ -93,12 +93,12 @@ pub fn service_secret_to_clipboard(
     Ok(clipboard_control) => state.inner().set_clipboard(clipboard_control)?,
     Err(ServiceError::NotAvailable) => {
       let store = state.inner().get_store(store_name.clone())?;
-      let secret_version = store.get_version(&block_id).map_err(|err| format!("{}", err))?;
+      let secret_version = store.get_version(&block_id).map_err(|err| format!("{err}"))?;
       let secret_provider = SecretsProvider::new(store_name, block_id, secret_version, &properties_ref);
-      let fallback = ClipboardFallback::new(app, secret_provider).map_err(|err| format!("{}", err))?;
+      let fallback = ClipboardFallback::new(app, secret_provider).map_err(|err| format!("{err}"))?;
       state.inner().set_clipboard(Arc::new(fallback))?
     }
-    Err(err) => return Err(format!("{}", err)),
+    Err(err) => return Err(format!("{err}")),
   }
 
   Ok(())

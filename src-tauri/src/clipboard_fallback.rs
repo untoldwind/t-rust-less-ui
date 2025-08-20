@@ -32,12 +32,12 @@ impl ClipboardFallback {
         .app
         .clipboard()
         .write_text(secret.as_str())
-        .map_err(|err| ServiceError::IO(format!("{}", err)))?,
+        .map_err(|err| ServiceError::IO(format!("{err}")))?,
       _ => self
         .app
         .clipboard()
         .write_text("")
-        .map_err(|err| ServiceError::IO(format!("{}", err)))?,
+        .map_err(|err| ServiceError::IO(format!("{err}")))?,
     };
     Ok(())
   }
@@ -64,7 +64,7 @@ impl ClipboardControl for ClipboardFallback {
       .app
       .clipboard()
       .write_text("")
-      .map_err(|err| ServiceError::IO(format!("{}", err)))?;
+      .map_err(|err| ServiceError::IO(format!("{err}")))?;
     Ok(())
   }
 }

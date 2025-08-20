@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from "react";
 import { AlignSpec, OffsetSpec, offsetSpecToPadding, JustifySpec } from "./constraints";
-import { CSSInterpolation, css, cx } from "@emotion/css";
+import { css, cx } from "@emotion/css";
+import { CSSInterpolation } from "@emotion/serialize";
 
 export interface GridItemProps {
   colStart?: number

@@ -1,4 +1,4 @@
-import { CSSInterpolation } from "@emotion/css";
+import { CSSInterpolation } from "@emotion/serialize";
 
 export type Size = 0 | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50;
 export type OffsetSpec = Size | [Size, Size] | [Size, Size, Size] | [Size, Size, Size, Size];
@@ -19,4 +19,3 @@ export function offsetSpecToPadding(size: OffsetSpec): CSSInterpolation {
     }
   }
 }
-
