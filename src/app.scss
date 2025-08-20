@@ -1,4 +1,4 @@
-@import "~@blueprintjs/core/lib/scss/variables";
+@use "~@blueprintjs/core/lib/scss/variables" as v;
 
 html {
     font-family: "Lato", "Roboto", "Arial", "Helvetica", sans-serif;
@@ -15,7 +15,7 @@ body {
 }
 
 .browser-sidebar {
-  background-color: $dark-gray4;
+  background-color: v.$dark-gray4;
   display: flex;
   flex-direction: column;
 }
