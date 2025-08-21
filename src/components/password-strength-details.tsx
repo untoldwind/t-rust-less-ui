@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Grid } from "./ui/grid";
-import { PasswordStrength } from "../machines/backend-tauri";
-import { useTranslate } from "../machines/state";
+import { PasswordStrength } from "../contexts/backend-tauri";
+import { TranslationsContext } from "../i18n";
 
 export interface PasswordStrengthDetailsProps {
-  strength?: PasswordStrength
+  strength?: PasswordStrength;
 }
 
-export const PasswordStrengthDetails: React.FC<PasswordStrengthDetailsProps> = ({ strength }) => {
-  const translate = useTranslate()
+export const PasswordStrengthDetails: React.FC<
+  PasswordStrengthDetailsProps
+> = ({ strength }) => {
+  const translate = useContext(TranslationsContext);
 
   if (!strength) return null;
 
@@ -21,5 +23,5 @@ export const PasswordStrengthDetails: React.FC<PasswordStrengthDetailsProps> = (
       <div>{translate.secret.strength.cracktime}</div>
       <div>{strength.crack_time_display}</div>
     </Grid>
-  )
-}
+  );
+};

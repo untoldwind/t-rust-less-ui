@@ -1,22 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Callout, H5, HTMLTable } from "@blueprintjs/core";
-import { useRecoilValue } from "recoil";
-import { identitiesState, useTranslate } from "../machines/state";
 import { ConfigAddIdentity } from "./config-add-identity";
 import { Grid } from "./ui/grid";
+import { TranslationsContext } from "../i18n";
+import { MainStateContext } from "../contexts/main-state";
 
 export const ConfigIdentitiesList: React.FC = () => {
-  const translate = useTranslate();
-  const identities = useRecoilValue(identitiesState);
+  const mainState = useContext(MainStateContext);
+  const translate = useContext(TranslationsContext);
 
-  if (identities.length === 0) {
+  if (mainState.identities.length === 0) {
     return (
       <Grid columns={1}>
         <H5>{translate.storeConfig.identities}</H5>
         <Callout intent="warning">{translate.storeConfig.noIdentities}</Callout>
         <ConfigAddIdentity />
       </Grid>
-    )
+    );
   }
   return (
     <Grid columns={1}>
@@ -30,7 +30,7 @@ export const ConfigIdentitiesList: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {identities.map((identity, idx) => (
+          {mainState.identities.map((identity, idx) => (
             <tr key={idx}>
               <td style={{ whiteSpace: "nowrap" }}>{identity.name}</td>
               <td>{identity.email}</td>
@@ -40,5 +40,5 @@ export const ConfigIdentitiesList: React.FC = () => {
       </HTMLTable>
       <ConfigAddIdentity />
     </Grid>
-  )
-}
+  );
+};

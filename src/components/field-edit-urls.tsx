@@ -1,27 +1,43 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, InputGroup } from "@blueprintjs/core";
-import { useTranslate } from "../machines/state";
 import { Grid } from "./ui/grid";
 import { NoWrap } from "./ui/nowrap";
+import { TranslationsContext } from "../i18n";
 
 export interface FieldEditUrlsProps {
-  urls: string[]
-  onChange: (urls: string[]) => void
+  urls: string[];
+  onChange: (urls: string[]) => void;
 }
 
-export const FieldEditUrls: React.FC<FieldEditUrlsProps> = ({ urls, onChange }) => {
-  const translate = useTranslate()
+export const FieldEditUrls: React.FC<FieldEditUrlsProps> = ({
+  urls,
+  onChange,
+}) => {
+  const translate = useContext(TranslationsContext);
 
-  const activeUrls = urls.length === 0 || urls[urls.length - 1].length > 0 ? [...urls, ""] : [...urls];
+  const activeUrls =
+    urls.length === 0 || urls[urls.length - 1].length > 0
+      ? [...urls, ""]
+      : [...urls];
 
   function handleDelete(idx: number) {
-    const len = activeUrls[activeUrls.length - 1].length === 0 ? activeUrls.length - 1 : activeUrls.length;
+    const len =
+      activeUrls[activeUrls.length - 1].length === 0
+        ? activeUrls.length - 1
+        : activeUrls.length;
     onChange([...activeUrls.slice(0, idx), ...activeUrls.slice(idx + 1, len)]);
   }
 
   function handleChange(idx: number, value: string) {
-    const len = activeUrls[activeUrls.length - 1].length === 0 ? activeUrls.length - 1 : activeUrls.length;
-    onChange([...activeUrls.slice(0, idx), value, ...activeUrls.slice(idx + 1, len)]);
+    const len =
+      activeUrls[activeUrls.length - 1].length === 0
+        ? activeUrls.length - 1
+        : activeUrls.length;
+    onChange([
+      ...activeUrls.slice(0, idx),
+      value,
+      ...activeUrls.slice(idx + 1, len),
+    ]);
   }
 
   function handleCleanup(idx: number) {
@@ -33,12 +49,25 @@ export const FieldEditUrls: React.FC<FieldEditUrlsProps> = ({ urls, onChange }) 
       <NoWrap>{translate.secret.urls}</NoWrap>
       <Grid columns={1} gap={5}>
         {activeUrls.map((url, idx) => (
-          <InputGroup key={idx} value={url} fill
+          <InputGroup
+            key={idx}
+            value={url}
+            fill
             onBlur={() => handleCleanup(idx)}
-            onChange={event => handleChange(idx, event.currentTarget.value)}
-            rightElement={idx < activeUrls.length - 1 ? <Button intent="danger" minimal icon="remove" onClick={() => handleDelete(idx)} /> : undefined} />
+            onChange={(event) => handleChange(idx, event.currentTarget.value)}
+            rightElement={
+              idx < activeUrls.length - 1 ? (
+                <Button
+                  intent="danger"
+                  minimal
+                  icon="remove"
+                  onClick={() => handleDelete(idx)}
+                />
+              ) : undefined
+            }
+          />
         ))}
       </Grid>
     </>
-  )
-}
+  );
+};

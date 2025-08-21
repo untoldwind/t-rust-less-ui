@@ -1,31 +1,30 @@
-import React from "react";
+import React, { useContext } from "react";
 import { UnlockStore } from "./unlock-store";
 import { ListSecretsHotkeys } from "./list-secrets-hotkeys";
 import { Configuration } from "./configuration";
-import { mainPanelState } from "../machines/state";
-import { useRecoilValue } from "recoil";
-import { useStatusRefresh } from "../machines/actions";
-import { Loading } from "./loading";
+import { MainStateContext } from "../contexts/main-state";
+import { BrowseStateProvider } from "../contexts/browse-state";
 
 export const MainFrame: React.FC = () => {
-  const mainPanel = useRecoilValue(mainPanelState);
+  const mainState = useContext(MainStateContext);
 
-  useStatusRefresh();
-
-  switch (mainPanel) {
+  switch (mainState.mainPanel) {
     case "unlock":
-      return (
-        <React.Suspense fallback={<Loading />}>
-          <UnlockStore />
-        </React.Suspense>
-      );
+      return <UnlockStore />;
     case "browse":
-      return (<ListSecretsHotkeys />);
+      if (mainState.selectedStore && !mainState.status.locked) {
+        return (
+          <BrowseStateProvider
+            storeName={mainState.selectedStore!!}
+            unlockedBy={mainState.status.unlocked_by}
+          >
+            <ListSecretsHotkeys />
+          </BrowseStateProvider>
+        );
+      } else {
+        return <UnlockStore />;
+      }
     case "config":
-      return (
-        <React.Suspense fallback={<Loading />}>
-          <Configuration />
-        </React.Suspense>
-      )
+      return <Configuration />;
   }
-}
+};

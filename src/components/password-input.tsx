@@ -1,53 +1,78 @@
 import React from "react";
-import { Button, InputGroup } from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
-import { estimatePassword, PasswordStrength } from "../machines/backend-tauri";
+import { Button, InputGroup, Popover } from "@blueprintjs/core";
+import { estimatePassword, PasswordStrength } from "../contexts/backend-tauri";
 import { PasswordGenerator } from "./password-generator";
 import { PasswordStrengthView } from "./password-strength-view";
 import { Flex } from "./ui/flex";
 import { Grid } from "./ui/grid";
 
 export interface PasswordInputProps {
-  password: string
-  disabled?: boolean
-  onChange: (password: string) => void
+  password: string;
+  disabled?: boolean;
+  onChange: (password: string) => void;
 }
 
-export const PasswordInput: React.FC<PasswordInputProps> = ({ password, disabled, onChange }) => {
+export const PasswordInput: React.FC<PasswordInputProps> = ({
+  password,
+  disabled,
+  onChange,
+}) => {
   const [timer, setTimer] = React.useState<number | null>(null);
   const [reveal, setReveal] = React.useState(false);
-  const [passwordStrength, setPasswordStrength] = React.useState<PasswordStrength | undefined>(undefined);
+  const [passwordStrength, setPasswordStrength] = React.useState<
+    PasswordStrength | undefined
+  >(undefined);
 
-  React.useEffect(debounce(500, () => {
-    if (password.length === 0)
-      setPasswordStrength(undefined);
-    else
-      estimatePassword(password).then(setPasswordStrength, () => setPasswordStrength(undefined));
-  }), [password]);
+  React.useEffect(
+    debounce(500, () => {
+      if (password.length === 0) setPasswordStrength(undefined);
+      else
+        estimatePassword(password).then(setPasswordStrength, () =>
+          setPasswordStrength(undefined),
+        );
+    }),
+    [password],
+  );
 
   function debounce(delay: number, fn: () => void): () => void {
     return () => {
       if (!timer)
-        setTimer(window.setTimeout(() => {
-          fn();
-          setTimer(null);
-        }, delay));
+        setTimer(
+          window.setTimeout(() => {
+            fn();
+            setTimer(null);
+          }, delay),
+        );
     };
   }
 
   return (
     <Grid columns={1}>
-      <InputGroup value={password} disabled={disabled} fill
+      <InputGroup
+        value={password}
+        disabled={disabled}
+        fill
         type={reveal ? "text" : "password"}
-        onChange={event => onChange(event.currentTarget.value)}
-        rightElement={<Flex flexDirection="row" gap={5} padding={[0, 5, 0, 0]}>
-          <Button minimal icon={reveal ? "eye-on" : "eye-off"} onClick={() => setReveal(!reveal)} />
-          <Popover2 fill usePortal position="bottom-right" content={<PasswordGenerator onPasswordGenerated={onChange} />}>
-            <Button minimal icon="cog" />
-          </Popover2>
-        </Flex>}
+        onChange={(event) => onChange(event.currentTarget.value)}
+        rightElement={
+          <Flex flexDirection="row" gap={5} padding={[0, 5, 0, 0]}>
+            <Button
+              minimal
+              icon={reveal ? "eye-on" : "eye-off"}
+              onClick={() => setReveal(!reveal)}
+            />
+            <Popover
+              fill
+              usePortal
+              position="bottom-right"
+              content={<PasswordGenerator onPasswordGenerated={onChange} />}
+            >
+              <Button minimal icon="cog" />
+            </Popover>
+          </Flex>
+        }
       />
       <PasswordStrengthView passwordStrength={passwordStrength} />
     </Grid>
-  )
-}
+  );
+};

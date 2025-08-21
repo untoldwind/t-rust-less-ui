@@ -1,19 +1,19 @@
-import React from "react";
-import { SecretType } from "../machines/backend-tauri";
-import { useTranslate } from "../machines/state";
+import React, { useContext } from "react";
+import { SecretType } from "../contexts/backend-tauri";
 import { NoWrap } from "./ui/nowrap";
+import { TranslationsContext } from "../i18n";
 
 export interface FieldTypeProps {
-  value: SecretType
+  value: SecretType;
 }
 
 export const FieldType: React.FC<FieldTypeProps> = ({ value }) => {
-  const translate = useTranslate();
+  const translate = useContext(TranslationsContext);
 
   return (
     <>
       <NoWrap>{translate.secret.type}</NoWrap>
       <NoWrap>{translate.secret.typeName[value]}</NoWrap>
     </>
-  )
-}
+  );
+};

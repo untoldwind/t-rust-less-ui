@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Grid } from "./ui/grid";
-import { Tab, Tabs, NumericInput, Switch, InputGroup, Button, TabsExpander } from "@blueprintjs/core";
+import {
+  Tab,
+  Tabs,
+  NumericInput,
+  Switch,
+  InputGroup,
+  Button,
+  TabsExpander,
+} from "@blueprintjs/core";
 import { GridItem } from "./ui/grid-item";
-import { generatePassword, PasswordGeneratorCharsParam, PasswordGeneratorWordsParam } from "../machines/backend-tauri";
-import { useTranslate } from "../machines/state";
+import {
+  generatePassword,
+  PasswordGeneratorCharsParam,
+  PasswordGeneratorWordsParam,
+} from "../contexts/backend-tauri";
+import { TranslationsContext } from "../i18n";
 
 export interface PasswordGeneratorProps {
-  onPasswordGenerated: (password: string) => void
+  onPasswordGenerated: (password: string) => void;
 }
 
 const DEFAULT_CHARS_PARAM: PasswordGeneratorCharsParam = {
@@ -23,13 +35,15 @@ const DEFAULT_CHARS_PARAM: PasswordGeneratorCharsParam = {
 
 const DEFAULT_WORDS_PARAM: PasswordGeneratorWordsParam = {
   num_words: 4,
-  delim: '.',
-}
+  delim: ".",
+};
 
 export type Generator = "chars" | "words";
 
-export const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({ onPasswordGenerated }) => {
-  const translate = useTranslate();
+export const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({
+  onPasswordGenerated,
+}) => {
+  const translate = useContext(TranslationsContext);
   const [generator, setGenerator] = React.useState<Generator>("chars");
   const [charsParam, setCharsParam] = React.useState(DEFAULT_CHARS_PARAM);
   const [wordsParam, setWordsParam] = React.useState(DEFAULT_WORDS_PARAM);
@@ -37,57 +51,110 @@ export const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({ onPassword
   const charsPanel = (
     <Grid columnSpec="min-content 1fr" gap={10} alignItems="center">
       <div>{translate.passwordGenerator.numChars}</div>
-      <NumericInput value={charsParam.num_chars} onValueChange={num_chars => setCharsParam({
-        ...charsParam,
-        num_chars,
-      })} />
+      <NumericInput
+        value={charsParam.num_chars}
+        onValueChange={(num_chars) =>
+          setCharsParam({
+            ...charsParam,
+            num_chars,
+          })
+        }
+      />
       <GridItem colSpan={2}>
-        <Switch label={translate.passwordGenerator.includeUppers} checked={charsParam.include_uppers} onChange={event => setCharsParam({
-          ...charsParam,
-          include_uppers: event.currentTarget.checked,
-        })} />
+        <Switch
+          label={translate.passwordGenerator.includeUppers}
+          checked={charsParam.include_uppers}
+          onChange={(event) =>
+            setCharsParam({
+              ...charsParam,
+              include_uppers: event.currentTarget.checked,
+            })
+          }
+        />
       </GridItem>
       <GridItem colSpan={2}>
-        <Switch label={translate.passwordGenerator.includeNumbers} checked={charsParam.include_numbers} onChange={event => setCharsParam({
-          ...charsParam,
-          include_numbers: event.currentTarget.checked,
-        })} />
+        <Switch
+          label={translate.passwordGenerator.includeNumbers}
+          checked={charsParam.include_numbers}
+          onChange={(event) =>
+            setCharsParam({
+              ...charsParam,
+              include_numbers: event.currentTarget.checked,
+            })
+          }
+        />
       </GridItem>
       <GridItem colSpan={2}>
-        <Switch label={translate.passwordGenerator.includeSymbols} checked={charsParam.include_symbols} onChange={event => setCharsParam({
-          ...charsParam,
-          include_symbols: event.currentTarget.checked,
-        })} />
+        <Switch
+          label={translate.passwordGenerator.includeSymbols}
+          checked={charsParam.include_symbols}
+          onChange={(event) =>
+            setCharsParam({
+              ...charsParam,
+              include_symbols: event.currentTarget.checked,
+            })
+          }
+        />
       </GridItem>
       <GridItem colSpan={2}>
-        <Switch label={translate.passwordGenerator.requireUpper} checked={charsParam.require_upper} onChange={event => setCharsParam({
-          ...charsParam,
-          require_upper: event.currentTarget.checked,
-        })} />
+        <Switch
+          label={translate.passwordGenerator.requireUpper}
+          checked={charsParam.require_upper}
+          onChange={(event) =>
+            setCharsParam({
+              ...charsParam,
+              require_upper: event.currentTarget.checked,
+            })
+          }
+        />
       </GridItem>
       <GridItem colSpan={2}>
-        <Switch label={translate.passwordGenerator.requireNumber} checked={charsParam.require_number} onChange={event => setCharsParam({
-          ...charsParam,
-          require_number: event.currentTarget.checked,
-        })} />
+        <Switch
+          label={translate.passwordGenerator.requireNumber}
+          checked={charsParam.require_number}
+          onChange={(event) =>
+            setCharsParam({
+              ...charsParam,
+              require_number: event.currentTarget.checked,
+            })
+          }
+        />
       </GridItem>
       <GridItem colSpan={2}>
-        <Switch label={translate.passwordGenerator.requireSymbol} checked={charsParam.require_symbol} onChange={event => setCharsParam({
-          ...charsParam,
-          require_symbol: event.currentTarget.checked,
-        })} />
+        <Switch
+          label={translate.passwordGenerator.requireSymbol}
+          checked={charsParam.require_symbol}
+          onChange={(event) =>
+            setCharsParam({
+              ...charsParam,
+              require_symbol: event.currentTarget.checked,
+            })
+          }
+        />
       </GridItem>
       <GridItem colSpan={2}>
-        <Switch label={translate.passwordGenerator.excludeSimilar} checked={charsParam.exclude_similar} onChange={event => setCharsParam({
-          ...charsParam,
-          exclude_similar: event.currentTarget.checked,
-        })} />
+        <Switch
+          label={translate.passwordGenerator.excludeSimilar}
+          checked={charsParam.exclude_similar}
+          onChange={(event) =>
+            setCharsParam({
+              ...charsParam,
+              exclude_similar: event.currentTarget.checked,
+            })
+          }
+        />
       </GridItem>
       <GridItem colSpan={2}>
-        <Switch label={translate.passwordGenerator.excludeAmbigous} checked={charsParam.exclude_ambiguous} onChange={event => setCharsParam({
-          ...charsParam,
-          exclude_ambiguous: event.currentTarget.checked,
-        })} />
+        <Switch
+          label={translate.passwordGenerator.excludeAmbigous}
+          checked={charsParam.exclude_ambiguous}
+          onChange={(event) =>
+            setCharsParam({
+              ...charsParam,
+              exclude_ambiguous: event.currentTarget.checked,
+            })
+          }
+        />
       </GridItem>
     </Grid>
   );
@@ -95,37 +162,65 @@ export const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({ onPassword
   const wordsPanel = (
     <Grid columnSpec="min-content 1fr" gap={10} alignItems="center">
       <div>{translate.passwordGenerator.numWords}</div>
-      <NumericInput value={wordsParam.num_words} onValueChange={num_words => setWordsParam({
-        ...wordsParam,
-        num_words,
-      })} />
+      <NumericInput
+        value={wordsParam.num_words}
+        onValueChange={(num_words) =>
+          setWordsParam({
+            ...wordsParam,
+            num_words,
+          })
+        }
+      />
       <div>{translate.passwordGenerator.delim}</div>
-      <InputGroup value={wordsParam.delim} maxLength={1} onChange={(event: React.FormEvent<HTMLInputElement>) => setWordsParam({
-        ...wordsParam,
-        delim: event.currentTarget.value,
-      })} />
+      <InputGroup
+        value={wordsParam.delim}
+        maxLength={1}
+        onChange={(event: React.FormEvent<HTMLInputElement>) =>
+          setWordsParam({
+            ...wordsParam,
+            delim: event.currentTarget.value,
+          })
+        }
+      />
     </Grid>
   );
 
   function onGenerate() {
     switch (generator) {
       case "chars":
-        generatePassword({ chars: charsParam }).then(onPasswordGenerated, () => { })
+        generatePassword({ chars: charsParam }).then(
+          onPasswordGenerated,
+          () => {},
+        );
         break;
       case "words":
-        generatePassword({ words: wordsParam }).then(onPasswordGenerated, () => { })
+        generatePassword({ words: wordsParam }).then(
+          onPasswordGenerated,
+          () => {},
+        );
         break;
     }
   }
 
   return (
     <Grid columns={1} padding={10}>
-      <Tabs selectedTabId={generator} onChange={(generator: Generator) => setGenerator(generator)}>
-        <Tab id="chars" title={translate.passwordGenerator.chars} panel={charsPanel} />
-        <Tab id="words" title={translate.passwordGenerator.words} panel={wordsPanel} />
+      <Tabs
+        selectedTabId={generator}
+        onChange={(generator: Generator) => setGenerator(generator)}
+      >
+        <Tab
+          id="chars"
+          title={translate.passwordGenerator.chars}
+          panel={charsPanel}
+        />
+        <Tab
+          id="words"
+          title={translate.passwordGenerator.words}
+          panel={wordsPanel}
+        />
         <TabsExpander />
         <Button icon="repeat" minimal onClick={onGenerate} />
       </Tabs>
     </Grid>
-  )
-}
+  );
+};

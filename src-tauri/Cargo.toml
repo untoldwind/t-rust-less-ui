@@ -1,6 +1,6 @@
 [package]
 name = "t-rust-less-ui"
-version = "0.2.14"
+version = "0.2.15"
 description = "T-Rust-Less"
 authors = ["Untoldwind <landru@untoldwind.net>"]
 license = ""

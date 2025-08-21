@@ -5,21 +5,27 @@ import { Button } from "@blueprintjs/core";
 import { Grid } from "./ui/grid";
 import { PasswordStrengthView } from "./password-strength-view";
 import { NoWrap } from "./ui/nowrap";
-import { PasswordStrength } from "../machines/backend-tauri";
+import { PasswordStrength } from "../contexts/backend-tauri";
 
 export interface FieldPasswordProps {
-  label: string
-  value: string
-  strength?: PasswordStrength
-  onZoom: () => void
-  onCopy: () => void
+  label: string;
+  value: string;
+  strength?: PasswordStrength;
+  onZoom: () => void;
+  onCopy: () => void;
 }
 
 export interface FieldPasswordState {
-  reveal: boolean
+  reveal: boolean;
 }
 
-export const FieldPassword: React.FC<FieldPasswordProps> = ({ label, value, strength, onZoom, onCopy }) => {
+export const FieldPassword: React.FC<FieldPasswordProps> = ({
+  label,
+  value,
+  strength,
+  onZoom,
+  onCopy,
+}) => {
   const [reveal, setReveal] = React.useState(false);
 
   React.useEffect(() => {
@@ -39,11 +45,16 @@ export const FieldPassword: React.FC<FieldPasswordProps> = ({ label, value, stre
         <FlexItem flexGrow={0}>
           <Flex flexDirection="row">
             <Button icon="zoom-in" minimal onClick={onZoom} />
-            <Button active={reveal} minimal onClick={() => setReveal(!reveal)} icon={reveal ? "eye-off" : "eye-open"} />
+            <Button
+              active={reveal}
+              minimal
+              onClick={() => setReveal(!reveal)}
+              icon={reveal ? "eye-off" : "eye-open"}
+            />
             <Button icon="clipboard" minimal onClick={onCopy} />
           </Flex>
         </FlexItem>
       </Flex>
     </>
-  )
-}
+  );
+};

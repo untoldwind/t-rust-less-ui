@@ -2,21 +2,31 @@ import React from "react";
 import { Flex } from "./ui/flex";
 import { FlexItem } from "./ui/flex-item";
 import { Grid } from "./ui/grid";
-import { ProgressBar, Button, PopoverInteractionKind } from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
+import {
+  ProgressBar,
+  Button,
+  PopoverInteractionKind,
+  Popover,
+} from "@blueprintjs/core";
 import QRCode from "qrcode.react";
 import { NoWrap } from "./ui/nowrap";
-import { calculateOtpToken, OTPToken } from "../machines/backend-tauri";
+import { calculateOtpToken, OTPToken } from "../contexts/backend-tauri";
 
 export interface FieldTOPTProps {
-  label: string
-  otpUrl: string
-  onCopy: () => void
+  label: string;
+  otpUrl: string;
+  onCopy: () => void;
 }
 
-export const FieldTOTP: React.FC<FieldTOPTProps> = ({ otpUrl, label, onCopy }) => {
+export const FieldTOTP: React.FC<FieldTOPTProps> = ({
+  otpUrl,
+  label,
+  onCopy,
+}) => {
   const [reveal, setReveal] = React.useState(false);
-  const [otpToken, setOtpToken] = React.useState<OTPToken | undefined>(undefined);
+  const [otpToken, setOtpToken] = React.useState<OTPToken | undefined>(
+    undefined,
+  );
 
   React.useEffect(() => {
     const update = async () => {
@@ -40,27 +50,38 @@ export const FieldTOTP: React.FC<FieldTOPTProps> = ({ otpUrl, label, onCopy }) =
     return (
       <>
         <NoWrap>{label}</NoWrap>
-        <Popover2 fill
+        <Popover
+          fill
           content={popoverContent}
           isOpen={reveal}
-          interactionKind={PopoverInteractionKind.CLICK_TARGET_ONLY}>
+          interactionKind={PopoverInteractionKind.CLICK_TARGET_ONLY}
+        >
           <Flex flexDirection="row" gap={5}>
             <FlexItem flexGrow={1}>
               <Grid columns={1}>
                 <div>{otpToken.totp.token}</div>
-                <ProgressBar stripes={false} animate={false} value={otpToken.totp.valid_for / otpToken.totp.period} />
+                <ProgressBar
+                  stripes={false}
+                  animate={false}
+                  value={otpToken.totp.valid_for / otpToken.totp.period}
+                />
               </Grid>
             </FlexItem>
             <FlexItem flexGrow={0}>
               <Flex flexDirection="row">
-                <Button active={reveal} minimal onClick={() => setReveal(!reveal)} icon={reveal ? "eye-off" : "eye-open"} />
+                <Button
+                  active={reveal}
+                  minimal
+                  onClick={() => setReveal(!reveal)}
+                  icon={reveal ? "eye-off" : "eye-open"}
+                />
                 <Button icon="clipboard" minimal onClick={onCopy} />
               </Flex>
             </FlexItem>
           </Flex>
-        </Popover2>
+        </Popover>
       </>
-    )
+    );
   }
   return (
     <>
@@ -70,4 +91,4 @@ export const FieldTOTP: React.FC<FieldTOPTProps> = ({ otpUrl, label, onCopy }) =
       </Flex>
     </>
   );
-}
+};

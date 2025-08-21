@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Tag } from "@blueprintjs/core";
-import { useTranslate } from "../machines/state";
 import { Flex } from "./ui/flex";
 import { NoWrap } from "./ui/nowrap";
+import { TranslationsContext } from "../i18n";
 
 export interface FieldTagsProps {
-  tags: string[]
+  tags: string[];
 }
 
 export const FieldTags: React.FC<FieldTagsProps> = ({ tags }) => {
-  const translate = useTranslate()
+  const translate = useContext(TranslationsContext);
 
   if (tags.length === 0) return null;
 
@@ -22,5 +22,5 @@ export const FieldTags: React.FC<FieldTagsProps> = ({ tags }) => {
         ))}
       </Flex>
     </>
-  )
-}
+  );
+};

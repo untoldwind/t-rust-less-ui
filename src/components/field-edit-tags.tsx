@@ -1,21 +1,28 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, MenuItem } from "@blueprintjs/core";
 import { ItemPredicate, ItemRenderer, MultiSelect } from "@blueprintjs/select";
-import { useTranslate } from "../machines/state";
 import { NoWrap } from "./ui/nowrap";
+import { TranslationsContext } from "../i18n";
 
 export interface FieldEditTagsProps {
-  allTags: string[]
-  tags: string[]
-  onChange: (tags: string[]) => void
+  allTags: string[];
+  tags: string[];
+  onChange: (tags: string[]) => void;
 }
 
 const TagMultiSelect = MultiSelect.ofType<string>();
 
-export const FieldEditTags: React.FC<FieldEditTagsProps> = ({ allTags, tags, onChange }) => {
-  const translate = useTranslate()
+export const FieldEditTags: React.FC<FieldEditTagsProps> = ({
+  allTags,
+  tags,
+  onChange,
+}) => {
+  const translate = useContext(TranslationsContext);
 
-  const itemRenderer: ItemRenderer<string> = (tag, { modifiers, handleClick }) => {
+  const itemRenderer: ItemRenderer<string> = (
+    tag,
+    { modifiers, handleClick },
+  ) => {
     if (!modifiers.matchesPredicate || tags.indexOf(tag) >= 0) {
       return null;
     }
@@ -24,11 +31,16 @@ export const FieldEditTags: React.FC<FieldEditTagsProps> = ({ allTags, tags, onC
         active={modifiers.active}
         key={tag}
         text={tag}
-        onClick={handleClick} />
-    )
+        onClick={handleClick}
+      />
+    );
   };
 
-  const renderCreateTag = (query: string, active: boolean, handleClick: React.MouseEventHandler<HTMLElement>) => (
+  const renderCreateTag = (
+    query: string,
+    active: boolean,
+    handleClick: React.MouseEventHandler<HTMLElement>,
+  ) => (
     <MenuItem icon="add" text={query} active={active} onClick={handleClick} />
   );
 
@@ -38,13 +50,20 @@ export const FieldEditTags: React.FC<FieldEditTagsProps> = ({ allTags, tags, onC
 
   const handleItemRemove = (_: React.ReactNode, idx: number) => {
     onChange([...tags.slice(0, idx), ...tags.slice(idx + 1)]);
-  }
+  };
 
-  const tagPredicate: ItemPredicate<string> = (query, tag, _index, exactMatch) => {
+  const tagPredicate: ItemPredicate<string> = (
+    query,
+    tag,
+    _index,
+    exactMatch,
+  ) => {
     const normalizedTitle = tag.toLowerCase();
     const normalizedQuery = query.toLowerCase();
-    return exactMatch ? normalizedQuery == normalizedTitle : normalizedTitle.startsWith(normalizedQuery)
-  }
+    return exactMatch
+      ? normalizedQuery == normalizedTitle
+      : normalizedTitle.startsWith(normalizedQuery);
+  };
 
   const handleClear = () => onChange([]);
 
@@ -58,17 +77,20 @@ export const FieldEditTags: React.FC<FieldEditTagsProps> = ({ allTags, tags, onC
         items={allTags}
         selectedItems={tags}
         itemRenderer={itemRenderer}
-        tagRenderer={tag => tag}
+        tagRenderer={(tag) => tag}
         itemPredicate={tagPredicate}
         onItemSelect={handleItemSelect}
         popoverProps={{ minimal: true }}
-        createNewItemFromQuery={tag => tag}
+        createNewItemFromQuery={(tag) => tag}
         createNewItemRenderer={renderCreateTag}
         tagInputProps={{
           onRemove: handleItemRemove,
-          rightElement: tags.length > 0 ? <Button icon="cross" minimal={true} onClick={handleClear} /> : undefined,
+          rightElement:
+            tags.length > 0 ? (
+              <Button icon="cross" minimal={true} onClick={handleClear} />
+            ) : undefined,
         }}
       />
     </>
-  )
-}
+  );
+};

@@ -1,52 +1,77 @@
-import React from "react";
-import { Button, ButtonGroup, Menu, MenuItem } from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
-import { selectedSecretState, selectedSecretVersionIdState, useTranslate } from "../machines/state";
-import { useRecoilState, useRecoilValue } from "recoil";
+import React, { useContext } from "react";
+import {
+  Button,
+  ButtonGroup,
+  Menu,
+  MenuItem,
+  Popover,
+} from "@blueprintjs/core";
+import { TranslationsContext } from "../i18n";
+import { Secret } from "../contexts/backend-tauri";
+import { BrowseStateContext } from "../contexts/browse-state";
 
-export const SecretVersionSelect: React.FC = () => {
-  const translate = useTranslate()
-  const currentSecret = useRecoilValue(selectedSecretState);
-  const [selectedSecretVersionId, setSelectedSecretVersionId] = useRecoilState(selectedSecretVersionIdState);
+export interface SecretVersionSelectProps {
+  secret: Secret;
+}
 
-  if (!currentSecret) return null;
+export const SecretVersionSelect: React.FC<SecretVersionSelectProps> = ({
+  secret,
+}) => {
+  const browseState = useContext(BrowseStateContext);
+  const translate = useContext(TranslationsContext);
 
-  const currentBlockId = selectedSecretVersionId ? selectedSecretVersionId : currentSecret.current_block_id;
+  const currentBlockId =
+    browseState.selectedSecretVersion?.id ?? secret.current_block_id;
 
   function renderMenu() {
     return (
       <Menu>
-        {currentSecret?.versions.map(versionRef => (
+        {secret.versions.map((versionRef) => (
           <MenuItem
             key={versionRef.block_id}
             active={currentBlockId === versionRef.block_id}
             text={translate.formatTimestamp(versionRef.timestamp)}
-            onClick={() => setSelectedSecretVersionId(versionRef.block_id)}
+            onClick={() =>
+              browseState.setSelectedSecretVersionId(versionRef.block_id)
+            }
           />
         ))}
       </Menu>
-    )
+    );
   }
 
-  const idx = currentSecret.versions.findIndex(versionRef => versionRef.block_id === currentBlockId);
+  const idx = secret.versions.findIndex(
+    (versionRef) => versionRef.block_id === currentBlockId,
+  );
 
   return (
     <ButtonGroup>
       <Button
         icon="chevron-left"
-        disabled={idx >= currentSecret.versions.length - 1}
+        disabled={idx >= secret.versions.length - 1}
         onClick={() => {
-          idx < currentSecret.versions.length - 1 && setSelectedSecretVersionId(currentSecret.versions[idx + 1].block_id);
-        }} />
-      <Popover2 content={renderMenu()}>
-        <Button text={translate.formatTimestamp(currentSecret.current.timestamp)} rightIcon="caret-down" />
-      </Popover2>
+          idx < secret.versions.length - 1 &&
+            browseState.setSelectedSecretVersionId(
+              secret.versions[idx + 1].block_id,
+            );
+        }}
+      />
+      <Popover content={renderMenu()}>
+        <Button
+          text={translate.formatTimestamp(secret.current.timestamp)}
+          rightIcon="caret-down"
+        />
+      </Popover>
       <Button
         icon="chevron-right"
         disabled={idx <= 0}
         onClick={() => {
-          idx > 0 && setSelectedSecretVersionId(currentSecret.versions[idx - 1].block_id);
-        }} />
+          idx > 0 &&
+            browseState.setSelectedSecretVersionId(
+              secret.versions[idx - 1].block_id,
+            );
+        }}
+      />
     </ButtonGroup>
-  )
-}
+  );
+};

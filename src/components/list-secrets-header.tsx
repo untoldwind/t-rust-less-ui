@@ -1,45 +1,85 @@
-import React from "react";
-import { Navbar, InputGroup, Button, ProgressBar } from "@blueprintjs/core";
-import { Tooltip2 } from "@blueprintjs/popover2";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Navbar,
+  InputGroup,
+  Button,
+  ProgressBar,
+  Tooltip,
+} from "@blueprintjs/core";
 import { Grid } from "./ui/grid";
-import { autolockInState, mainPanelState, secretListFilterNameState, useTranslate } from "../machines/state";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { useLock } from "../machines/actions";
+import { TranslationsContext } from "../i18n";
+import { BrowseStateContext } from "../contexts/browse-state";
+import { MainStateContext } from "../contexts/main-state";
+import moment from "moment";
+
+type Autolock = {
+  autoLockIn: number;
+  autolockTimeout: number;
+};
 
 export const ListSecretsHeader: React.FC = () => {
-  const translate = useTranslate();
-  const lock = useLock();
-  const [secretListFilterName, setSecretListFilterName] = useRecoilState(secretListFilterNameState);
-  const { autolockIn, autolockTimeout } = useRecoilValue(autolockInState);
-  const setMainPanel = useSetRecoilState(mainPanelState);
+  const mainState = useContext(MainStateContext);
+  const browseState = useContext(BrowseStateContext);
+  const translate = useContext(TranslationsContext);
+  const [autolock, setAutolock] = useState<Autolock>({
+    autoLockIn: 0,
+    autolockTimeout: 0,
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (mainState.status.locked) {
+        setAutolock({ autoLockIn: 0, autolockTimeout: 0 });
+      } else {
+        const autoLockIn =
+          moment(mainState.status.autolock_at).diff(moment()) / 1000.0;
+        setAutolock({
+          autoLockIn: autoLockIn < 0 ? 0 : autoLockIn,
+          autolockTimeout: mainState.status.autolock_timeout,
+        });
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [mainState.status]);
 
   function onChangeNameFilter(event: React.FormEvent<HTMLInputElement>) {
     const value = event.currentTarget.value;
 
-    setSecretListFilterName(value.length > 0 ? value : undefined);
+    browseState.setSecretListFilterName(value.length > 0 ? value : undefined);
   }
 
   return (
     <Navbar>
       <Navbar.Group align="left">
         <InputGroup
-          leftIcon="search" autoFocus
-          value={secretListFilterName || ""}
-          onChange={onChangeNameFilter} />
+          leftIcon="search"
+          autoFocus
+          value={browseState.secretListFilter.name ?? ""}
+          onChange={onChangeNameFilter}
+        />
       </Navbar.Group>
       <Navbar.Group align="right">
-        <Tooltip2 content={translate.action.config}>
-          <Button icon="cog" large minimal onClick={() => setMainPanel("config")} />
-        </Tooltip2>
+        <Tooltip content={translate.action.config}>
+          <Button
+            icon="cog"
+            large
+            minimal
+            onClick={() => mainState.setMainPanel("config")}
+          />
+        </Tooltip>
         <Grid columns={1}>
-          <Tooltip2 content={translate.action.autolockIn(autolockIn)}>
-            <Button icon="lock" onClick={lock}>
+          <Tooltip content={translate.action.autolockIn(autolock.autoLockIn)}>
+            <Button icon="lock" onClick={() => mainState.lock()}>
               {translate.action.lock}
             </Button>
-          </Tooltip2>
-          <ProgressBar stripes={false} animate={false} value={autolockIn / autolockTimeout} />
+          </Tooltip>
+          <ProgressBar
+            stripes={false}
+            animate={false}
+            value={autolock.autoLockIn / autolock.autolockTimeout}
+          />
         </Grid>
       </Navbar.Group>
     </Navbar>
-  )
+  );
 };

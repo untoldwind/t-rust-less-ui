@@ -1,28 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FlexItem } from "./ui/flex-item";
 import { Menu, MenuItem, H5 } from "@blueprintjs/core";
-import { SECRET_TYPES } from "../machines/backend-tauri";
-import { secretListFilterDeletedState, secretListFilterTagState, secretListFilterTypeState, secretListState, useTranslate } from "../machines/state";
-import { useRecoilState, useRecoilValueLoadable } from "recoil";
+import { SECRET_TYPES } from "../contexts/backend-tauri";
+import { TranslationsContext } from "../i18n";
+import { BrowseStateContext } from "../contexts/browse-state";
 
 export const ListSecretsSidebar: React.FC = () => {
-  const translate = useTranslate();
-  const [secretListFilterType, setSecretListFilterType] = useRecoilState(secretListFilterTypeState);
-  const [secretListFilterTag, setSecretListFilterTag] = useRecoilState(secretListFilterTagState);
-  const [secretListFilterDeleted, setSecretListFilterDeleted] = useRecoilState(secretListFilterDeletedState);
-  const secretList = useRecoilValueLoadable(secretListState);
-  const [tags, setTags] = React.useState<string[]>([]);
-
-  React.useEffect(() => {
-    if (secretList.state == "hasValue")
-      setTags(secretList.contents.all_tags);
-  }, [secretList]);
+  const browseState = useContext(BrowseStateContext);
+  const translate = useContext(TranslationsContext);
+  const tags = browseState.secretList.all_tags;
 
   return (
     <div className="bp6-dark browser-sidebar">
       <Menu>
         {SECRET_TYPES.map((secretType, idx) => (
-          <MenuItem key={idx} text={translate.secret.typeName[secretType]} active={secretListFilterType === secretType} onClick={() => setSecretListFilterType(secretType)} />
+          <MenuItem
+            key={idx}
+            text={translate.secret.typeName[secretType]}
+            active={browseState.secretListFilter.type === secretType}
+            onClick={() => browseState.setSecretListFilterType(secretType)}
+          />
         ))}
       </Menu>
 
@@ -30,14 +27,24 @@ export const ListSecretsSidebar: React.FC = () => {
         <H5>{translate.secret.tags}</H5>
         <Menu>
           {tags.map((tag, idx) => (
-            <MenuItem key={idx} text={tag} active={secretListFilterTag === tag} onClick={() => setSecretListFilterTag(tag)} />
+            <MenuItem
+              key={idx}
+              text={tag}
+              active={browseState.secretListFilter.tag === tag}
+              onClick={() => browseState.setSecretListFilterTag(tag)}
+            />
           ))}
         </Menu>
       </FlexItem>
       <FlexItem flexGrow={1} />
       <Menu>
-        <MenuItem text={translate.secret.archived} icon="box" active={secretListFilterDeleted} onClick={() => setSecretListFilterDeleted(true)} />
+        <MenuItem
+          text={translate.secret.archived}
+          icon="box"
+          active={browseState.secretListFilter.deleted}
+          onClick={() => browseState.setSecretListFilterDeleted(true)}
+        />
       </Menu>
     </div>
   );
-}
+};
