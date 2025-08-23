@@ -1,27 +1,26 @@
 {
-    "compilerOptions": {
-      "strict": true,
-      "sourceMap": true,
-      "inlineSourceMap": false,
-      "target": "es5",
-      "module": "es2015",
-      "jsx": "react",
-      "moduleResolution": "node",
-      "experimentalDecorators": true,
-      "allowSyntheticDefaultImports": true,
-      "removeComments": true,
-      "emitDecoratorMetadata": true,
-      "noImplicitAny": true,
-      "noImplicitReturns": true,
-      "noImplicitThis": true,
-      "strictNullChecks": true,
-      "noUnusedLocals": true
-    },
-    "include": [
-      "src/**/*"
-    ],
-    "exclude": [
-      "node_modules"
-    ]
-  }
-  
+  "compilerOptions": {
+    "strict": true,
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "target": "es2018",
+    "jsx": "react",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

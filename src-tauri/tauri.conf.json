@@ -4,13 +4,17 @@
   "identifier": "io.github.untoldwind",
   "build": {
     "frontendDist": "../app",
-    "devUrl": "http://localhost:8123",
+    "devUrl": "http://localhost:1420",
     "beforeDevCommand": "yarn dev:app",
     "beforeBuildCommand": "yarn build:app"
   },
   "bundle": {
     "active": true,
-    "targets": ["deb", "rpm", "msi"],
+    "targets": [
+      "deb",
+      "rpm",
+      "msi"
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -54,7 +58,9 @@
     ],
     "security": {
       "csp": "default-src blob: data: filesystem: ws: wss: http: https: tauri: 'unsafe-eval' 'unsafe-inline' 'self' img-src: 'self'",
-      "capabilities": ["main-window"]
+      "capabilities": [
+        "main-window"
+      ]
     }
   }
 }
