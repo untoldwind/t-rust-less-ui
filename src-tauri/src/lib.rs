@@ -10,9 +10,19 @@ mod service;
 mod state;
 mod store;
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() -> Result<(), Box<dyn Error + Send + Sync>> {
+use tauri_plugin_log::{Target, TargetKind};
+
+pub fn try_run() -> Result<(), Box<dyn Error + Send + Sync>> {
   tauri::Builder::default()
+    .plugin(
+      tauri_plugin_log::Builder::new()
+        .targets([
+          Target::new(TargetKind::Stdout),
+          //          Target::new(TargetKind::LogDir { file_name: None }),
+          //          Target::new(TargetKind::Webview),
+        ])
+        .build(),
+    )
     .plugin(tauri_plugin_shell::init())
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_clipboard_manager::init())
@@ -46,4 +56,9 @@ pub fn run() -> Result<(), Box<dyn Error + Send + Sync>> {
     .run(tauri::generate_context!())?;
 
   Ok(())
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+  try_run().unwrap()
 }

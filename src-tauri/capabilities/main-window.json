@@ -8,6 +8,7 @@
   "permissions": [
     "shell:allow-open",
     "dialog:default",
-    "core:app:default"
+    "core:app:default",
+    "log:default"
   ]
 }

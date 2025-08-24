@@ -37,6 +37,7 @@
     "@tauri-apps/api": "^2.8.0",
     "@tauri-apps/plugin-clipboard-manager": "~2",
     "@tauri-apps/plugin-dialog": "~2",
+    "@tauri-apps/plugin-log": "~2",
     "@tauri-apps/plugin-shell": "~2",
     "hack-font": "^3.3.0",
     "moment": "^2.30.1",

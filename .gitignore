@@ -9,4 +9,5 @@ native/target
 native/artifacts.json
 *.iml
 .idea/
-export NDK_HOME=/home/bjunglas/Android/android-ndk-r27d/
+.envrc
+
