@@ -1,136 +1,136 @@
 on:
   push:
     tags:
-    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 name: Release
 jobs:
   build_linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Update apt
-      run: sudo apt-get update
-    - name: Install deps
-      run: sudo apt-get install -y libpango1.0-dev libatk1.0-dev libgtk-3-dev libsoup2.4-dev libwebkit2gtk-4.0-dev
-    - name: Install packages
-      run: yarn install
-    - name: Build dist
-      run: yarn dist
-    - uses: actions/upload-artifact@v2
-      with:
-        name: t-rust-less-ui.AppImage
-        path: ./src-tauri/target/release/bundle/appimage/t-rust-less-ui_*.AppImage
-    - uses: actions/upload-artifact@v2
-      with:
-        name: t-rust-less-ui.deb
-        path: ./src-tauri/target/release/bundle/deb/t-rust-less-ui_*.deb
+      - uses: actions/checkout@v4
+      - name: Update apt
+        run: sudo apt-get update
+      - name: Install deps
+        run: sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - name: Install packages
+        run: yarn install
+      - name: Build dist
+        run: yarn dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t-rust-less-ui.AppImage
+          path: ./src-tauri/target/release/bundle/appimage/t-rust-less-ui_*.AppImage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t-rust-less-ui.deb
+          path: ./src-tauri/target/release/bundle/deb/t-rust-less-ui_*.deb
 
   build_windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v2
-    - name: Install cert
-      run: certutil -user -f -p ${{ secrets.SIGN_PASSWORD }} -importpfx certs/t-rust-less.pfx
-    - name: Install packages
-      run: yarn install
-    - name: Build dist
-      run: yarn dist
-    - uses: actions/upload-artifact@v2
-      with:
-        name: t-rust-less-ui.msi
-        path: ./src-tauri/target/release/bundle/msi/t-rust-less-ui_*.msi
+      - uses: actions/checkout@v4
+      - name: Install cert
+        run: certutil -user -f -p ${{ secrets.SIGN_PASSWORD }} -importpfx certs/t-rust-less.pfx
+      - name: Install packages
+        run: yarn install
+      - name: Build dist
+        run: yarn dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t-rust-less-ui.msi
+          path: ./src-tauri/target/release/bundle/msi/t-rust-less-ui_*.msi
 
   publish:
     runs-on: ubuntu-latest
     needs: [build_linux, build_windows]
     steps:
-    - uses: actions/download-artifact@v2
-      with:
-        name: t-rust-less-ui.AppImage
-    - name: Simplify name
-      run: mv t-rust-less-ui_*.AppImage t-rust-less-ui.AppImage
-    - uses: actions/download-artifact@v2
-      with:
-        name:  t-rust-less-ui.deb
-    - name: Simplify name
-      run: mv t-rust-less-ui_*.deb t-rust-less-ui.deb
-    - uses: actions/download-artifact@v2
-      with:
-        name:  t-rust-less-ui.msi
-    - name: Simplify name
-      run: mv t-rust-less-ui_*.msi t-rust-less-ui.msi
-    - name: Display structure of downloaded files
-      run: ls -R
-    - name: Display structure of downloaded files
-      run: ls -R        
-    - name: Create sha256sum appimage
-      run: sha256sum t-rust-less-ui.AppImage > t-rust-less-ui.AppImage.sha256sum
-    - name: Create sha256sum deb
-      run: sha256sum  t-rust-less-ui.deb > t-rust-less-ui.deb.sha256sum
-    - name: Create sha256sum msi
-      run: sha256sum  t-rust-less-ui.msi > t-rust-less-ui.msi.sha256sum
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: ""
-        draft: false
-        prerelease: false
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: t-rust-less-ui.AppImage
-        asset_name: t-rust-less-ui.AppImage
-        asset_content_type: application/x-executable
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: t-rust-less-ui.AppImage.sha256sum
-        asset_name: t-rust-less-ui.AppImage.sha256sum
-        asset_content_type: text/plain
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path:  t-rust-less-ui.msi
-        asset_name:  t-rust-less-ui.msi
-        asset_content_type: application/x-executable
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path:  t-rust-less-ui.deb.sha256sum
-        asset_name:  t-rust-less-ui.deb.sha256sum
-        asset_content_type: text/plain
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path:  t-rust-less-ui.deb
-        asset_name:  t-rust-less-ui.deb
-        asset_content_type: application/x-executable
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path:  t-rust-less-ui.msi.sha256sum
-        asset_name:  t-rust-less-ui.msi.sha256sum
-        asset_content_type: text/plain
+      - uses: actions/download-artifact@v4
+        with:
+          name: t-rust-less-ui.AppImage
+      - name: Simplify name
+        run: mv t-rust-less-ui_*.AppImage t-rust-less-ui.AppImage
+      - uses: actions/download-artifact@v4
+        with:
+          name: t-rust-less-ui.deb
+      - name: Simplify name
+        run: mv t-rust-less-ui_*.deb t-rust-less-ui.deb
+      - uses: actions/download-artifact@v4
+        with:
+          name: t-rust-less-ui.msi
+      - name: Simplify name
+        run: mv t-rust-less-ui_*.msi t-rust-less-ui.msi
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Create sha256sum appimage
+        run: sha256sum t-rust-less-ui.AppImage > t-rust-less-ui.AppImage.sha256sum
+      - name: Create sha256sum deb
+        run: sha256sum  t-rust-less-ui.deb > t-rust-less-ui.deb.sha256sum
+      - name: Create sha256sum msi
+        run: sha256sum  t-rust-less-ui.msi > t-rust-less-ui.msi.sha256sum
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ""
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: t-rust-less-ui.AppImage
+          asset_name: t-rust-less-ui.AppImage
+          asset_content_type: application/x-executable
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: t-rust-less-ui.AppImage.sha256sum
+          asset_name: t-rust-less-ui.AppImage.sha256sum
+          asset_content_type: text/plain
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: t-rust-less-ui.msi
+          asset_name: t-rust-less-ui.msi
+          asset_content_type: application/x-executable
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: t-rust-less-ui.deb.sha256sum
+          asset_name: t-rust-less-ui.deb.sha256sum
+          asset_content_type: text/plain
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: t-rust-less-ui.deb
+          asset_name: t-rust-less-ui.deb
+          asset_content_type: application/x-executable
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: t-rust-less-ui.msi.sha256sum
+          asset_name: t-rust-less-ui.msi.sha256sum
+          asset_content_type: text/plain
