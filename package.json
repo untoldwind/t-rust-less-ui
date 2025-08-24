@@ -11,7 +11,7 @@
     "dev:app": "vite",
     "format": "tsfmt -r && scssfmt --recursive sass/**/*.scss && tslint -c tslint.json --project .",
     "clean": "rimraf dist app src-tauri/target",
-    "dist": "tauri build"
+    "dist": "env NO_STRIP=true tauri build"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.8.1",
