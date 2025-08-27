@@ -7,7 +7,6 @@ license = ""
 repository = ""
 default-run = "t-rust-less-ui"
 edition = "2021"
-build = "src/build.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -34,10 +33,6 @@ tauri-plugin-dialog = "2"
 tauri-plugin-shell = "2"
 tauri-plugin-log = "2"
 log = "0"
-
-[features]
-default = ["custom-protocol"]
-custom-protocol = ["tauri/custom-protocol"]
 
 [profile.release]
 panic = "abort"
