@@ -2,6 +2,8 @@
 
 use std::error::Error;
 
+#[cfg(target_os = "android")]
+mod android;
 mod clipboard;
 mod clipboard_fallback;
 mod estimate;
@@ -18,8 +20,8 @@ pub fn try_run() -> Result<(), Box<dyn Error + Send + Sync>> {
       tauri_plugin_log::Builder::new()
         .targets([
           Target::new(TargetKind::Stdout),
-          //          Target::new(TargetKind::LogDir { file_name: None }),
-          //          Target::new(TargetKind::Webview),
+          Target::new(TargetKind::LogDir { file_name: None }),
+          Target::new(TargetKind::Webview),
         ])
         .build(),
     )

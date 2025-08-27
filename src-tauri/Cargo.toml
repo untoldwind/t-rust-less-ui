@@ -45,3 +45,6 @@ codegen-units = 1
 lto = true
 incremental = false
 opt-level = "s"
+
+[patch.crates-io]
+t-rust-less-lib = { path = "../../t-rust-less/lib" }

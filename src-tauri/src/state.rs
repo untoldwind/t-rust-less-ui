@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use t_rust_less_lib::secrets_store::SecretsStore;
-use t_rust_less_lib::service::{create_service, ClipboardControl, TrustlessService};
+use t_rust_less_lib::service::{ClipboardControl, TrustlessService};
 
 pub struct State {
   service: Mutex<Option<Arc<dyn TrustlessService>>>,
@@ -24,7 +24,10 @@ impl State {
     match maybe_service.as_ref() {
       Some(service) => Ok(service.clone()),
       None => {
-        let service = create_service().map_err(|err| format!("{err}"))?;
+        #[cfg(not(target_os = "android"))]
+        let service = t_rust_less_lib::service::create_service().map_err(|err| format!("{err}"))?;
+        #[cfg(target_os = "android")]
+        let service = crate::android::create_service().map_err(|err| format!("{err}"))?;
         *maybe_service = Some(service.clone());
         Ok(service)
       }

@@ -40,6 +40,9 @@
       "certificateThumbprint": "438a68db3bb3fc6dccd8b484f85b0f659db3eed1",
       "digestAlgorithm": "sha256",
       "timestampUrl": "http://timestamp.digicert.com"
+    },
+    "android": {
+      "minSdkVersion": 29
     }
   },
   "app": {
@@ -54,9 +57,7 @@
     ],
     "security": {
       "csp": "default-src blob: data: filesystem: ws: wss: http: https: tauri: 'unsafe-eval' 'unsafe-inline' 'self' img-src: 'self'",
-      "capabilities": [
-        "main-window"
-      ]
+      "capabilities": ["main-window"]
     }
   }
 }
