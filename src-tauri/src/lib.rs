@@ -2,8 +2,6 @@
 
 use std::error::Error;
 
-#[cfg(target_os = "android")]
-mod android;
 mod clipboard;
 mod clipboard_fallback;
 mod estimate;
@@ -11,7 +9,9 @@ mod otp;
 mod service;
 mod state;
 mod store;
+mod view;
 
+use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 
 pub fn try_run() -> Result<(), Box<dyn Error + Send + Sync>> {
@@ -29,6 +29,10 @@ pub fn try_run() -> Result<(), Box<dyn Error + Send + Sync>> {
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_clipboard_manager::init())
     .manage(state::State::new())
+    .setup(|app| {
+      app.state::<state::State>().setup(app.handle())?;
+      Ok(())
+    })
     .invoke_handler(tauri::generate_handler![
       service::service_list_stores,
       service::service_get_default_store,
@@ -54,6 +58,7 @@ pub fn try_run() -> Result<(), Box<dyn Error + Send + Sync>> {
       clipboard::clipboard_destroy,
       estimate::estimate_password_strength,
       otp::calculate_otp_token,
+      view::view_insets,
     ])
     .run(tauri::generate_context!())?;
 

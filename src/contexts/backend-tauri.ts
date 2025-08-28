@@ -359,3 +359,14 @@ export function addIdentity(
     passphrase,
   });
 }
+
+export type Rect = {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+};
+
+export function viewInsets(): Promise<Rect> {
+  return invoke("view_insets", {});
+}

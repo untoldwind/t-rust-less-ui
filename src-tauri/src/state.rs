@@ -1,11 +1,20 @@
 use log::error;
 use std::collections::HashMap;
 use std::error::Error;
+use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use t_rust_less_lib::secrets_store::SecretsStore;
-use t_rust_less_lib::service::{ClipboardControl, TrustlessService};
+#[cfg(target_os = "android")]
+use t_rust_less_lib::service::config::LocalConfigProvider;
+#[cfg(not(target_os = "android"))]
+use t_rust_less_lib::service::create_service;
+#[cfg(target_os = "android")]
+use t_rust_less_lib::service::local::LocalTrustlessService;
+use t_rust_less_lib::service::{ClipboardControl, ServiceError, ServiceResult, TrustlessService};
+use tauri::{AppHandle, Manager};
 
 pub struct State {
+  data_path: Mutex<Option<PathBuf>>,
   service: Mutex<Option<Arc<dyn TrustlessService>>>,
   stores: Mutex<HashMap<String, Arc<dyn SecretsStore>>>,
   clipboard: Mutex<Option<Arc<dyn ClipboardControl>>>,
@@ -19,10 +28,22 @@ fn handle_error<E: Error>(err: E) -> String {
 impl State {
   pub fn new() -> State {
     State {
+      data_path: Mutex::new(None),
       service: Mutex::new(None),
       stores: Mutex::new(HashMap::new()),
       clipboard: Mutex::new(None),
     }
+  }
+
+  pub fn setup(&self, app: &AppHandle) -> ServiceResult<()> {
+    let data_path = app
+      .path()
+      .app_local_data_dir()
+      .map_err(|err| ServiceError::IO(format!("{err}")))?;
+
+    let mut maybe_data_path = self.data_path.lock()?;
+    maybe_data_path.replace(data_path.join("files"));
+    Ok(())
   }
 
   pub fn get_service(&self) -> Result<Arc<dyn TrustlessService>, String> {
@@ -31,10 +52,20 @@ impl State {
     match maybe_service.as_ref() {
       Some(service) => Ok(service.clone()),
       None => {
-        #[cfg(not(target_os = "android"))]
-        let service = t_rust_less_lib::service::create_service().map_err(handle_error)?;
         #[cfg(target_os = "android")]
-        let service = crate::android::create_service().map_err(handle_error)?;
+        let service = {
+          let data_file = self
+            .data_path
+            .lock()
+            .map_err(handle_error)?
+            .clone()
+            .unwrap_or("/data/data/io.github.unotldwind/files".into());
+          let config_file = data_file.join("config.toml");
+          log::info!("Use config file: {:?}", config_file);
+          Arc::new(LocalTrustlessService::new(LocalConfigProvider::new(config_file)).map_err(handle_error)?)
+        };
+        #[cfg(not(target_os = "android"))]
+        let service = create_service().map_err(handle_error)?;
         *maybe_service = Some(service.clone());
         Ok(service)
       }
