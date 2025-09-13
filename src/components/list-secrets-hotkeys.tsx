@@ -1,12 +1,10 @@
-import React, { PropsWithChildren, useContext } from "react";
+import React, { useContext } from "react";
 import { useHotkeys } from "@blueprintjs/core";
 import { ListSecrets } from "./list-secrets";
 import { ClipboardControl } from "./clipboard-control";
 import { BrowseStateContext } from "../contexts/browse-state";
 
-export const ListSecretsHotkeys: React.FC<PropsWithChildren<{}>> = ({
-  children,
-}) => {
+export const ListSecretsHotkeys: React.FC = () => {
   const browseState = useContext(BrowseStateContext);
 
   const hotkeys = React.useMemo(

@@ -343,6 +343,7 @@ export async function selectStoreLocation(
   const result = (await dialog.open({
     multiple: false,
     directory: true,
+    defaultPath,
   })) as string | null;
 
   return result;

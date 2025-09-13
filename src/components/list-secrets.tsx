@@ -13,10 +13,7 @@ export interface ListSecretsProps {
   onKeyUp: React.KeyboardEventHandler<HTMLElement>;
 }
 
-export const ListSecrets: React.FC<ListSecretsProps> = ({
-  onKeyUp,
-  onKeyDown,
-}) => {
+export const ListSecrets: React.FC<ListSecretsProps> = () => {
   const browseState = useContext(BrowseStateContext);
 
   return (

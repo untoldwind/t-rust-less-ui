@@ -24,7 +24,7 @@ export const Configuration: React.FC = () => {
         key={idx}
         interactive={!selected}
         elevation={selected ? 2 : 0}
-        onClick={(event) => {
+        onClick={() => {
           !selected && mainState.setSelectedStore(storeConfig.name);
         }}
       >
